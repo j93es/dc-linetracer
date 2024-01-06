@@ -1,0 +1,10 @@
+../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_tim.h:1124:22:LL_TIM_EnableCounter	16	static
+../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_tim.h:1135:22:LL_TIM_DisableCounter	16	static
+../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_tim.h:3457:22:LL_TIM_EnableIT_UPDATE	16	static
+../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_tim.h:3468:22:LL_TIM_DisableIT_UPDATE	16	static
+/Users/j93es/workspace/c/step_tracer_masterCode/Nucleo-Linetracer/External Library/Inc/custom_gpio.h:54:20:Custom_GPIO_Set_t	16	static
+../Main/Src/motor.c:37:6:Motor_Power_Off	8	static
+../Main/Src/motor.c:54:6:Motor_Start	8	static
+../Main/Src/motor.c:66:6:Motor_Stop	8	static
+../Main/Src/motor.c:84:6:Speed_Control_Start	8	static
+../Main/Src/motor.c:92:6:Speed_Control_Stop	8	static

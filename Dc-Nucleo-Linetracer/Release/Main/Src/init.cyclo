@@ -1,0 +1,8 @@
+../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_usart.h:410:22:LL_USART_Enable	1
+../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_usart.h:1814:26:LL_USART_IsActiveFlag_TXE	1
+../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_usart.h:2426:22:LL_USART_TransmitData8	1
+/Users/j93es/workspace/c/step_tracer_masterCode/Nucleo-Linetracer/External Library/Inc/custom_delay.h:20:22:Custom_Delay_us	2
+/Users/j93es/workspace/c/step_tracer_masterCode/Nucleo-Linetracer/External Library/Inc/custom_delay.h:28:22:Custom_Delay_ms	1
+/Users/j93es/workspace/c/step_tracer_masterCode/Nucleo-Linetracer/External Library/Inc/custom_delay.h:39:22:Custom_Delay_Init_SysTick	1
+../Main/Src/init.c:26:5:__io_putchar	2
+../Main/Src/init.c:35:6:Init	6

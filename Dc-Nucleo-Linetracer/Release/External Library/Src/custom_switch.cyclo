@@ -1,0 +1,5 @@
+../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_gpio.h:771:26:LL_GPIO_ReadInputPort	1
+/Users/j93es/workspace/c/step_tracer_masterCode/Nucleo-Linetracer/External Library/Inc/custom_delay.h:51:26:Custom_Delay_Get_SysTick	1
+../External Library/Src/custom_switch.c:27:13:Custom_Switch_Init_ButtonState	1
+../External Library/Src/custom_switch.c:36:16:Custom_Switch_State_Machine	10
+../External Library/Src/custom_switch.c:93:9:Custom_Switch_Read	8

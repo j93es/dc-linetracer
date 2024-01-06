@@ -1,0 +1,19 @@
+../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_adc.h:3867:22:LL_ADC_Enable	16	static
+../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_adc.h:3878:22:LL_ADC_Disable	16	static
+../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_adc.h:3918:22:LL_ADC_REG_StartConversionSWStart	16	static
+../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_adc.h:3986:26:LL_ADC_REG_ReadConversionData12	16	static
+../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_adc.h:4287:26:LL_ADC_IsActiveFlag_EOCS	16	static
+../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_adc.h:4340:22:LL_ADC_ClearFlag_EOCS	16	static
+../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_tim.h:1124:22:LL_TIM_EnableCounter	16	static
+../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_tim.h:1135:22:LL_TIM_DisableCounter	16	static
+../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_tim.h:3457:22:LL_TIM_EnableIT_UPDATE	16	static
+../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_tim.h:3468:22:LL_TIM_DisableIT_UPDATE	16	static
+/Users/j93es/workspace/c/step_tracer_masterCode/Nucleo-Linetracer/Main/Inc/sensor.h:55:26:Sensor_ADC_Read	8	static,ignoring_inline_asm
+/Users/j93es/workspace/c/step_tracer_masterCode/Nucleo-Linetracer/External Library/Inc/custom_delay.h:20:22:Custom_Delay_us	16	static
+/Users/j93es/workspace/c/step_tracer_masterCode/Nucleo-Linetracer/External Library/Inc/custom_delay.h:28:22:Custom_Delay_ms	16	static
+../Main/Src/sensor.c:38:6:Sensor_Start	8	static
+../Main/Src/sensor.c:51:6:Sensor_Stop	8	static
+../Main/Src/sensor.c:63:6:Make_Sensor_Raw_Vals	16	static
+../Main/Src/sensor.c:96:6:Make_Sensor_Norm_Vals	16	static
+../Main/Src/sensor.c:112:6:Make_Sensor_State	16	static
+../Main/Src/sensor.c:126:6:Sensor_Calibration	56	static

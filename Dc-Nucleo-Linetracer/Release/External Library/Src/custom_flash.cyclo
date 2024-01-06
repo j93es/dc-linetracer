@@ -1,0 +1,7 @@
+../External Library/Src/custom_flash.c:17:6:Custom_Flash_Check_Error	5
+../External Library/Src/custom_flash.c:27:6:Custom_Flash_Read	3
+../External Library/Src/custom_flash.c:37:6:Custom_Flash_Unlock	3
+../External Library/Src/custom_flash.c:55:6:Custom_Flash_Lock	1
+../External Library/Src/custom_flash.c:59:6:Custom_Flash_Wait	2
+../External Library/Src/custom_flash.c:64:6:Custom_Flash_Erase	2
+../External Library/Src/custom_flash.c:89:6:Custom_Flash_Write	3

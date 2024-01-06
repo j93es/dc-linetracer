@@ -1,0 +1,10 @@
+../External Library/Src/custom_filesystem.c:58:6:Custom_FileSystem_Load	1
+../External Library/Src/custom_filesystem.c:63:6:Custom_FileSystem_Reset	2
+../External Library/Src/custom_filesystem.c:69:6:Custom_FileSystem_Flush	4
+../External Library/Src/custom_filesystem.c:76:16:Custom_FileSystem_Get_CheckSum	2
+../External Library/Src/custom_filesystem.c:88:6:Custom_FileSystem_IsValidName	4
+../External Library/Src/custom_filesystem.c:101:6:Custom_FileSystem_Validate	7
+../External Library/Src/custom_filesystem.c:112:13:Custom_FileSystem_Find	5
+../External Library/Src/custom_filesystem.c:132:6:Custom_FileSystem_Delete	4
+../External Library/Src/custom_filesystem.c:153:6:Custom_FileSystem_Read	4
+../External Library/Src/custom_filesystem.c:165:6:Custom_FileSystem_Write	13

@@ -1,0 +1,14 @@
+../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_spi.h:297:22:LL_SPI_Enable	16	static
+../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_spi.h:524:22:LL_SPI_SetTransferDirection	16	static
+../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_spi.h:742:26:LL_SPI_IsActiveFlag_TXE	16	static
+../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_spi.h:793:26:LL_SPI_IsActiveFlag_BSY	16	static
+../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_spi.h:1098:22:LL_SPI_TransmitData8	24	static
+/Users/j93es/workspace/c/step_tracer_masterCode/Nucleo-Linetracer/External Library/Inc/custom_gpio.h:23:20:Custom_GPIO_Set	24	static
+../External Library/Src/custom_oled.c:109:20:Custom_OLED_SPI_Tramsnit_Blocking	16	static
+../External Library/Src/custom_oled.c:121:20:Custom_OLED_Write_Command	24	static
+../External Library/Src/custom_oled.c:139:20:Custom_OLED_Write_Data	24	static
+../External Library/Src/custom_oled.c:179:20:Custom_OLED_Set_Window	32	static
+../External Library/Src/custom_oled.c:190:6:Custom_OLED_Clear	16	static
+../External Library/Src/custom_oled.c:200:6:Custom_OLED_Init	56	static
+../External Library/Src/custom_oled.c:241:5:Custom_OLED_Putchar	48	static
+../External Library/Src/custom_oled.c:269:6:Custom_OLED_Printf	568	static
