@@ -1,5 +1,5 @@
 Main/Src/motor.o: ../Main/Src/motor.c \
- C:/Users/j93es/Desktop/step_tracer_masterCode/Dc-Nucleo-Linetracer/Main/Inc/motor.h \
+ /Users/j93es/workspace/c/DC_Tracer/Dc-Nucleo-Linetracer/Main/Inc/motor.h \
  ../Core/Inc/main.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_adc.h \
  ../Drivers/CMSIS/Device/ST/STM32F4xx/Include/stm32f4xx.h \
@@ -23,8 +23,8 @@ Main/Src/motor.o: ../Main/Src/motor.c \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_tim.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_usart.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_gpio.h \
- C:/Users/j93es/Desktop/step_tracer_masterCode/Dc-Nucleo-Linetracer/External\ Library/Inc/custom_gpio.h
-C:/Users/j93es/Desktop/step_tracer_masterCode/Dc-Nucleo-Linetracer/Main/Inc/motor.h:
+ /Users/j93es/workspace/c/DC_Tracer/Dc-Nucleo-Linetracer/External\ Library/Inc/custom_gpio.h
+/Users/j93es/workspace/c/DC_Tracer/Dc-Nucleo-Linetracer/Main/Inc/motor.h:
 ../Core/Inc/main.h:
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_adc.h:
 ../Drivers/CMSIS/Device/ST/STM32F4xx/Include/stm32f4xx.h:
@@ -48,4 +48,4 @@ C:/Users/j93es/Desktop/step_tracer_masterCode/Dc-Nucleo-Linetracer/Main/Inc/moto
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_tim.h:
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_usart.h:
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_gpio.h:
-C:/Users/j93es/Desktop/step_tracer_masterCode/Dc-Nucleo-Linetracer/External\ Library/Inc/custom_gpio.h:
+/Users/j93es/workspace/c/DC_Tracer/Dc-Nucleo-Linetracer/External\ Library/Inc/custom_gpio.h:

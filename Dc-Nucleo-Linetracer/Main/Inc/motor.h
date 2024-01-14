@@ -42,11 +42,6 @@ extern volatile uint32_t	curTick_R;
 
 __STATIC_INLINE void	Motor_L_TIM3_IRQ() {
 
-	// motorL phase 잡기
-	Custom_GPIO_Set_t(motorL + 0, (phaseL_table[phaseL] >> 0) & 0x01);
-	Custom_GPIO_Set_t(motorL + 1, (phaseL_table[phaseL] >> 1) & 0x01);
-	Custom_GPIO_Set_t(motorL + 2, (phaseL_table[phaseL] >> 2) & 0x01);
-	Custom_GPIO_Set_t(motorL + 3, (phaseL_table[phaseL] >> 3) & 0x01);
 
 	phaseL = (phaseL + 1) & 0x07;
 
@@ -61,11 +56,6 @@ __STATIC_INLINE void	Motor_L_TIM3_IRQ() {
 
 __STATIC_INLINE void	Motor_R_TIM4_IRQ() {
 
-	// motorR phase 잡기
-	Custom_GPIO_Set_t(motorR + 0, (phaseR_table[phaseR] >> 0) & 0x01);
-	Custom_GPIO_Set_t(motorR + 1, (phaseR_table[phaseR] >> 1) & 0x01);
-	Custom_GPIO_Set_t(motorR + 2, (phaseR_table[phaseR] >> 2) & 0x01);
-	Custom_GPIO_Set_t(motorR + 3, (phaseR_table[phaseR] >> 3) & 0x01);
 
 	phaseR = (phaseR + 1) & 0x07;
 

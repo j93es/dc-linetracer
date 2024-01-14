@@ -205,43 +205,31 @@ void SysTick_Handler(void)
 /******************************************************************************/
 
 /**
+  * @brief This function handles ADC1 global interrupt.
+  */
+void ADC_IRQHandler(void)
+{
+  /* USER CODE BEGIN ADC_IRQn 0 */
+
+  /* USER CODE END ADC_IRQn 0 */
+
+  /* USER CODE BEGIN ADC_IRQn 1 */
+
+  /* USER CODE END ADC_IRQn 1 */
+}
+
+/**
   * @brief This function handles TIM1 break interrupt and TIM9 global interrupt.
   */
 void TIM1_BRK_TIM9_IRQHandler(void)
 {
   /* USER CODE BEGIN TIM1_BRK_TIM9_IRQn 0 */
-  Drive_TIM9_IRQ();
+	Drive_TIM9_IRQ();
   /* USER CODE END TIM1_BRK_TIM9_IRQn 0 */
 
   /* USER CODE BEGIN TIM1_BRK_TIM9_IRQn 1 */
-  LL_TIM_ClearFlag_UPDATE(TIM9);
+	LL_TIM_ClearFlag_UPDATE(TIM9);
   /* USER CODE END TIM1_BRK_TIM9_IRQn 1 */
-}
-
-/**
-  * @brief This function handles TIM3 global interrupt.
-  */
-void TIM3_IRQHandler(void)
-{
-  /* USER CODE BEGIN TIM3_IRQn 0 */
-  Motor_L_TIM3_IRQ();
-  /* USER CODE END TIM3_IRQn 0 */
-  /* USER CODE BEGIN TIM3_IRQn 1 */
-  LL_TIM_ClearFlag_UPDATE(TIM3);
-  /* USER CODE END TIM3_IRQn 1 */
-}
-
-/**
-  * @brief This function handles TIM4 global interrupt.
-  */
-void TIM4_IRQHandler(void)
-{
-  /* USER CODE BEGIN TIM4_IRQn 0 */
-  Motor_R_TIM4_IRQ();
-  /* USER CODE END TIM4_IRQn 0 */
-  /* USER CODE BEGIN TIM4_IRQn 1 */
-  LL_TIM_ClearFlag_UPDATE(TIM4);
-  /* USER CODE END TIM4_IRQn 1 */
 }
 
 /**
@@ -250,10 +238,10 @@ void TIM4_IRQHandler(void)
 void TIM5_IRQHandler(void)
 {
   /* USER CODE BEGIN TIM5_IRQn 0 */
-  Sensor_TIM5_IRQ();
+	Sensor_TIM5_IRQ();
   /* USER CODE END TIM5_IRQn 0 */
   /* USER CODE BEGIN TIM5_IRQn 1 */
-  LL_TIM_ClearFlag_UPDATE(TIM5);
+	LL_TIM_ClearFlag_UPDATE(TIM5);
   /* USER CODE END TIM5_IRQn 1 */
 }
 

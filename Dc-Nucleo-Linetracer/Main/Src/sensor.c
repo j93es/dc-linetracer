@@ -2,27 +2,24 @@
  * sensor.c
  */
 
-#include "motor.h"
-#include "sensor.h"
-
-#include "main.h"
-#include "custom_delay.h"
-#include "custom_gpio.h"
-#include "custom_oled.h"
-#include "custom_switch.h"
+#include "header_init.h"
 
 
 
 volatile uint8_t	sensorRawVals[16];
-volatile uint8_t	midian[3];
 
-volatile uint8_t	sensorNormVals[16] = { 0, };
+volatile uint8_t	sensorNormVals[16];
 volatile uint8_t	normalizeCoef[16];
 volatile uint8_t	whiteMaxs[16];
 volatile uint8_t	blackMaxs[16];
 
-volatile uint16_t	state = 0x00;
+volatile uint8_t	state = 0x00;
 volatile uint8_t	threshold = THRESHOLD_INIT;
+
+volatile int32_t	positionTable[16] = { -14000, -12000, -10000, -8000, -6000, -4000, -2000, 0, 0,\
+		2000, 4000, 6000, 8000, 10000, 12000, 14000 };
+
+volatile float		voltage;
 
 
 

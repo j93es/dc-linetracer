@@ -1,14 +1,19 @@
+../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_tim.h:1124:22:LL_TIM_EnableCounter	1
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_tim.h:1446:22:LL_TIM_SetAutoReload	1
-C:/Users/j93es/Desktop/step_tracer_masterCode/Dc-Nucleo-Linetracer/External Library/Inc/custom_delay.h:20:22:Custom_Delay_us	2
-C:/Users/j93es/Desktop/step_tracer_masterCode/Dc-Nucleo-Linetracer/External Library/Inc/custom_delay.h:28:22:Custom_Delay_ms	1
-C:/Users/j93es/Desktop/step_tracer_masterCode/Dc-Nucleo-Linetracer/Main/Inc/drive_speed_ctrl.h:111:22:Motor_L_Speed_Control	1
-C:/Users/j93es/Desktop/step_tracer_masterCode/Dc-Nucleo-Linetracer/Main/Inc/drive_speed_ctrl.h:116:22:Motor_R_Speed_Control	1
-C:/Users/j93es/Desktop/step_tracer_masterCode/Dc-Nucleo-Linetracer/External Library/Inc/custom_gpio.h:54:20:Custom_GPIO_Set_t	2
-../Main/Src/linetracer_test.c:22:6:Switch_Test	8
-../Main/Src/linetracer_test.c:61:6:Sensor_Test_Raw	2
-../Main/Src/linetracer_test.c:87:6:Sensor_Test_Normalized	2
-../Main/Src/linetracer_test.c:111:6:Sensor_Test_State	6
-../Main/Src/linetracer_test.c:159:6:Motor_Test_Phase	4
-../Main/Src/linetracer_test.c:216:6:Motor_Test_Velocity	4
-../Main/Src/linetracer_test.c:264:6:Drive_Test_Position	2
-../Main/Src/linetracer_test.c:288:6:Current_Setting	3
+../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_tim.h:1609:22:LL_TIM_CC_EnableChannel	1
+../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_tim.h:2134:22:LL_TIM_OC_SetCompareCH2	1
+/Users/j93es/workspace/c/DC_Tracer/Dc-Nucleo-Linetracer/External Library/Inc/custom_delay.h:20:22:Custom_Delay_us	2
+/Users/j93es/workspace/c/DC_Tracer/Dc-Nucleo-Linetracer/External Library/Inc/custom_delay.h:28:22:Custom_Delay_ms	1
+/Users/j93es/workspace/c/DC_Tracer/Dc-Nucleo-Linetracer/Main/Inc/drive_speed_ctrl.h:21:22:Motor_L_Speed_Control	1
+/Users/j93es/workspace/c/DC_Tracer/Dc-Nucleo-Linetracer/Main/Inc/drive_speed_ctrl.h:26:22:Motor_R_Speed_Control	1
+/Users/j93es/workspace/c/DC_Tracer/Dc-Nucleo-Linetracer/External Library/Inc/custom_gpio.h:23:20:Custom_GPIO_Set	2
+../Main/Src/linetracer_test.c:24:6:Switch_Test	8
+../Main/Src/linetracer_test.c:63:6:Sensor_Test_Raw	2
+../Main/Src/linetracer_test.c:89:6:Sensor_Test_Normalized	2
+../Main/Src/linetracer_test.c:113:6:Sensor_Test_State	6
+../Main/Src/linetracer_test.c:149:6:Battery_Test_Voltage	2
+../Main/Src/linetracer_test.c:177:6:MotorR_Test_Duty	6
+../Main/Src/linetracer_test.c:221:6:MotorL_Test_Duty	6
+../Main/Src/linetracer_test.c:271:6:Motor_Test_Velocity	4
+../Main/Src/linetracer_test.c:319:6:Drive_Test_Position	2
+../Main/Src/linetracer_test.c:343:6:Current_Setting	3

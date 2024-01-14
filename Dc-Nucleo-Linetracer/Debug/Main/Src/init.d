@@ -1,7 +1,8 @@
 Main/Src/init.o: ../Main/Src/init.c \
- C:/Users/j93es/Desktop/step_tracer_masterCode/Dc-Nucleo-Linetracer/Main/Inc/drive_preset.h \
- C:/Users/j93es/Desktop/step_tracer_masterCode/Dc-Nucleo-Linetracer/Main/Inc/init.h \
- C:/Users/j93es/Desktop/step_tracer_masterCode/Dc-Nucleo-Linetracer/Main/Inc/drive_speed_ctrl.h \
+ /Users/j93es/workspace/c/DC_Tracer/Dc-Nucleo-Linetracer/Main/Inc/drive_preset.h \
+ /Users/j93es/workspace/c/DC_Tracer/Dc-Nucleo-Linetracer/Main/Inc/init.h \
+ /Users/j93es/workspace/c/DC_Tracer/Dc-Nucleo-Linetracer/Main/Inc/drive_speed_ctrl.h \
+ /Users/j93es/workspace/c/DC_Tracer/Dc-Nucleo-Linetracer/Main/Inc/drive_def_var.h \
  ../Core/Inc/main.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_adc.h \
  ../Drivers/CMSIS/Device/ST/STM32F4xx/Include/stm32f4xx.h \
@@ -25,23 +26,23 @@ Main/Src/init.o: ../Main/Src/init.c \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_tim.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_usart.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_gpio.h \
- C:/Users/j93es/Desktop/step_tracer_masterCode/Dc-Nucleo-Linetracer/Main/Inc/sensor.h \
- C:/Users/j93es/Desktop/step_tracer_masterCode/Dc-Nucleo-Linetracer/External\ Library/Inc/custom_delay.h \
- C:/Users/j93es/Desktop/step_tracer_masterCode/Dc-Nucleo-Linetracer/Main/Inc/first_drive.h \
- C:/Users/j93es/Desktop/step_tracer_masterCode/Dc-Nucleo-Linetracer/Main/Inc/init.h \
- C:/Users/j93es/Desktop/step_tracer_masterCode/Dc-Nucleo-Linetracer/Main/Inc/linetracer_test.h \
- C:/Users/j93es/Desktop/step_tracer_masterCode/Dc-Nucleo-Linetracer/Main/Inc/motor.h \
- C:/Users/j93es/Desktop/step_tracer_masterCode/Dc-Nucleo-Linetracer/External\ Library/Inc/custom_gpio.h \
- C:/Users/j93es/Desktop/step_tracer_masterCode/Dc-Nucleo-Linetracer/Main/Inc/sensor.h \
- C:/Users/j93es/Desktop/step_tracer_masterCode/Dc-Nucleo-Linetracer/External\ Library/Inc/custom_oled.h \
- C:/Users/j93es/Desktop/step_tracer_masterCode/Dc-Nucleo-Linetracer/External\ Library/Inc/custom_switch.h \
- C:/Users/j93es/Desktop/step_tracer_masterCode/Dc-Nucleo-Linetracer/External\ Library/Inc/custom_delay.h \
- C:/Users/j93es/Desktop/step_tracer_masterCode/Dc-Nucleo-Linetracer/External\ Library/Inc/custom_exception.h \
- C:/Users/j93es/Desktop/step_tracer_masterCode/Dc-Nucleo-Linetracer/External\ Library/Inc/custom_filesystem.h \
- C:/Users/j93es/Desktop/step_tracer_masterCode/Dc-Nucleo-Linetracer/External\ Library/Inc/custom_flash.h
-C:/Users/j93es/Desktop/step_tracer_masterCode/Dc-Nucleo-Linetracer/Main/Inc/drive_preset.h:
-C:/Users/j93es/Desktop/step_tracer_masterCode/Dc-Nucleo-Linetracer/Main/Inc/init.h:
-C:/Users/j93es/Desktop/step_tracer_masterCode/Dc-Nucleo-Linetracer/Main/Inc/drive_speed_ctrl.h:
+ /Users/j93es/workspace/c/DC_Tracer/Dc-Nucleo-Linetracer/External\ Library/Inc/custom_delay.h \
+ /Users/j93es/workspace/c/DC_Tracer/Dc-Nucleo-Linetracer/Main/Inc/first_drive.h \
+ /Users/j93es/workspace/c/DC_Tracer/Dc-Nucleo-Linetracer/Main/Inc/init.h \
+ /Users/j93es/workspace/c/DC_Tracer/Dc-Nucleo-Linetracer/Main/Inc/linetracer_test.h \
+ /Users/j93es/workspace/c/DC_Tracer/Dc-Nucleo-Linetracer/Main/Inc/motor.h \
+ /Users/j93es/workspace/c/DC_Tracer/Dc-Nucleo-Linetracer/External\ Library/Inc/custom_gpio.h \
+ /Users/j93es/workspace/c/DC_Tracer/Dc-Nucleo-Linetracer/Main/Inc/sensor.h \
+ /Users/j93es/workspace/c/DC_Tracer/Dc-Nucleo-Linetracer/External\ Library/Inc/custom_oled.h \
+ /Users/j93es/workspace/c/DC_Tracer/Dc-Nucleo-Linetracer/External\ Library/Inc/custom_switch.h \
+ /Users/j93es/workspace/c/DC_Tracer/Dc-Nucleo-Linetracer/External\ Library/Inc/custom_delay.h \
+ /Users/j93es/workspace/c/DC_Tracer/Dc-Nucleo-Linetracer/External\ Library/Inc/custom_exception.h \
+ /Users/j93es/workspace/c/DC_Tracer/Dc-Nucleo-Linetracer/External\ Library/Inc/custom_filesystem.h \
+ /Users/j93es/workspace/c/DC_Tracer/Dc-Nucleo-Linetracer/External\ Library/Inc/custom_flash.h
+/Users/j93es/workspace/c/DC_Tracer/Dc-Nucleo-Linetracer/Main/Inc/drive_preset.h:
+/Users/j93es/workspace/c/DC_Tracer/Dc-Nucleo-Linetracer/Main/Inc/init.h:
+/Users/j93es/workspace/c/DC_Tracer/Dc-Nucleo-Linetracer/Main/Inc/drive_speed_ctrl.h:
+/Users/j93es/workspace/c/DC_Tracer/Dc-Nucleo-Linetracer/Main/Inc/drive_def_var.h:
 ../Core/Inc/main.h:
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_adc.h:
 ../Drivers/CMSIS/Device/ST/STM32F4xx/Include/stm32f4xx.h:
@@ -65,17 +66,16 @@ C:/Users/j93es/Desktop/step_tracer_masterCode/Dc-Nucleo-Linetracer/Main/Inc/driv
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_tim.h:
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_usart.h:
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_gpio.h:
-C:/Users/j93es/Desktop/step_tracer_masterCode/Dc-Nucleo-Linetracer/Main/Inc/sensor.h:
-C:/Users/j93es/Desktop/step_tracer_masterCode/Dc-Nucleo-Linetracer/External\ Library/Inc/custom_delay.h:
-C:/Users/j93es/Desktop/step_tracer_masterCode/Dc-Nucleo-Linetracer/Main/Inc/first_drive.h:
-C:/Users/j93es/Desktop/step_tracer_masterCode/Dc-Nucleo-Linetracer/Main/Inc/init.h:
-C:/Users/j93es/Desktop/step_tracer_masterCode/Dc-Nucleo-Linetracer/Main/Inc/linetracer_test.h:
-C:/Users/j93es/Desktop/step_tracer_masterCode/Dc-Nucleo-Linetracer/Main/Inc/motor.h:
-C:/Users/j93es/Desktop/step_tracer_masterCode/Dc-Nucleo-Linetracer/External\ Library/Inc/custom_gpio.h:
-C:/Users/j93es/Desktop/step_tracer_masterCode/Dc-Nucleo-Linetracer/Main/Inc/sensor.h:
-C:/Users/j93es/Desktop/step_tracer_masterCode/Dc-Nucleo-Linetracer/External\ Library/Inc/custom_oled.h:
-C:/Users/j93es/Desktop/step_tracer_masterCode/Dc-Nucleo-Linetracer/External\ Library/Inc/custom_switch.h:
-C:/Users/j93es/Desktop/step_tracer_masterCode/Dc-Nucleo-Linetracer/External\ Library/Inc/custom_delay.h:
-C:/Users/j93es/Desktop/step_tracer_masterCode/Dc-Nucleo-Linetracer/External\ Library/Inc/custom_exception.h:
-C:/Users/j93es/Desktop/step_tracer_masterCode/Dc-Nucleo-Linetracer/External\ Library/Inc/custom_filesystem.h:
-C:/Users/j93es/Desktop/step_tracer_masterCode/Dc-Nucleo-Linetracer/External\ Library/Inc/custom_flash.h:
+/Users/j93es/workspace/c/DC_Tracer/Dc-Nucleo-Linetracer/External\ Library/Inc/custom_delay.h:
+/Users/j93es/workspace/c/DC_Tracer/Dc-Nucleo-Linetracer/Main/Inc/first_drive.h:
+/Users/j93es/workspace/c/DC_Tracer/Dc-Nucleo-Linetracer/Main/Inc/init.h:
+/Users/j93es/workspace/c/DC_Tracer/Dc-Nucleo-Linetracer/Main/Inc/linetracer_test.h:
+/Users/j93es/workspace/c/DC_Tracer/Dc-Nucleo-Linetracer/Main/Inc/motor.h:
+/Users/j93es/workspace/c/DC_Tracer/Dc-Nucleo-Linetracer/External\ Library/Inc/custom_gpio.h:
+/Users/j93es/workspace/c/DC_Tracer/Dc-Nucleo-Linetracer/Main/Inc/sensor.h:
+/Users/j93es/workspace/c/DC_Tracer/Dc-Nucleo-Linetracer/External\ Library/Inc/custom_oled.h:
+/Users/j93es/workspace/c/DC_Tracer/Dc-Nucleo-Linetracer/External\ Library/Inc/custom_switch.h:
+/Users/j93es/workspace/c/DC_Tracer/Dc-Nucleo-Linetracer/External\ Library/Inc/custom_delay.h:
+/Users/j93es/workspace/c/DC_Tracer/Dc-Nucleo-Linetracer/External\ Library/Inc/custom_exception.h:
+/Users/j93es/workspace/c/DC_Tracer/Dc-Nucleo-Linetracer/External\ Library/Inc/custom_filesystem.h:
+/Users/j93es/workspace/c/DC_Tracer/Dc-Nucleo-Linetracer/External\ Library/Inc/custom_flash.h:

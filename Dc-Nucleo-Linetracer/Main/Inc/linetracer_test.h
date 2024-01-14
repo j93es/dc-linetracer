@@ -16,7 +16,10 @@ void	Sensor_Test_State();
 
 
 void	Motor_Test_Velocity();
-void	Motor_Test_Phase();
+void	MotorL_Test_Duty();
+void	MotorR_Test_Duty();
+
+void	Battery_Test_Voltage();
 
 
 void	Drive_Test_Position();

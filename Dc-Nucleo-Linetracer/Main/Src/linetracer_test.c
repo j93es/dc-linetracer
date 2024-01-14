@@ -9,6 +9,8 @@
 #include "motor.h"
 #include "sensor.h"
 
+#include <stdlib.h>
+
 #include "main.h"
 #include "custom_delay.h"
 #include "custom_gpio.h"
@@ -144,66 +146,119 @@ void Sensor_Test_State() {
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-void Motor_Test_Phase() {
-	uint8_t	sw = 0;
-	uint8_t	phaseL = 0;
-	uint8_t	phaseR = 0;
-
-	static Custom_GPIO_t	motorL[4];
-
-	static Custom_GPIO_t	motorR[4];
-
-	static uint8_t	phases[8] = { 0x01, 0x03, 0x02, 0x06, 0x04, 0x0C, 0x08, 0x09 };
-
-	/*
-	 * 모터의 각 상을 잠깐씩 잡아본다.
-	 * 모터에 무리를 주지 않기 위해 100ms 동안만 상을 잡은 후 바로 놓는다.
-	 */
+void Battery_Test_Voltage() {
+	Sensor_Start();
 	Custom_OLED_Clear();
-	Custom_OLED_Printf("/0phaseL: %1x", phaseL);
-	Custom_OLED_Printf("/1phaseR: %1x", phaseR);
-	while (CUSTOM_SW_3 != (sw = Custom_Switch_Read())) {
 
-		if (sw == CUSTOM_SW_1) {
-			Custom_GPIO_Set_t(motorL + 0, (phases[7 - phaseL] >> 0) & 0x01);
-			Custom_GPIO_Set_t(motorL + 1, (phases[7 - phaseL] >> 1) & 0x01);
-			Custom_GPIO_Set_t(motorL + 2, (phases[7 - phaseL] >> 2) & 0x01);
-			Custom_GPIO_Set_t(motorL + 3, (phases[7 - phaseL] >> 3) & 0x01);
+	// 센서의 Normalized 값을 디스플레이에 출력해 확인하기
+	while (CUSTOM_SW_3 != Custom_Switch_Read()) {
+		uint32_t num1 = (uint32_t)voltage;
+		uint32_t num2 = (uint32_t)(voltage * 100000 - num1 * 100000);
 
-			Custom_Delay_ms(100);
-			Motor_Power_Off();
-
-			Custom_OLED_Printf("/0phaseL: %1x", phaseL);
-			phaseL = (phaseL + 1) & 0x07;
-		}
-
-		else if (sw == CUSTOM_SW_2) {
-			Custom_GPIO_Set_t(motorR + 0, (phases[phaseR] >> 0) & 0x01);
-			Custom_GPIO_Set_t(motorR + 1, (phases[phaseR] >> 1) & 0x01);
-			Custom_GPIO_Set_t(motorR + 2, (phases[phaseR] >> 2) & 0x01);
-			Custom_GPIO_Set_t(motorR + 3, (phases[phaseR] >> 3) & 0x01);
-
-			Custom_Delay_ms(100);
-			Motor_Power_Off();
-
-			Custom_OLED_Printf("/1phaseR: %1x", phaseR);
-			phaseR = (phaseR + 1) & 0x07;
-		}
+		Custom_OLED_Printf("/A/4%u.%05u", num1, num2);
 	}
 
 	Custom_OLED_Clear();
+	Sensor_Stop();
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+void MotorR_Test_Duty() {
+	LL_TIM_EnableCounter(TIM11);
+	LL_TIM_CC_EnableChannel(TIM11, LL_TIM_CHANNEL_CH1);
+	LL_TIM_OC_SetCompareCH2(TIM11, 0);
+
+	LL_TIM_EnableCounter(TIM3);
+
+	const uint16_t level_max = TIM11->ARR + 1;
+	float duty_ratio = 0.0f;
+
+	for (;;) {
+
+		// input
+		uint8_t sw = Custom_Switch_Read();
+
+		if (sw == CUSTOM_SW_3) {
+		 break;
+		} else if (sw == CUSTOM_SW_1) {
+		 duty_ratio -= 0.1f;
+		} else if (sw == CUSTOM_SW_2) {
+		 duty_ratio += 0.1f;
+		}
+
+		// get level(CCR3)
+		int level = abs(duty_ratio * level_max);
+
+		if (level > level_max) {
+		 level = level_max;
+		} else if (level < 0) {
+		 level = 0;
+		}
+
+		// set level(CCR3) and direction
+		TIM11->CCR1 = level;
+		Custom_GPIO_Set(GPIOC, 1 << 4, duty_ratio < 0); // PA5
+		Custom_GPIO_Set(GPIOC, 1 << 5, duty_ratio > 0); // PA6
+		Custom_OLED_Printf("/0Duty : %3.2f", duty_ratio);
+		Custom_OLED_Printf("/1CCR3 : %4d", TIM11->CCR1);
+
+		Custom_OLED_Printf("/2ECOD : %9d", TIM3->CNT);
+	}
+}
+
+
+void MotorL_Test_Duty() {
+	LL_TIM_EnableCounter(TIM10);
+	LL_TIM_CC_EnableChannel(TIM10, LL_TIM_CHANNEL_CH1);
+	LL_TIM_OC_SetCompareCH2(TIM10, 0);
+
+	LL_TIM_EnableCounter(TIM4);
+
+	const uint16_t level_max = TIM10->ARR + 1;
+	float duty_ratio = 0.0f;
+
+	for (;;) {
+
+		// input
+		uint8_t sw = Custom_Switch_Read();
+
+		if (sw == CUSTOM_SW_3) {
+		 break;
+		} else if (sw == CUSTOM_SW_1) {
+		 duty_ratio -= 0.1f;
+		} else if (sw == CUSTOM_SW_2) {
+		 duty_ratio += 0.1f;
+		}
+
+		// get level(CCR3)
+		int level = abs(duty_ratio * level_max);
+
+		if (level > level_max) {
+		 level = level_max;
+		} else if (level < 0) {
+		 level = 0;
+		}
+
+		// set level(CCR3) and direction
+		TIM10->CCR1 = level;
+		Custom_GPIO_Set(GPIOB, 1 << 4, duty_ratio > 0); // PA5
+		Custom_GPIO_Set(GPIOB, 1 << 5, duty_ratio < 0); // PA6
+		Custom_OLED_Printf("/0Duty : %3.2f", duty_ratio);
+		Custom_OLED_Printf("/1CCR3 : %4d", TIM10->CCR1);
+
+		Custom_OLED_Printf("/2ECOD : %9d", TIM4->CNT);
+	}
 }
 
 

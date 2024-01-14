@@ -2,53 +2,14 @@
  * first_drive.c
  */
 
-#include "drive_preset.h"
-#include "drive_speed_ctrl.h"
-#include "first_drive.h"
-#include "motor.h"
-#include "sensor.h"
-
-#include "custom_oled.h"
-#include "custom_switch.h"
+#include "header_init.h"
 
 
 
-
-
-// 현재 직진인지 커브인지 등을 저장하는 변수
-uint8_t					markState = MARK_STRAIGHT;
-
-
-// state machine 의 상태
-uint8_t					driveState = DRIVE_STATE_IDLE;
-
-
-//end mark를 몇 번 봤는지 카운트하는 변수
-uint8_t					endMarkCnt = 0;
-
-
-// 피트인 거리
-float					pitInLen = PIT_IN_LEN_INIT;
-
-
-// state machine 에서 사용
-//센서 값 누적
-uint8_t					sensorStateSum = 0x00;
-
-
-
-
-// line sensor가 읽은 값을 개수를 리턴함
-uint8_t	Get_Line_Sensor_Cnt() {
-	return ((state >> 6) & 0x01) + ((state >> 5) & 0x01) + ((state >> 4) & 0x01) + \
-			((state >> 3) & 0x01) + ((state >> 2) & 0x01) + ((state >> 1) & 0x01);
-}
-
-
-// marker sensor가 읽은 값을 개수를 리턴함
-uint8_t	Get_Marker_Sensor_Cnt() {
-	return ((state >> 7) & 0x01) + ((state >> 0) & 0x01);
-}
+__STATIC_INLINE void	First_Drive_Ctrl();
+__STATIC_INLINE void	Set_First_Drive_Data();
+static void				First_Drive_Data_Cntl(uint8_t exitEcho);
+static void				First_Drive_Data_Update_Cntl(uint8_t exitEcho);
 
 
 
@@ -77,12 +38,7 @@ void First_Drive() {
 		//Drive_Test_Info_Oled();
 
 		Drive_State_Machine();
-
-
-		/*
-		 * 마크 정보, 이동한 거리(틱수) 저장
-		 * 개인이 알아서 작성하도록 지시
-		 * */
+		First_Drive_Ctrl();
 
 		//Drive_Speed_Cntl();
 		if ( EXIT_ECHO_IDLE != (exitEcho = Is_Drive_End(exitEcho)) ) {
@@ -96,6 +52,9 @@ void First_Drive() {
 	Speed_Control_Stop();
 	Sensor_Stop();
 
+
+	First_Drive_Data_Cntl(exitEcho);
+
 	Custom_OLED_Printf("%u", endTime - startTime);
 }
 
@@ -104,108 +63,194 @@ void First_Drive() {
 
 
 
+__STATIC_INLINE void First_Drive_Ctrl() {
 
-void	Drive_State_Machine() {
+	if (markState == MARK_LINE_OUT) {
 
-	static uint32_t	lineOutStartTime;
+		return ;
+	}
+
+	// markState가 변경되었을 경우
+	else if (markState != driveDataBuffer[driveDataIdx].markState) {
+
+		// driveData 값 업데이트
+		Set_First_Drive_Data();
+	}
+}
 
 
-	switch (driveState) {
+
+__STATIC_INLINE void Set_First_Drive_Data() {
+
+	// 크로스, 엔드마크가 아닐 경우
+	if (markState != MARK_CROSS && markState != MARK_END) {
+
+		// 현재마크에서 이동한 tick 값을 현재 인덱스의 구조체에 저장
+		driveDataBuffer[driveDataIdx].tickCnt_L = curTick_L - markStartTick_L;
+		driveDataBuffer[driveDataIdx].tickCnt_R = curTick_R - markStartTick_R;
+
+		// 종료 시점에서의 읽은 크로스의 개수
+		driveDataBuffer[driveDataIdx].crossCnt = crossCnt;
+
+		// drivePtr 값 인덱스 증가
+		driveDataIdx += 1;
+
+		// markStartTick 업데이트
+		markStartTick_L = curTick_L;
+		markStartTick_R = curTick_R;
 
 
-		case DRIVE_STATE_IDLE :
+		// 증가된 구조체의 인덱스에 markState 저장
+		driveDataBuffer[driveDataIdx].markState = markState;
+	}
 
-				// 라인 센서 4개 이상 인식
-				if (Get_Line_Sensor_Cnt() >= 4) {
+	else {
 
-					sensorStateSum = 0x00;
+		// 크로스일 경우
+		if (markState == MARK_CROSS) {
 
-					driveState = DRIVE_STATE_CROSS;
+			/*
+			 *    n번째 크로스(crossCnt)		0		1		...		50
+			 *    m번째 마크(driveDataIdx)		4(3)	6(5)	...		98
+			 *
+			 *    (0번째 마크에서 크로스를 읽었을 때 1번째 마크로 저장되도록 함, 0은 값이 없는 상태를 나타냄)
+			 */
+			crossCntTableBuffer[crossCnt] = driveDataIdx + 1;
+
+			crossCnt += 1;
+		}
+
+		// 엔드마크일 경우
+		else if (markState == MARK_END){
+
+			endMarkCnt += 1;
+
+			if (endMarkCnt >= 2) {
+
+				// 현재마크에서 이동한 tick 값을 현재 인덱스의 구조체에 저장
+				driveDataBuffer[driveDataIdx].tickCnt_L = curTick_L - markStartTick_L;
+				driveDataBuffer[driveDataIdx].tickCnt_R = curTick_R - markStartTick_R;
+
+				// 종료 시점에서의 읽은 크로스의 개수
+				driveDataBuffer[driveDataIdx].crossCnt = crossCnt;
+			}
+		}
+
+		// 크로스, 엔드마크는 읽은 후 이전 상태로 되돌림
+		markState = driveDataBuffer[driveDataIdx].markState;
+	}
+
+}
+
+
+
+
+
+
+static void First_Drive_Data_Cntl(uint8_t exitEcho) {
+	uint32_t i = 1;
+	uint16_t markCnt_L = 0;
+	uint16_t markCnt_R = 0;
+	uint16_t crossCnt = 0;
+
+	if (exitEcho == EXIT_ECHO_END_MARK) {
+
+		// 마크 개수 세기
+		for (i = 1; driveDataBuffer[i].markState != MARK_NONE && i < MAX_DRIVE_DATA_LEN; i++) {
+
+			// 현재상태가 좌측 곡선인 경우
+			if (driveDataBuffer[i].markState == MARK_CURVE_L) {
+
+				markCnt_L += 1;
+			}
+
+			// 현재상태가 우측 곡선인 경우
+			else if (driveDataBuffer[i].markState == MARK_CURVE_R) {
+
+				markCnt_R += 1;
+			}
+
+			// 직선 (인덱스가 1부터 시작하기에 지정되지 않은 메모리에 접근하는 행동을 방지함)
+			else if (driveDataBuffer[i].markState == MARK_STRAIGHT) {
+
+				// 이전 상태가 좌측 곡선이었을 경우
+				if (driveDataBuffer[i-1].markState == MARK_CURVE_L) {
+					markCnt_L += 1;
 				}
 
-				// 라인 센서 4개 이하 and 마크 센서 1개 이상
-				else if (Get_Marker_Sensor_Cnt() != 0) {
-
-					sensorStateSum = 0x00;
-
-					driveState = DRIVE_STATE_MARKER;
+				// 이전 상태가 우측 곡선이었을 경우
+				else if (driveDataBuffer[i-1].markState == MARK_CURVE_R) {
+					markCnt_R += 1;
 				}
+			}
+		}
 
-				// 라인아웃되거나 잠깐 떳을 때
-				else if (state == 0x00) {
+		for (i = 0; crossCntTableBuffer[i] != 0 && i < MAX_CROSS_CNT; i++) {
 
-					lineOutStartTime = uwTick;
+			crossCnt++;
+		}
 
-					driveState = DRIVE_DECISION_LINE_OUT;
-				}
+		Custom_OLED_Clear();
 
-				break;
+		// OLED에 exitEcho 변수명 및 마크 개수 출력
+		Custom_OLED_Printf("/0end mark");
+		Custom_OLED_Printf("/1mark L:   %d", markCnt_L);
+		Custom_OLED_Printf("/2mark R:   %d", markCnt_R);
+		Custom_OLED_Printf("/3cross:    %d", crossCnt);
 
+		while (CUSTOM_SW_3 != Custom_Switch_Read()) ;
 
+		First_Drive_Data_Update_Cntl(exitEcho);
+	}
 
+	else if (exitEcho == EXIT_ECHO_LINE_OUT){
 
+		Custom_OLED_Printf("/0line out");
 
-		case DRIVE_STATE_CROSS:
+		while (CUSTOM_SW_3 != Custom_Switch_Read()) ;
+	}
 
-				// accum
-				sensorStateSum |= state;
-
-				// 모든 센서를 읽었고 마크 센서가 선을 지나쳤을 때 IDLE
-				if (sensorStateSum == 0xff && Get_Marker_Sensor_Cnt() == 0) {
-
-					driveState = DRIVE_STATE_DECISION;
-				}
-
-				break;
-
-
-
-
-
-		case DRIVE_STATE_MARKER :
-
-				// accum
-				sensorStateSum |= state;
-
-				// 마커 센서가 0개 일 때
-				if (Get_Marker_Sensor_Cnt() == 0) {
-
-					driveState = DRIVE_STATE_DECISION;
-				}
-
-				break;
+	Custom_OLED_Clear();
+}
 
 
 
+static void First_Drive_Data_Update_Cntl(uint8_t exitEcho) {
 
+	uint8_t sw;
+	uint8_t isUpdate = CUSTOM_FALSE;
 
-		case DRIVE_STATE_DECISION :
+	Custom_OLED_Printf("/5update: NO");
 
-				Decision(sensorStateSum);
+	while (CUSTOM_SW_3 != (sw = Custom_Switch_Read())) {
 
-				driveState = DRIVE_STATE_IDLE;
+		// data 업데이트 함
+		if (sw == CUSTOM_SW_1) {
+			Custom_OLED_Printf("/5update: YES");
+			isUpdate = CUSTOM_TRUE;
+		}
 
-				break;
+		// data 업데이트 안함
+		else if (sw == CUSTOM_SW_2) {
+			Custom_OLED_Printf("/5update: NO ");
+			isUpdate = CUSTOM_FALSE;
+		}
+	}
+	Custom_OLED_Clear();
 
+	if (driveData[0].markState == MARK_NONE || isUpdate == CUSTOM_TRUE) {
 
+		for (uint32_t i = 0; i < MAX_DRIVE_DATA_LEN; i++) {
+			driveData[i].tickCnt_L = driveDataBuffer[i].tickCnt_L;
+			driveData[i].tickCnt_R = driveDataBuffer[i].tickCnt_R;
+			driveData[i].markState = driveDataBuffer[i].markState;
+			driveData[i].crossCnt = driveDataBuffer[i].crossCnt;
+		}
 
+		for (uint32_t i = 0; i < MAX_CROSS_CNT; i++) {
 
-
-		case DRIVE_DECISION_LINE_OUT :
-
-				if (state != 0x00) {
-
-					driveState = DRIVE_STATE_IDLE;
-				}
-
-				// state == 0x00인 상태가 t(ms) 지속되었을 때
-				else if (uwTick > lineOutStartTime + LINE_OUT_DELAY_MS) {
-
-					markState = MARK_LINE_OUT;
-				}
-
-				break ;
-
+			crossCntTable[i] = crossCntTableBuffer[i];
+		}
 	}
 }
 
@@ -213,94 +258,233 @@ void	Drive_State_Machine() {
 
 
 
-// end line, right mark, left mark, straight를 판별하고 정해진 동작을 실행하는 함수
-void	Decision(uint8_t sensorStateSum) {
 
+void Drive_Time_Attack_Get_Data() {
 
-	// cross
-	if (sensorStateSum == 0xff) {
+	Custom_OLED_Clear();
 
-		markState = MARK_CROSS;
-	}
+	//주행 전 변수값 초기화
+	Time_Attack_Setting();
 
+	Sensor_Start();
+	Motor_Start();
+	Speed_Control_Start();
 
-	// end mark
-	// if ( ((sensorStateSum >> 0) & 0x01) && ((sensorStateSum >> 7) & 0x01) )
-	else if ( (sensorStateSum & 0x81) == 0x81 ) {
+	while (1) {
 
-		markState = MARK_END;
-		endMarkCnt += 1;
-	}
+		//Drive_Test_Info_Oled();
 
+		Drive_State_Machine();
+		First_Drive_Ctrl();
 
-	// left mark
-	else if ( (sensorStateSum & 0x80) == 0x80 ) {
+		//Drive_Speed_Cntl();
+		if (endMarkCnt >= 2 || markState == MARK_LINE_OUT) {
 
+			Custom_OLED_Printf("/0%u", curTick_L);
 
-		// 이전 마크가 왼쪽 곡선 마크였다면 곡선주행 종료
-		if (markState == MARK_CURVE_L) {
-			markState = MARK_STRAIGHT;
-		}
+			Drive_Fit_In(pitInLen, PIT_IN_TARGET_SPEED);
 
-		// 곡선주행 진입
-		else {
-			markState = MARK_CURVE_L;
-		}
-	}
+			while (curSpeed > DRIVE_END_DELAY_SPEED) {
+				//Drive_Speed_Cntl();
+			}
 
-
-	// right mark
-	else if ( (sensorStateSum & 0x01) == 0x01 ) {
-
-		// 이전 마크가 오른쪽 곡선 마크였다면 곡선주행 종료
-		if (markState == MARK_CURVE_R) {
-			markState = MARK_STRAIGHT;
-		}
-
-		// 곡선주행 진입
-		else {
-			markState = MARK_CURVE_R;
+			break;
 		}
 	}
+
+	Motor_Stop();
+	Speed_Control_Stop();
+	Sensor_Stop();
+
+	while (CUSTOM_SW_3 != Custom_Switch_Read()) ;
+
+	Custom_OLED_Clear();
 }
 
 
 
 
 
-// 피트인 함수
-void	Drive_Fit_In(float s, float pinSpeed) {
-
-	targetSpeed = pinSpeed;
-	decele = ABS( (pinSpeed - curSpeed) * (pinSpeed + curSpeed) ) / (2 * s);
-}
-
-
+void Drive_Time_Attack() {
+	uint8_t	sw = 0;
+	uint8_t exitEcho = EXIT_ECHO_IDLE;
+	int32_t targetTick = 0;
+	int32_t targetMs = 0;
+	int32_t pitInMs = 0;
 
 
+	//주행 전 변수값 초기화
+	Time_Attack_Setting();
 
-uint8_t	Is_Drive_End(uint8_t exitEcho) {
 
-	// endMark || lineOut
-	if (endMarkCnt >= 2 || markState == MARK_LINE_OUT) {
 
-		Drive_Fit_In(pitInLen, PIT_IN_TARGET_SPEED);
+	for (int i = 9;  i > 0; i--) {
 
-		while (curSpeed > DRIVE_END_DELAY_SPEED) {
+
+		while (CUSTOM_SW_3 != (sw = Custom_Switch_Read())) {
+
+			Custom_OLED_Printf("/0target tick");
+
+			// n 번째 자리수인지 출력
+			Custom_OLED_Printf("/1%d", i);
+
+			// OLED에 변수값 출력
+			Custom_OLED_Printf("/2%d", targetTick);
+
+
+			// 변수 값 빼기
+			if (sw == CUSTOM_SW_1) {
+				targetTick -= 1;
+			}
+			// 변수값 더하기
+			else if (sw == CUSTOM_SW_2) {
+				targetTick += 1;
+			}
+		}
+
+		targetTick = 10 * targetTick;
+	}
+
+	Custom_OLED_Clear();
+
+
+
+
+	for (int i = 5;  i > 0; i--) {
+
+		while (CUSTOM_SW_3 != (sw = Custom_Switch_Read())) {
+
+			Custom_OLED_Printf("/0target ms");
+
+			// n 번째 자리수인지 출력
+			Custom_OLED_Printf("/1%d", i);
+
+			// OLED에 변수값 출력
+			Custom_OLED_Printf("/2%d", targetMs);
+
+
+			// 변수 값 빼기
+			if (sw == CUSTOM_SW_1) {
+				targetMs -= 1;
+			}
+			// 변수값 더하기
+			else if (sw == CUSTOM_SW_2) {
+				targetMs += 1;
+			}
+		}
+
+		targetMs = 10 * targetMs;
+	}
+
+
+	Custom_OLED_Clear();
+
+
+
+
+	for (int i = 5;  i > 0; i--) {
+
+		while (CUSTOM_SW_3 != (sw = Custom_Switch_Read())) {
+
+			Custom_OLED_Printf("/0pit in ms");
+
+			// n 번째 자리수인지 출력
+			Custom_OLED_Printf("/1%d", i);
+
+			// OLED에 변수값 출력
+			Custom_OLED_Printf("/2%d", pitInMs);
+
+
+			// 변수 값 빼기
+			if (sw == CUSTOM_SW_1) {
+				pitInMs -= 1;
+			}
+			// 변수값 더하기
+			else if (sw == CUSTOM_SW_2) {
+				pitInMs += 1;
+			}
+		}
+		pitInMs = 10 * pitInMs;
+	}
+
+
+
+
+
+
+
+	Custom_OLED_Clear();
+
+	Sensor_Start();
+	Motor_Start();
+	Speed_Control_Start();
+
+	while (1) {
+
+		//Drive_Test_Info_Oled();
+
+		Drive_State_Machine();
+		First_Drive_Ctrl();
+
+		//Drive_Speed_Cntl();
+		if ( curTick_L > targetTick - 0.5 * TICK_PER_M || endMarkCnt >= 2 || markState == MARK_LINE_OUT ) {
+
+			if (endMarkCnt >= 2 || markState == MARK_LINE_OUT) {
+
+				exitEcho = ~EXIT_ECHO_IDLE;
+			}
+
+			Drive_Fit_In(pitInLen, PIT_IN_TARGET_SPEED);
+
+			while (curSpeed > DRIVE_END_DELAY_SPEED) {
+				//Drive_Speed_Cntl();
+			}
+
+			break;
+		}
+	}
+
+	Motor_Stop();
+	Speed_Control_Stop();
+
+
+
+
+	if (exitEcho == EXIT_ECHO_IDLE) {
+
+		while (uwTick < targetMs - pitInMs) ;
+
+		targetSpeed = 1.5f;
+
+
+		Motor_Start();
+		Speed_Control_Start();
+
+		while (1) {
+
+			//Drive_Test_Info_Oled();
+
+			Drive_State_Machine();
+			First_Drive_Ctrl();
+
 			//Drive_Speed_Cntl();
+			if ( endMarkCnt >= 2 || markState == MARK_LINE_OUT ) {
+
+				Drive_Fit_In(pitInLen, PIT_IN_TARGET_SPEED);
+
+				while (curSpeed > DRIVE_END_DELAY_SPEED) {
+					//Drive_Speed_Cntl();
+				}
+
+				break;
+			}
 		}
 
-		Custom_Delay_ms(DRIVE_END_DELAY_TIME_MS);
+		Motor_Stop();
+		Speed_Control_Stop();
+		Sensor_Stop();
 
-		if (endMarkCnt >= 2) {
-
-			exitEcho = EXIT_ECHO_END_MARK;
-		}
-		else {
-
-			exitEcho = EXIT_ECHO_LINE_OUT;
-		}
+		Custom_OLED_Clear();
 	}
-
-	return exitEcho;
 }
+

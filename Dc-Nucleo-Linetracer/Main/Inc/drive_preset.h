@@ -12,8 +12,11 @@
 
 
 void	Pre_Drive_Setting();
+void	Drive_Last_Spurt();
+void	Drive_Read_Mark();
 
 
+void	Time_Attack_Setting();
 
 
 typedef struct	s_driveMenu_Float {

@@ -22,9 +22,6 @@ volatile uint8_t	phaseR_table[8] = { 0x01, 0x03, 0x02, 0x06, 0x04, 0x0C, 0x08, 0
 volatile uint8_t	phaseL  = 0;
 volatile uint8_t	phaseR  = 0;
 
-// 현재 모터에 몇번 상이 잡혔는 지를 카운트하는 변수
-volatile uint32_t		curTick_L = 0;
-volatile uint32_t		curTick_R = 0;
 
 
 

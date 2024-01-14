@@ -35,12 +35,12 @@ uint8_t Custom_Switch_Read(void);
  ******************************************************************************
  */
 
-#define SW1_PORT	GPIOB
-#define SW1_PIN		LL_GPIO_PIN_4
-#define SW2_PORT	GPIOB
-#define SW2_PIN		LL_GPIO_PIN_5
-#define SW3_PORT	GPIOB
-#define SW3_PIN		LL_GPIO_PIN_6
+#define SW1_PORT	GPIOC
+#define SW1_PIN		LL_GPIO_PIN_10
+#define SW2_PORT	GPIOC
+#define SW2_PIN		LL_GPIO_PIN_11
+#define SW3_PORT	GPIOC
+#define SW3_PIN		LL_GPIO_PIN_12
 
 
 #endif /* INC_CUSTOM_SWITCH_H_ */
