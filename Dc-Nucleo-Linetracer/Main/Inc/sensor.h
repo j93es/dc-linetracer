@@ -10,7 +10,8 @@
 #include "drive_def_var.h"
 
 
-#define SWAP(a, b)				{ a ^= b; b ^= a; a ^= b; }
+#define INT_SWAP(a, b)				{ a ^= b; b ^= a; a ^= b; }
+#define FLOAT_SWAP(a, b, c)			{ a = b; b = c; c = a; }
 
 
 #define	THRESHOLD_MAX 			250
@@ -67,10 +68,10 @@ __STATIC_INLINE uint8_t	Sensor_ADC_Midian_Filter() {
 	sensorMidian[2] = ADC_Read();
 
 	if (sensorMidian[0] > sensorMidian[1]) {
-		SWAP(sensorMidian[0], sensorMidian[1]);
+		INT_SWAP(sensorMidian[0], sensorMidian[1]);
 	}
 	if (sensorMidian[1] > sensorMidian[2]) {
-		SWAP(sensorMidian[1], sensorMidian[2]);
+		INT_SWAP(sensorMidian[1], sensorMidian[2]);
 	}
 
 	return sensorMidian[1] >> 4;
@@ -110,6 +111,8 @@ __STATIC_INLINE void	Make_Sensor_Norm_Vals(uint8_t idx) {
 // sensor state 계산
 __STATIC_INLINE void	Make_Sensor_State(uint8_t idx) {
 
+//	state = ( state & ~(0x01 << idx) ) | ( (sensorNormVals[idx] > threshold) << idx );
+
 	if (sensorNormVals[idx] > threshold) {
 		state |= 0x01 << (15 - idx);
 	}
@@ -120,43 +123,48 @@ __STATIC_INLINE void	Make_Sensor_State(uint8_t idx) {
 
 
 
+__STATIC_INLINE float	Make_Voltage_Raw_Val() {
+	LL_ADC_REG_SetSequencerRanks(ADC1, LL_ADC_REG_RANK_1, LL_ADC_CHANNEL_8);
+	return 3.3f * 21.f * (float)ADC_Read() / 4095.f;
+}
+
+
+
 __STATIC_INLINE void	Make_Battery_Voltage() {
 	static uint8_t	voltageIdx = 0;
-	static uint16_t	voltageMidian[3];
+	static float	voltageMidian[3];
 
 
 	switch(voltageIdx) {
 		case 0:
-			LL_ADC_REG_SetSequencerRanks(ADC1, LL_ADC_REG_RANK_1, LL_ADC_CHANNEL_8);
-			voltageMidian[voltageIdx] = 3.3f / 4095.f *21.f / 1.0f * (float)ADC_Read();
-
+			voltageMidian[voltageIdx] = Make_Voltage_Raw_Val();
 			voltageIdx++;
 			break;
 
 		case 1:
-			LL_ADC_REG_SetSequencerRanks(ADC1, LL_ADC_REG_RANK_1, LL_ADC_CHANNEL_8);
-			voltageMidian[voltageIdx] = 3.3f / 4095.f *21.f / 1.0f * (float)ADC_Read();
-
+			voltageMidian[voltageIdx] = Make_Voltage_Raw_Val();
 			voltageIdx++;
 			break;
 
 		case 2:
-			LL_ADC_REG_SetSequencerRanks(ADC1, LL_ADC_REG_RANK_1, LL_ADC_CHANNEL_8);
-			voltageMidian[voltageIdx] = 3.3f / 4095.f *21.f / 1.0f * (float)ADC_Read();
-
+			voltageMidian[voltageIdx] = Make_Voltage_Raw_Val();
 			voltageIdx++;
 			break;
 
 		case 3:
+			float tmp;
+
 			if (voltageMidian[0] > voltageMidian[1]) {
-				SWAP(voltageMidian[0], voltageMidian[1]);
+				FLOAT_SWAP(tmp, voltageMidian[0], voltageMidian[1]);
 			}
 			if (voltageMidian[1] > voltageMidian[2]) {
-				SWAP(voltageMidian[1], voltageMidian[2]);
+				FLOAT_SWAP(tmp, voltageMidian[1], voltageMidian[2]);
 			}
 			if (voltageMidian[0] > voltageMidian[1]) {
-				SWAP(voltageMidian[0], voltageMidian[1]);
+				FLOAT_SWAP(tmp, voltageMidian[0], voltageMidian[1]);
 			}
+
+			voltage = voltageMidian[1];
 
 			voltageIdx = 0;
 			break;
@@ -244,39 +252,40 @@ __STATIC_INLINE void	Sensor_TIM5_IRQ() {
 	switch(tim5Idx) {
 		case 0:
 //			Position_Windowing();
-//			Sum_Position_Val(tim5Idx);
+			Sum_Position_Val(tim5Idx);
 			break;
 
 		case 1:
+			Sum_Position_Val(tim5Idx);
 			break;
 
 		case 2:
-//			Sum_Position_Val(tim5Idx);
+			Sum_Position_Val(tim5Idx);
 			break;
 
 		case 3:
-//			Sum_Position_Val(tim5Idx);
+			Sum_Position_Val(tim5Idx);
 			Make_Battery_Voltage();
 			break;
 
 		case 4:
-//			Sum_Position_Val(tim5Idx);
+			Sum_Position_Val(tim5Idx);
 			Make_Battery_Voltage();
 			break;
 
 		case 5:
-//			Sum_Position_Val(tim5Idx);
+			Sum_Position_Val(tim5Idx);
 			Make_Battery_Voltage();
 			break;
 
 		case 6:
-//			Sum_Position_Val(tim5Idx);
+			Sum_Position_Val(tim5Idx);
 			Make_Battery_Voltage();
 			break;
 
 		case 7:
-//			Sum_Position_Val(tim5Idx);
-//			Make_Position_Val();
+			Sum_Position_Val(tim5Idx);
+			Make_Position_Val();
 			break;
 
 
