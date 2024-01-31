@@ -1,4 +1,4 @@
-Main/Src/drive_preset.o: ../Main/Src/drive_preset.c \
+Main/Src/drive_def_var.o: ../Main/Src/drive_def_var.c \
  /Users/j93es/workspace/c/line-tracer/DC_Tracer/Dc-Nucleo-Linetracer/Main/Inc/header_init.h \
  /Users/j93es/workspace/c/line-tracer/DC_Tracer/Dc-Nucleo-Linetracer/Main/Inc/drive_data_tools.h \
  /Users/j93es/workspace/c/line-tracer/DC_Tracer/Dc-Nucleo-Linetracer/Main/Inc/drive_def_var.h \

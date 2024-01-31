@@ -3,7 +3,7 @@
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_spi.h:742:26:LL_SPI_IsActiveFlag_TXE	16	static
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_spi.h:793:26:LL_SPI_IsActiveFlag_BSY	16	static
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_spi.h:1098:22:LL_SPI_TransmitData8	24	static
-/Users/j93es/workspace/c/DC_Tracer/Dc-Nucleo-Linetracer/External Library/Inc/custom_gpio.h:23:20:Custom_GPIO_Set	24	static
+/Users/j93es/workspace/c/line-tracer/DC_Tracer/Dc-Nucleo-Linetracer/External Library/Inc/custom_gpio.h:23:20:Custom_GPIO_Set	24	static
 ../External Library/Src/custom_oled.c:109:20:Custom_OLED_SPI_Tramsnit_Blocking	16	static
 ../External Library/Src/custom_oled.c:121:20:Custom_OLED_Write_Command	24	static
 ../External Library/Src/custom_oled.c:139:20:Custom_OLED_Write_Data	24	static

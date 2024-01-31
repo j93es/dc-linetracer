@@ -21,7 +21,7 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_tim.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_usart.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_gpio.h \
- /Users/j93es/workspace/c/DC_Tracer/Dc-Nucleo-Linetracer/Main/Inc/init.h
+ /Users/j93es/workspace/c/line-tracer/DC_Tracer/Dc-Nucleo-Linetracer/Main/Inc/init.h
 ../Core/Inc/main.h:
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_adc.h:
 ../Drivers/CMSIS/Device/ST/STM32F4xx/Include/stm32f4xx.h:
@@ -45,4 +45,4 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_tim.h:
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_usart.h:
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_gpio.h:
-/Users/j93es/workspace/c/DC_Tracer/Dc-Nucleo-Linetracer/Main/Inc/init.h:
+/Users/j93es/workspace/c/line-tracer/DC_Tracer/Dc-Nucleo-Linetracer/Main/Inc/init.h:

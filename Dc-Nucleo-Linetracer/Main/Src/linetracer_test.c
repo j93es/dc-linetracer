@@ -2,21 +2,7 @@
  * linetracer_test.c
  */
 
-#include "drive_speed_ctrl.h"
-#include "first_drive.h"
-#include "init.h"
-#include "linetracer_test.h"
-#include "motor.h"
-#include "sensor.h"
-
-#include <stdlib.h>
-
-#include "main.h"
-#include "custom_delay.h"
-#include "custom_gpio.h"
-#include "custom_oled.h"
-#include "custom_switch.h"
-#include "custom_exception.h"
+#include "header_init.h"
 
 
 
@@ -152,10 +138,8 @@ void Battery_Test_Voltage() {
 
 	// 센서의 Normalized 값을 디스플레이에 출력해 확인하기
 	while (CUSTOM_SW_3 != Custom_Switch_Read()) {
-		uint32_t num1 = (uint32_t)voltage;
-		uint32_t num2 = (uint32_t)(voltage * 100000 - num1 * 100000);
 
-		Custom_OLED_Printf("/A/4%u.%05u", num1, num2);
+		Custom_OLED_Printf("/A%5f", sensingVoltage);
 	}
 
 	Custom_OLED_Clear();
@@ -198,7 +182,7 @@ void MotorR_Test_Duty() {
 		}
 
 		// get level(CCR3)
-		int level = abs(duty_ratio * level_max);
+		int level = ABS(duty_ratio * level_max);
 
 		if (level > level_max) {
 		 level = level_max;
@@ -208,13 +192,19 @@ void MotorR_Test_Duty() {
 
 		// set level(CCR3) and direction
 		TIM11->CCR1 = level;
-		Custom_GPIO_Set(GPIOC, 1 << 4, duty_ratio < 0); // PA5
-		Custom_GPIO_Set(GPIOC, 1 << 5, duty_ratio > 0); // PA6
+		Custom_GPIO_Set(GPIOC, 1 << 4, duty_ratio < 0 ? 1 : 0); // PC4
+		Custom_GPIO_Set(GPIOC, 1 << 5, duty_ratio > 0 ? 1 : 0); // PC5
 		Custom_OLED_Printf("/0Duty : %3.2f", duty_ratio);
 		Custom_OLED_Printf("/1CCR3 : %4d", TIM11->CCR1);
 
 		Custom_OLED_Printf("/2ECOD : %9d", TIM3->CNT);
 	}
+
+	TIM11->CCR1 = 0;
+	LL_TIM_DisableCounter(TIM11);
+	LL_TIM_CC_DisableChannel(TIM11, LL_TIM_CHANNEL_CH1);
+
+	LL_TIM_DisableCounter(TIM3);
 }
 
 
@@ -227,6 +217,8 @@ void MotorL_Test_Duty() {
 
 	const uint16_t level_max = TIM10->ARR + 1;
 	float duty_ratio = 0.0f;
+
+	TIM4->CNT = 30000;
 
 	for (;;) {
 
@@ -242,7 +234,7 @@ void MotorL_Test_Duty() {
 		}
 
 		// get level(CCR3)
-		int level = abs(duty_ratio * level_max);
+		int level = ABS(duty_ratio * level_max);
 
 		if (level > level_max) {
 		 level = level_max;
@@ -252,56 +244,118 @@ void MotorL_Test_Duty() {
 
 		// set level(CCR3) and direction
 		TIM10->CCR1 = level;
-		Custom_GPIO_Set(GPIOB, 1 << 4, duty_ratio > 0); // PA5
-		Custom_GPIO_Set(GPIOB, 1 << 5, duty_ratio < 0); // PA6
+		Custom_GPIO_Set(GPIOB, 1 << 4, duty_ratio > 0 ? 1 : 0); // PB4
+		Custom_GPIO_Set(GPIOB, 1 << 5, duty_ratio < 0 ? 1 : 0); // PB5
 		Custom_OLED_Printf("/0Duty : %3.2f", duty_ratio);
 		Custom_OLED_Printf("/1CCR3 : %4d", TIM10->CCR1);
 
 		Custom_OLED_Printf("/2ECOD : %9d", TIM4->CNT);
 	}
+
+	TIM10->CCR1 = 0;
+	LL_TIM_DisableCounter(TIM10);
+	LL_TIM_CC_DisableChannel(TIM10, LL_TIM_CHANNEL_CH1);
+
+	LL_TIM_DisableCounter(TIM4);
 }
 
 
 
+void Motor_Test_Speed() {
 
+	// pd 제어에 사용하는 변수 초기화
+	levelMaxCCR_L = TIM10->ARR + 1;
+	levelMaxCCR_R = TIM11->ARR + 1;
+	prevErrorL = 0;
+	prevErrorR = 0;
+	targetEncoderValueL = ENCODER_VALUE_ADJUST_THRESHOLD_MID;
+	targetEncoderValueR = ENCODER_VALUE_ADJUST_THRESHOLD_MID;
+	TIM3->CNT = ENCODER_VALUE_ADJUST_THRESHOLD_MID;
+	TIM4->CNT = ENCODER_VALUE_ADJUST_THRESHOLD_MID;
 
+	// 가속도 변수 초기화
+	targetAccele = 1;
+	curAccele = 0;
 
+	// 속도 관련 변수 초기화
+	targetSpeed = 0;
+	decele = 1;
+	curSpeed = 0;
 
-
-void Motor_Test_Velocity() {
-	uint8_t		sw = 0;
-	float		speed = MIN_SPEED;
-	float		maxSpeed = 2.f;
-	float		minSpeed = 1.f;
-	float		accele = 1;
-	/*
-	 * 모터 속도를 부드럽게 올렸다가 내리기를 반복한다.
-	 */
+	// 좌우모터 포지션 값을 0으로 초기화
+	positionVal = 0;
+	limitedPositionVal = 0;
+	curInlineVal = 0;
+	curveDeceleCoef = 20000;
 
 	Motor_Start();
+	Speed_Control_Start();
 
-	while (CUSTOM_SW_3 != (sw = Custom_Switch_Read())) {
+	for (;;) {
 
-		// accele / 1000인 이유는 단위 시간이 1ms이기 때문이다. 따라서 인터럽트는 500us 단위이기 때문에 인터럽트에서는 accele / 2000을 해야한다.
-		speed += accele / 1000;
+		// input
+		uint8_t sw = Custom_Switch_Read();
 
-
-		if (speed > maxSpeed) {
-			speed = maxSpeed;
-			accele *= -1;
+		if (sw == CUSTOM_SW_3) {
+		 break;
+		} else if (sw == CUSTOM_SW_1) {
+			targetSpeed -= 0.1f;
+		} else if (sw == CUSTOM_SW_2) {
+			targetSpeed += 0.1f;
 		}
-		else if (speed < minSpeed) {
-			speed = minSpeed;
-			accele *= -1;
-		}
 
-		Motor_L_Speed_Control(speed);
-		Motor_R_Speed_Control(speed);
+		Custom_OLED_Printf("/0speed  : %3.2f", curSpeed);
+		Custom_OLED_Printf("/1CCR    : %5d", TIM10->CCR1);
+		Custom_OLED_Printf("/2curECOD: %5d", TIM4->CNT);
+		Custom_OLED_Printf("/3tarECOD: %5f", targetEncoderValueL);
 
-		Custom_Delay_ms(1);
 	}
+
+	Speed_Control_Stop();
 	Motor_Stop();
+
+
 }
+
+
+
+
+
+
+//void Motor_Test_Velocity() {
+//	uint8_t		sw = 0;
+//	float		speed = MIN_SPEED;
+//	float		maxSpeed = 2.f;
+//	float		minSpeed = 1.f;
+//	float		accele = 1;
+//	/*
+//	 * 모터 속도를 부드럽게 올렸다가 내리기를 반복한다.
+//	 */
+//
+//	Motor_Start();
+//
+//	while (CUSTOM_SW_3 != (sw = Custom_Switch_Read())) {
+//
+//		// accele / 1000인 이유는 단위 시간이 1ms이기 때문이다. 따라서 인터럽트는 500us 단위이기 때문에 인터럽트에서는 accele / 2000을 해야한다.
+//		speed += accele / 1000;
+//
+//
+//		if (speed > maxSpeed) {
+//			speed = maxSpeed;
+//			accele *= -1;
+//		}
+//		else if (speed < minSpeed) {
+//			speed = minSpeed;
+//			accele *= -1;
+//		}
+//
+//		Motor_L_Speed_Control(speed);
+//		Motor_R_Speed_Control(speed);
+//
+//		Custom_Delay_ms(1);
+//	}
+//	Motor_Stop();
+//}
 
 
 
@@ -340,27 +394,92 @@ void Drive_Test_Position() {
 
 
 
-void Current_Setting() {
-	uint8_t		sw = 0;
-	float		acc = ACCELE_INIT;
-	float		speed = MIN_SPEED;
-	float		target = 2.0f;
 
-	Motor_Start();
 
-	while (CUSTOM_SW_3 != (sw = Custom_Switch_Read())) {
 
-		Motor_L_Speed_Control(speed);
-		Motor_R_Speed_Control(speed);
+void Mark_Live_Test(void) {
+	uint8_t	sw = 0;
 
-		speed += acc / 1000;
-		if (speed > target) {
-			speed = target;
-		}
+	Sensor_Start();
 
-		Custom_Delay_ms(1);
-	}
+    Custom_OLED_Clear();
+    Custom_OLED_Printf("/0Mark Live Test");
 
-	Motor_Stop();
+	positionIdxMax = 9;
+	positionIdxMin = 6;
+
+    while (CUSTOM_SW_3 != (sw = Custom_Switch_Read())) {
+
+    	Drive_State_Machine();
+
+        switch (driveState) {
+        case DRIVE_STATE_IDLE:
+        	Custom_OLED_Printf("/2STATE: IDLE     ");
+            break;
+        case DRIVE_STATE_CROSS:
+        	Custom_OLED_Printf("/2STATE: CROSS    ");
+            break;
+        case DRIVE_STATE_MARKER:
+        	Custom_OLED_Printf("/2STATE: MARK     ");
+            break;
+        case DRIVE_STATE_DECISION:
+        	Custom_OLED_Printf("/2STATE: DECISION ");
+        	break;
+        default:
+        	Custom_OLED_Printf("/2STATE: ------   ");
+            break;
+        }
+
+        switch (markState) {
+		case MARK_NONE:
+			Custom_OLED_Printf("/3MARK: NONE      ");
+			break;
+		case MARK_STRAIGHT:
+			Custom_OLED_Printf("/3MARK: STRAIGHT  ");
+			break;
+        case MARK_CURVE_L:
+        	Custom_OLED_Printf("/3MARK: LEFT      ");
+            break;
+        case MARK_CURVE_R:
+        	Custom_OLED_Printf("/3MARK: RIGHT     ");
+            break;
+        case MARK_END:
+        	Custom_OLED_Printf("/3MARK: END       ");
+            break;
+        case MARK_CROSS:
+        	Custom_OLED_Printf("/3MARK: CROSS     ");
+            break;
+        default:
+        	Custom_OLED_Printf("/3MARK: ------    ");
+        	break;
+        }
+    }
+
+    Sensor_Stop();
 }
+
+
+//void Current_Setting() {
+//	uint8_t		sw = 0;
+//	float		acc = ACCELE_INIT;
+//	float		speed = MIN_SPEED;
+//	float		target = 2.0f;
+//
+//	Motor_Start();
+//
+//	while (CUSTOM_SW_3 != (sw = Custom_Switch_Read())) {
+//
+//		Motor_L_Speed_Control(speed);
+//		Motor_R_Speed_Control(speed);
+//
+//		speed += acc / 1000;
+//		if (speed > target) {
+//			speed = target;
+//		}
+//
+//		Custom_Delay_ms(1);
+//	}
+//
+//	Motor_Stop();
+//}
 

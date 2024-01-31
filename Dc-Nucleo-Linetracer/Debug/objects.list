@@ -20,6 +20,7 @@
 "./External Library/Src/custom_oled.o"
 "./External Library/Src/custom_switch.o"
 "./Main/Src/drive_data_tools.o"
+"./Main/Src/drive_def_var.o"
 "./Main/Src/drive_preset.o"
 "./Main/Src/first_drive.o"
 "./Main/Src/init.o"

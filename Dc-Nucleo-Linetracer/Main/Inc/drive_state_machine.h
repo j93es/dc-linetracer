@@ -13,28 +13,24 @@
 
 
 
-// line sensor가 읽은 값을 개수를 리턴함
-__STATIC_INLINE uint8_t	Get_Line_Sensor_Cnt() {
-	return ((state >> 6) & 0x01) + ((state >> 5) & 0x01) + ((state >> 4) & 0x01) + \
-			((state >> 3) & 0x01) + ((state >> 2) & 0x01) + ((state >> 1) & 0x01);
+
+
+__STATIC_INLINE void	Mark_Masking() {
+
+	lineMasking = LINE_MASKING_TOOL >> (positionIdxMin - 1);
+	rightMarkMasking = MARK_MASKING_TOOL >> GET_MIN(positionIdxMax + 3, IR_SENSOR_LEN - 2);
+	leftMarkMasking = MARK_MASKING_TOOL >> GET_MAX(positionIdxMin - 4, 0);
+	bothMarkMasking = rightMarkMasking | leftMarkMasking;
 }
-
-
-// marker sensor가 읽은 값을 개수를 리턴함
-__STATIC_INLINE uint8_t	Get_Marker_Sensor_Cnt() {
-	return ((state >> 7) & 0x01) + ((state >> 0) & 0x01);
-}
-
 
 
 
 
 // end line, right mark, left mark, straight를 판별하고 정해진 동작을 실행하는 함수
-__STATIC_INLINE void	Decision(uint8_t sensorStateSum) {
-
+__STATIC_INLINE void	Decision(uint16_t sensorStateSum) {
 
 	// cross
-	if (sensorStateSum == 0xff) {
+	if (sensorStateSum == ALL_MARK_MASKING) {
 
 		markState = MARK_CROSS;
 	}
@@ -42,14 +38,14 @@ __STATIC_INLINE void	Decision(uint8_t sensorStateSum) {
 
 	// end mark
 	// if ( ((sensorStateSum >> 0) & 0x01) && ((sensorStateSum >> 7) & 0x01) )
-	else if ( (sensorStateSum & 0x81) == 0x81 ) {
+	else if ( (sensorStateSum & bothMarkMasking) == bothMarkMasking ) {
 
 		markState = MARK_END;
 	}
 
 
 	// left mark
-	else if ( (sensorStateSum & 0x80) == 0x80 ) {
+	else if ( (sensorStateSum & leftMarkMasking) == leftMarkMasking ) {
 
 
 		// 이전 마크가 왼쪽 곡선 마크였다면 곡선주행 종료
@@ -65,7 +61,7 @@ __STATIC_INLINE void	Decision(uint8_t sensorStateSum) {
 
 
 	// right mark
-	else if ( (sensorStateSum & 0x01) == 0x01 ) {
+	else if ( (sensorStateSum & rightMarkMasking) == rightMarkMasking ) {
 
 		// 이전 마크가 오른쪽 곡선 마크였다면 곡선주행 종료
 		if (markState == MARK_CURVE_R) {
@@ -93,8 +89,10 @@ __STATIC_INLINE void	Drive_State_Machine() {
 
 		case DRIVE_STATE_IDLE :
 
+				Mark_Masking();
+
 				// 라인 센서 4개 이상 인식
-				if (Get_Line_Sensor_Cnt() >= 4) {
+				if (__builtin_popcount(state & lineMasking) >= 4) {
 
 					sensorStateSum = 0x00;
 
@@ -102,7 +100,7 @@ __STATIC_INLINE void	Drive_State_Machine() {
 				}
 
 				// 라인 센서 4개 이하 and 마크 센서 1개 이상
-				else if (Get_Marker_Sensor_Cnt() != 0) {
+				else if (__builtin_popcount(state & bothMarkMasking) != 0) {
 
 					sensorStateSum = 0x00;
 
@@ -129,7 +127,7 @@ __STATIC_INLINE void	Drive_State_Machine() {
 				sensorStateSum |= state;
 
 				// 모든 센서를 읽었고 마크 센서가 선을 지나쳤을 때 IDLE
-				if (sensorStateSum == 0xff && Get_Marker_Sensor_Cnt() == 0) {
+				if (sensorStateSum == ALL_MARK_MASKING && __builtin_popcount(state & bothMarkMasking) == 0) {
 
 					driveState = DRIVE_STATE_DECISION;
 				}
@@ -146,7 +144,7 @@ __STATIC_INLINE void	Drive_State_Machine() {
 				sensorStateSum |= state;
 
 				// 마커 센서가 0개 일 때
-				if (Get_Marker_Sensor_Cnt() == 0) {
+				if (__builtin_popcount(state & bothMarkMasking) == 0) {
 
 					driveState = DRIVE_STATE_DECISION;
 				}

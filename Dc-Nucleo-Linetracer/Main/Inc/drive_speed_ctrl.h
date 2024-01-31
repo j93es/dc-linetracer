@@ -10,26 +10,14 @@
 
 
 #include "drive_def_var.h"
-#include "init.h"
 #include "main.h"
 #include "custom_delay.h"
+#include "motor.h"
 
-
-
-
-
-__STATIC_INLINE void	Motor_L_Speed_Control(float speed) {
-	LL_TIM_SetAutoReload(TIM3, SPEED_COEF / speed - 1);
-}
-
-
-__STATIC_INLINE void	Motor_R_Speed_Control(float speed) {
-	LL_TIM_SetAutoReload(TIM4, SPEED_COEF / speed - 1);
-}
 
 
 // 가속도 및 속도 제어
-__STATIC_INLINE void	Drive_Speed_Accele_Cntl() {
+__STATIC_INLINE void	Drive_Speed_Accele_Control() {
 
 	if (curSpeed == targetSpeed) {
 
@@ -76,7 +64,7 @@ __STATIC_INLINE void	Drive_Speed_Accele_Cntl() {
 //limitedPositionVal 값 업데이트
 __STATIC_INLINE void	Make_Limited_Position() {
 
-	int32_t absPositionVal = ABS(positionVal - curInlineVal);
+	uint32_t absPositionVal = ABS(positionVal - curInlineVal);
 
 	if (limitedPositionVal == absPositionVal) {
 
@@ -140,24 +128,26 @@ __STATIC_INLINE void	Make_Inline_Val(float finalSpeed) {
 // 500us마다 호출됨.
 __STATIC_INLINE void	Drive_TIM9_IRQ() {
 
-	float	finalSpeed;
-
-
 	// 가속도 및 속도 제어
-	Drive_Speed_Accele_Cntl();
+	Drive_Speed_Accele_Control();
 
-	// limitedPositionVal 값 업데이트
-	Make_Limited_Position();
+//	// limitedPositionVal 값 업데이트
+//	Make_Limited_Position();
+//
+//	// 포지션 값에 따른 감속
+//	float finalSpeed = curSpeed * curveDeceleCoef / (limitedPositionVal + curveDeceleCoef);
+//
+//	// inLine 값 생성
+//	Make_Inline_Val(finalSpeed);
+//
+//	//position 값에 따른 좌우 모터 속도 조정
+//	float speedL = finalSpeed * (1 + (positionVal - curInlineVal) * positionCoef);
+//	float speedR = finalSpeed * (1 - (positionVal - curInlineVal) * positionCoef);
 
-	// 포지션 값에 따른 감속
-	finalSpeed = curSpeed * curveDeceleCoef / (limitedPositionVal + curveDeceleCoef);
 
-	// inLine 값 생성
-	Make_Inline_Val(finalSpeed);
-
-	//position 값에 따른 좌우 모터 속도 조정
-	Motor_L_Speed_Control( finalSpeed * (1 + (positionVal - curInlineVal) * positionCoef) );
-	Motor_R_Speed_Control( finalSpeed * (1 - (positionVal - curInlineVal) * positionCoef) );
+	float speedL = curSpeed;
+	float speedR = curSpeed;
+	Motor_Speed_Control(speedL, speedR);
 }
 
 
@@ -191,8 +181,6 @@ __STATIC_INLINE uint8_t	Is_Drive_End(uint8_t exitEcho) {
 		if (endMarkCnt >= 2) {
 
 			exitEcho = EXIT_ECHO_END_MARK;
-
-			optimizeLevel += 1;
 		}
 		else {
 

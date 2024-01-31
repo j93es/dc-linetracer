@@ -2,21 +2,7 @@
  * init.c
  */
 
-#include "drive_preset.h"
-#include "drive_speed_ctrl.h"
-#include "first_drive.h"
-#include "init.h"
-#include "linetracer_test.h"
-#include "motor.h"
-#include "sensor.h"
-
-#include "main.h"
-#include "custom_delay.h"
-#include "custom_gpio.h"
-#include "custom_oled.h"
-#include "custom_switch.h"
-#include "custom_exception.h"
-#include "custom_filesystem.h"
+#include "header_init.h"
 
 
 
@@ -73,6 +59,7 @@ void Init() {
 	 * Custom_Switch_Read 함수 내부에는 1ms 딜레이가 존재하기 때문에, 이 함수를 주행 알고리즘 내부에 집어넣으면 성능이 크게 떨어지니 주의한.
 	 */
 	t_menuData menus[] = {
+			{ "Test Speed     ", Motor_Test_Speed },
 			{ "Test L Duty    ", MotorL_Test_Duty },
 			{ "Test R Duty    ", MotorR_Test_Duty },
 			{ "Test Voltage   ", Battery_Test_Voltage },
@@ -82,9 +69,9 @@ void Init() {
 			{ "Test Raw       ", Sensor_Test_Raw },
 			{ "Test Normalized", Sensor_Test_Normalized },
 			{ "Test State     ", Sensor_Test_State },
-			{ "Test Velocity  ", Motor_Test_Velocity },
+//			{ "Test Velocity  ", Motor_Test_Velocity },
 			{ "Test Position  ", Drive_Test_Position },
-			{ "Current setting", Current_Setting },
+//			{ "Current setting", Current_Setting },
 	};
 
 	uint8_t sw = 0;

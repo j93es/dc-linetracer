@@ -14,25 +14,34 @@
 #define FLOAT_SWAP(a, b, c)			{ a = b; b = c; c = a; }
 
 
+#define IR_SENSOR_LEN			16
+
+
+#define WINDOW_SIZE_HALF		2
+
+
+#define LINE_MARKER_SENSOR_LEN	5
+
+
 #define	THRESHOLD_MAX 			250
 #define	THRESHOLD_MIN			20
 #define	THRESHOLD_CHANGE_VAL	5
 #define	THRESHOLD_INIT			100
 
 
-extern volatile uint8_t		sensorRawVals[16];
+extern volatile uint8_t		sensorRawVals[IR_SENSOR_LEN];
 
-extern volatile uint8_t		sensorNormVals[16];
-extern volatile uint8_t		normalizeCoef[16];
-extern volatile uint8_t		whiteMaxs[16];
-extern volatile uint8_t		blackMaxs[16];
+extern volatile uint8_t		sensorNormVals[IR_SENSOR_LEN];
+extern volatile uint8_t		normalizeCoef[IR_SENSOR_LEN];
+extern volatile uint8_t		whiteMaxs[IR_SENSOR_LEN];
+extern volatile uint8_t		blackMaxs[IR_SENSOR_LEN];
 
-extern volatile uint8_t		state;
+extern volatile uint16_t	state;
 extern volatile uint8_t		threshold;
 
-extern volatile int32_t		positionTable[16];
+extern volatile int32_t		positionTable[IR_SENSOR_LEN];
 
-extern volatile float		voltage;
+extern volatile float		sensingVoltage;
 
 
 
@@ -97,6 +106,13 @@ __STATIC_INLINE void	Make_Sensor_Raw_Vals(uint8_t idx) {
 // normalized value 계산
 __STATIC_INLINE void	Make_Sensor_Norm_Vals(uint8_t idx) {
 
+/*
+ * 	sensorNormVals[idx] = ( (255 * (sensorRawVals[idx] - blackMaxs[idx]) / normalizeCoef[idx]) \
+ * 		& ( (sensorRawVals[idx] < blackMaxs[idx]) - 0x01 )  ) \
+ * 		| ( (sensorRawVals[idx] < whiteMaxs[idx]) - 0x01 );
+*/
+
+
 	if (sensorRawVals[idx] < blackMaxs[idx])
 		sensorNormVals[idx] = 0;
 	else if (sensorRawVals[idx] > whiteMaxs[idx])
@@ -111,14 +127,14 @@ __STATIC_INLINE void	Make_Sensor_Norm_Vals(uint8_t idx) {
 // sensor state 계산
 __STATIC_INLINE void	Make_Sensor_State(uint8_t idx) {
 
-//	state = ( state & ~(0x01 << idx) ) | ( (sensorNormVals[idx] > threshold) << idx );
+	state = ( state & ~(0x01 << idx) ) | ( (sensorNormVals[idx] > threshold ? 1 : 0) << idx );
 
-	if (sensorNormVals[idx] > threshold) {
-		state |= 0x01 << (15 - idx);
-	}
-	else {
-		state &= ~(0x01 << (15 - idx));
-	}
+//	if (sensorNormVals[idx] > threshold) {
+//		state |= 0x01 << (IR_SENSOR_LEN - 1 - idx);
+//	}
+//	else {
+//		state &= ~(0x01 << (IR_SENSOR_LEN - 1 - idx));
+//	}
 }
 
 
@@ -131,47 +147,49 @@ __STATIC_INLINE float	Make_Voltage_Raw_Val() {
 
 
 __STATIC_INLINE void	Make_Battery_Voltage() {
-	static uint8_t	voltageIdx = 0;
-	static float	voltageMidian[3];
+	static uint8_t	sensingVoltageIdx = 0;
+	static float	sensingVoltageMidian[3];
 
 
-	switch(voltageIdx) {
+	switch(sensingVoltageIdx) {
 		case 0:
-			voltageMidian[voltageIdx] = Make_Voltage_Raw_Val();
-			voltageIdx++;
-			break;
-
 		case 1:
-			voltageMidian[voltageIdx] = Make_Voltage_Raw_Val();
-			voltageIdx++;
+		case 2:
+			sensingVoltageMidian[sensingVoltageIdx] = Make_Voltage_Raw_Val();
+			sensingVoltageIdx++;
+
 			break;
 
-		case 2:
-			voltageMidian[voltageIdx] = Make_Voltage_Raw_Val();
-			voltageIdx++;
-			break;
 
 		case 3:
 			float tmp;
 
-			if (voltageMidian[0] > voltageMidian[1]) {
-				FLOAT_SWAP(tmp, voltageMidian[0], voltageMidian[1]);
+			if (sensingVoltageMidian[0] > sensingVoltageMidian[1]) {
+				FLOAT_SWAP(tmp, sensingVoltageMidian[0], sensingVoltageMidian[1]);
 			}
-			if (voltageMidian[1] > voltageMidian[2]) {
-				FLOAT_SWAP(tmp, voltageMidian[1], voltageMidian[2]);
+			if (sensingVoltageMidian[1] > sensingVoltageMidian[2]) {
+				FLOAT_SWAP(tmp, sensingVoltageMidian[1], sensingVoltageMidian[2]);
 			}
-			if (voltageMidian[0] > voltageMidian[1]) {
-				FLOAT_SWAP(tmp, voltageMidian[0], voltageMidian[1]);
+			if (sensingVoltageMidian[0] > sensingVoltageMidian[1]) {
+				FLOAT_SWAP(tmp, sensingVoltageMidian[0], sensingVoltageMidian[1]);
 			}
 
-			voltage = voltageMidian[1];
+			sensingVoltage = sensingVoltageMidian[1];
+			sensingVoltageIdx = 0;
 
-			voltageIdx = 0;
 			break;
 	}
 }
 
 
+
+__STATIC_INLINE void	Position_Windowing() {
+
+	int		window = (positionVal + 30000) / 4000;
+
+	positionIdxMax = GET_MIN(window + WINDOW_SIZE_HALF, IR_SENSOR_LEN - 1);
+	positionIdxMin = GET_MAX(window - WINDOW_SIZE_HALF + 1, 0);
+}
 
 
 
@@ -185,38 +203,7 @@ __STATIC_INLINE void	Sum_Position_Val(uint8_t idx) {
 		positionSum += positionTable[idx] * sensorNormVals[idx];
 		sensorNormValsSum += sensorNormVals[idx];
 	}
-
-	if (positionIdxMin <= idx + 8 && idx + 8 <= positionIdxMax) {
-
-		positionSum += positionTable[idx + 8] * sensorNormVals[idx + 8];
-		sensorNormValsSum += sensorNormVals[idx + 8];
-	}
 }
-
-
-
-__STATIC_INLINE void	Position_Windowing() {
-
-	positionIdxMax = 10;
-	positionIdxMin = 5;
-
-	if (ABS(positionVal) > positionTable[6]) {
-
-		// positionVal이 -2000보다 작을 때
-		if (positionVal < 0) {
-			positionIdxMax = 7;
-			positionIdxMin = 2;
-		}
-		// positionVal이 2000보다 클 때
-		else {
-			positionIdxMax = 13;
-			positionIdxMin = 8;
-		}
-	}
-
-}
-
-
 
 
 
@@ -251,41 +238,37 @@ __STATIC_INLINE void	Sensor_TIM5_IRQ() {
 
 	switch(tim5Idx) {
 		case 0:
-//			Position_Windowing();
+			Position_Windowing();
 			Sum_Position_Val(tim5Idx);
+			Sum_Position_Val(tim5Idx + 8);
+
 			break;
+
 
 		case 1:
-			Sum_Position_Val(tim5Idx);
-			break;
-
 		case 2:
 			Sum_Position_Val(tim5Idx);
+			Sum_Position_Val(tim5Idx + 8);
+
 			break;
+
 
 		case 3:
-			Sum_Position_Val(tim5Idx);
-			Make_Battery_Voltage();
-			break;
-
 		case 4:
-			Sum_Position_Val(tim5Idx);
-			Make_Battery_Voltage();
-			break;
-
 		case 5:
-			Sum_Position_Val(tim5Idx);
+		case 6:
 			Make_Battery_Voltage();
+			Sum_Position_Val(tim5Idx);
+			Sum_Position_Val(tim5Idx + 8);
+
 			break;
 
-		case 6:
-			Sum_Position_Val(tim5Idx);
-			Make_Battery_Voltage();
-			break;
 
 		case 7:
 			Sum_Position_Val(tim5Idx);
+			Sum_Position_Val(tim5Idx + 8);
 			Make_Position_Val();
+
 			break;
 
 

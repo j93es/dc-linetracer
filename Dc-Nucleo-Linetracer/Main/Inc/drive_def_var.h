@@ -15,7 +15,14 @@
 #define CUSTOM_FALSE				0
 #define CUSTOM_TRUE					1
 #define ABS(x) 						( ((x) < 0) ? (-1 * (x)) : (x) )
+#define GET_MAX(x, y)				( ((x) > (y)) ? (x) : (y) )
 #define GET_MIN(x, y)				( ((x) < (y)) ? (x) : (y) )
+
+
+
+// pd 제어 매크로
+#define P_COEF_INIT					0.2f;
+#define D_COEF_INIT					0.1f;
 
 
 // 속도와 관련된 매크로
@@ -80,6 +87,16 @@
 #define SECOND_DRIVE				1
 
 
+// state machine 비트 마스킹
+#define LINE_MASKING_INIT			0b0000011111100000
+#define RIGHT_MARK_MASKING_INIT		0b0000000000001100
+#define LEFT_MARK_MASKING_INIT		0b0011000000000000
+#define LINE_MASKING_TOOL			0b1111110000000000
+#define MARK_MASKING_TOOL			0b1100000000000000
+#define ALL_MARK_MASKING			0b1111111111111111
+
+
+
 // state machine에서 나온 상태
 #define DRIVE_STATE_IDLE			0
 #define DRIVE_STATE_CROSS			1
@@ -125,7 +142,7 @@
 
 
 // 라인 아웃 일 때 몇 초 딜레이 할지
-#define LINE_OUT_DELAY_MS			200
+#define LINE_OUT_DELAY_MS			0
 
 
 
@@ -195,6 +212,20 @@ typedef struct	s_driveData {
  */
 
 
+// pd 제어에 사용하는 변수
+extern volatile int32_t 	levelMaxCCR_L;
+extern volatile int32_t 	levelMaxCCR_R;
+extern volatile int32_t		prevErrorL;
+extern volatile int32_t		prevErrorR;
+extern volatile float		targetEncoderValueL;
+extern volatile float		targetEncoderValueR;
+extern volatile float		pCoef;
+extern volatile float		dCoef;
+
+extern volatile uint8_t		dutyRatioSignL;
+extern volatile uint8_t		dutyRatioSignR;
+
+
 // 초기의 속도 값에 관한 변수
 extern volatile float		targetSpeed_init;
 extern volatile float		targetAccele_init;
@@ -225,8 +256,8 @@ extern volatile float		curveDeceleCoef;
 
 
 // 현재 모터에 몇번 상이 잡혔는지를 카운트하는 변수
-extern volatile uint32_t	curTick_L;
-extern volatile uint32_t	curTick_R;
+extern volatile int64_t		curTick_L;
+extern volatile int64_t		curTick_R;
 
 
 // 2차 주행 inline
@@ -246,7 +277,15 @@ extern volatile int32_t		curInlineVal;
 extern uint8_t				markState;
 
 
-// state machone 의 상태
+// state machine 비트 마스킹
+extern volatile uint16_t	lineMasking;
+extern volatile uint16_t	rightMarkMasking;
+extern volatile uint16_t	leftMarkMasking;
+extern volatile uint16_t	bothMarkMasking;
+
+
+
+// state machine 의 상태
 extern uint8_t				driveState;
 
 
@@ -308,7 +347,7 @@ extern float				pitInLen;
 
 // state machine 에서 사용
 //센서 값 누적
-extern uint8_t				sensorStateSum;
+extern uint16_t				sensorStateSum;
 
 
 // 2차 주행 직선가속에서 사용

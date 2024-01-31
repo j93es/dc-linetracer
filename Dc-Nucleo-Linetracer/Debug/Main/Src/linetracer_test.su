@@ -1,19 +1,19 @@
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_tim.h:1124:22:LL_TIM_EnableCounter	16	static
-../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_tim.h:1446:22:LL_TIM_SetAutoReload	16	static
+../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_tim.h:1135:22:LL_TIM_DisableCounter	16	static
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_tim.h:1609:22:LL_TIM_CC_EnableChannel	16	static
+../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_tim.h:1634:22:LL_TIM_CC_DisableChannel	16	static
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_tim.h:2134:22:LL_TIM_OC_SetCompareCH2	16	static
-/Users/j93es/workspace/c/DC_Tracer/Dc-Nucleo-Linetracer/External Library/Inc/custom_delay.h:20:22:Custom_Delay_us	16	static
-/Users/j93es/workspace/c/DC_Tracer/Dc-Nucleo-Linetracer/External Library/Inc/custom_delay.h:28:22:Custom_Delay_ms	16	static
-/Users/j93es/workspace/c/DC_Tracer/Dc-Nucleo-Linetracer/Main/Inc/drive_speed_ctrl.h:21:22:Motor_L_Speed_Control	16	static
-/Users/j93es/workspace/c/DC_Tracer/Dc-Nucleo-Linetracer/Main/Inc/drive_speed_ctrl.h:26:22:Motor_R_Speed_Control	16	static
-/Users/j93es/workspace/c/DC_Tracer/Dc-Nucleo-Linetracer/External Library/Inc/custom_gpio.h:23:20:Custom_GPIO_Set	24	static
-../Main/Src/linetracer_test.c:24:6:Switch_Test	16	static
-../Main/Src/linetracer_test.c:63:6:Sensor_Test_Raw	48	static
-../Main/Src/linetracer_test.c:89:6:Sensor_Test_Normalized	48	static
-../Main/Src/linetracer_test.c:113:6:Sensor_Test_State	56	static
-../Main/Src/linetracer_test.c:149:6:Battery_Test_Voltage	16	static
-../Main/Src/linetracer_test.c:177:6:MotorR_Test_Duty	24	static
-../Main/Src/linetracer_test.c:221:6:MotorL_Test_Duty	24	static
-../Main/Src/linetracer_test.c:271:6:Motor_Test_Velocity	32	static
-../Main/Src/linetracer_test.c:319:6:Drive_Test_Position	16	static
-../Main/Src/linetracer_test.c:343:6:Current_Setting	24	static
+/Users/j93es/workspace/c/line-tracer/DC_Tracer/Dc-Nucleo-Linetracer/External Library/Inc/custom_gpio.h:23:20:Custom_GPIO_Set	24	static
+/Users/j93es/workspace/c/line-tracer/DC_Tracer/Dc-Nucleo-Linetracer/Main/Inc/drive_state_machine.h:18:22:Mark_Masking	4	static
+/Users/j93es/workspace/c/line-tracer/DC_Tracer/Dc-Nucleo-Linetracer/Main/Inc/drive_state_machine.h:30:22:Decision	16	static
+/Users/j93es/workspace/c/line-tracer/DC_Tracer/Dc-Nucleo-Linetracer/Main/Inc/drive_state_machine.h:82:22:Drive_State_Machine	8	static
+../Main/Src/linetracer_test.c:10:6:Switch_Test	16	static
+../Main/Src/linetracer_test.c:49:6:Sensor_Test_Raw	48	static
+../Main/Src/linetracer_test.c:75:6:Sensor_Test_Normalized	48	static
+../Main/Src/linetracer_test.c:99:6:Sensor_Test_State	56	static
+../Main/Src/linetracer_test.c:135:6:Battery_Test_Voltage	8	static
+../Main/Src/linetracer_test.c:161:6:MotorR_Test_Duty	24	static
+../Main/Src/linetracer_test.c:211:6:MotorL_Test_Duty	24	static
+../Main/Src/linetracer_test.c:264:6:Motor_Test_Speed	16	static
+../Main/Src/linetracer_test.c:373:6:Drive_Test_Position	16	static
+../Main/Src/linetracer_test.c:400:6:Mark_Live_Test	16	static

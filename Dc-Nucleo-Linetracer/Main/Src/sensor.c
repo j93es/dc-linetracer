@@ -6,20 +6,20 @@
 
 
 
-volatile uint8_t	sensorRawVals[16];
+volatile uint8_t	sensorRawVals[IR_SENSOR_LEN];
 
-volatile uint8_t	sensorNormVals[16];
-volatile uint8_t	normalizeCoef[16];
-volatile uint8_t	whiteMaxs[16];
-volatile uint8_t	blackMaxs[16];
+volatile uint8_t	sensorNormVals[IR_SENSOR_LEN];
+volatile uint8_t	normalizeCoef[IR_SENSOR_LEN];
+volatile uint8_t	whiteMaxs[IR_SENSOR_LEN];
+volatile uint8_t	blackMaxs[IR_SENSOR_LEN];
 
-volatile uint8_t	state = 0x00;
+volatile uint16_t	state = 0x00;
 volatile uint8_t	threshold = THRESHOLD_INIT;
 
-volatile int32_t	positionTable[16] = { -14000, -12000, -10000, -8000, -6000, -4000, -2000, 0, 0,\
-		2000, 4000, 6000, 8000, 10000, 12000, 14000 };
+volatile int32_t	positionTable[IR_SENSOR_LEN] = { -30000, -26000, -22000, -18000, -14000, -10000, -6000, -2000, \
+											2000, 6000, 10000, 14000, 18000, 22000, 26000, 30000 };
 
-volatile float		voltage;
+volatile float		sensingVoltage;
 
 
 
@@ -52,7 +52,7 @@ void Sensor_Stop() {
 void Sensor_Calibration() {
 	uint8_t	tmp = 0;
 
-	for (uint8_t i = 0; i < 8; i++) {
+	for (uint8_t i = 0; i < IR_SENSOR_LEN; i++) {
 		whiteMaxs[i] = 0;
 		blackMaxs[i] = 0;
 	}
@@ -64,7 +64,7 @@ void Sensor_Calibration() {
 	while (CUSTOM_SW_3 != Custom_Switch_Read()) {
 		Custom_OLED_Printf("/0Black Max");
 
-		for (uint8_t i = 0; i < 16; i++) {
+		for (uint8_t i = 0; i < IR_SENSOR_LEN; i++) {
 			if (blackMaxs[i] < (tmp = sensorRawVals[i])) {
 				blackMaxs[i] = tmp;
 			}
@@ -83,7 +83,7 @@ void Sensor_Calibration() {
 	while (CUSTOM_SW_3 != Custom_Switch_Read()) {
 		Custom_OLED_Printf("/0White Max");
 
-		for (uint8_t i = 0; i < 16; i++) {
+		for (uint8_t i = 0; i < IR_SENSOR_LEN; i++) {
 			if (whiteMaxs[i] < (tmp = sensorRawVals[i])) {
 				whiteMaxs[i] = tmp;
 			}
@@ -98,7 +98,7 @@ void Sensor_Calibration() {
 	}
 
 	// Calculate ADC coefficients
-	for (uint8_t i = 0; i < 16; i++) {
+	for (uint8_t i = 0; i < IR_SENSOR_LEN; i++) {
 		normalizeCoef[i] = whiteMaxs[i] - blackMaxs[i];
 	}
 
