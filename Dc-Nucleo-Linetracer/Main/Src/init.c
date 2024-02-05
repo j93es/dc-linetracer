@@ -59,13 +59,15 @@ void Init() {
 	 * Custom_Switch_Read 함수 내부에는 1ms 딜레이가 존재하기 때문에, 이 함수를 주행 알고리즘 내부에 집어넣으면 성능이 크게 떨어지니 주의한.
 	 */
 	t_menuData menus[] = {
+			{ "Test L PD      ", MotorL_Test_PD },
+			{ "Test R PD      ", MotorR_Test_PD },
 			{ "Test Speed     ", Motor_Test_Speed },
 			{ "Test L Duty    ", MotorL_Test_Duty },
 			{ "Test R Duty    ", MotorR_Test_Duty },
 			{ "Test Voltage   ", Battery_Test_Voltage },
-			{ "Switch Test    ", Switch_Test },
+//			{ "Switch Test    ", Switch_Test },
 			{ "Calibration    ", Sensor_Calibration },
-			{ "First Drive    ", First_Drive },
+//			{ "First Drive    ", First_Drive },
 			{ "Test Raw       ", Sensor_Test_Raw },
 			{ "Test Normalized", Sensor_Test_Normalized },
 			{ "Test State     ", Sensor_Test_State },

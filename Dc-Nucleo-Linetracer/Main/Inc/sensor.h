@@ -93,10 +93,10 @@ __STATIC_INLINE uint8_t	Sensor_ADC_Midian_Filter() {
 
 __STATIC_INLINE void	Make_Sensor_Raw_Vals(uint8_t idx) {
 
-	LL_ADC_REG_SetSequencerRanks(ADC1, LL_ADC_REG_RANK_1, LL_ADC_CHANNEL_6);
+	LL_ADC_REG_SetSequencerRanks(ADC1, LL_ADC_REG_RANK_1, LL_ADC_CHANNEL_7);
 	sensorRawVals[idx] = Sensor_ADC_Midian_Filter();
 
-	LL_ADC_REG_SetSequencerRanks(ADC1, LL_ADC_REG_RANK_1, LL_ADC_CHANNEL_7);
+	LL_ADC_REG_SetSequencerRanks(ADC1, LL_ADC_REG_RANK_1, LL_ADC_CHANNEL_6);
 	sensorRawVals[idx + 8] = Sensor_ADC_Midian_Filter();
 }
 

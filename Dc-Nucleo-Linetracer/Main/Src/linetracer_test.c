@@ -261,17 +261,151 @@ void MotorL_Test_Duty() {
 
 
 
-void Motor_Test_Speed() {
+
+void MotorL_Test_PD() {
+
+	float coefChangeVal = 0.05;
+	float targetChangeVal = 50;
 
 	// pd 제어에 사용하는 변수 초기화
-	levelMaxCCR_L = TIM10->ARR + 1;
-	levelMaxCCR_R = TIM11->ARR + 1;
+	levelMaxCCR = TIM10->ARR + 1;
 	prevErrorL = 0;
 	prevErrorR = 0;
+	prevErrorDiffL = 0;
+	prevErrorDiffR = 0;
 	targetEncoderValueL = ENCODER_VALUE_ADJUST_THRESHOLD_MID;
 	targetEncoderValueR = ENCODER_VALUE_ADJUST_THRESHOLD_MID;
 	TIM3->CNT = ENCODER_VALUE_ADJUST_THRESHOLD_MID;
 	TIM4->CNT = ENCODER_VALUE_ADJUST_THRESHOLD_MID;
+	pCoef = P_COEF_INIT;
+	dCoef = D_COEF_INIT;
+
+	dutyRatioSignL = 1;
+	dutyRatioSignR = 1;
+
+	Sensor_Start();
+	Speed_Control_Start();
+	MotorL_Start();
+
+	for (;;) {
+
+		// input
+		uint8_t sw = Custom_Switch_Read();
+
+		if (sw == CUSTOM_SW_ALL) {
+		 break;
+		} else if (sw == CUSTOM_SW_1) {
+			pCoef -= coefChangeVal;
+		} else if (sw == CUSTOM_SW_2) {
+			pCoef += coefChangeVal;
+		} else if (sw == CUSTOM_SW_1_2) {
+			dCoef -= coefChangeVal;
+		} else if (sw == CUSTOM_SW_2_3) {
+			dCoef += coefChangeVal;
+		} else if (sw == CUSTOM_SW_3) {
+			targetEncoderValueL -= targetChangeVal;
+		}
+
+		Custom_OLED_Printf("/0CCR    : %5d", TIM10->CCR1);
+		Custom_OLED_Printf("/1curECOD: %5d", TIM4->CNT);
+		Custom_OLED_Printf("/2tarECOD: %5f", targetEncoderValueL);
+		Custom_OLED_Printf("/3pCoef  : %5f", pCoef);
+		Custom_OLED_Printf("/4dCoef  : %5f", dCoef);
+
+	}
+
+	MotorL_Stop();
+	Speed_Control_Stop();
+	Sensor_Stop();
+}
+
+
+
+
+
+
+void MotorR_Test_PD() {
+
+	float coefChangeVal = 0.05;
+	float targetChangeVal = 50;
+
+	// pd 제어에 사용하는 변수 초기화
+	levelMaxCCR = TIM10->ARR + 1;
+	prevErrorL = 0;
+	prevErrorR = 0;
+	prevErrorDiffL = 0;
+	prevErrorDiffR = 0;
+	targetEncoderValueL = ENCODER_VALUE_ADJUST_THRESHOLD_MID;
+	targetEncoderValueR = ENCODER_VALUE_ADJUST_THRESHOLD_MID;
+	TIM3->CNT = ENCODER_VALUE_ADJUST_THRESHOLD_MID;
+	TIM4->CNT = ENCODER_VALUE_ADJUST_THRESHOLD_MID;
+	pCoef = P_COEF_INIT;
+	dCoef = D_COEF_INIT;
+
+	dutyRatioSignL = 1;
+	dutyRatioSignR = 1;
+
+
+
+	Sensor_Start();
+	Speed_Control_Start();
+	MotorR_Start();
+
+	for (;;) {
+
+		// input
+		uint8_t sw = Custom_Switch_Read();
+
+		if (sw == CUSTOM_SW_ALL) {
+		 break;
+		} else if (sw == CUSTOM_SW_1) {
+			pCoef -= coefChangeVal;
+		} else if (sw == CUSTOM_SW_2) {
+			pCoef += coefChangeVal;
+		} else if (sw == CUSTOM_SW_1_2) {
+			dCoef -= coefChangeVal;
+		} else if (sw == CUSTOM_SW_2_3) {
+			dCoef += coefChangeVal;
+		} else if (sw == CUSTOM_SW_3) {
+			targetEncoderValueR -= targetChangeVal;
+		}
+
+		Custom_OLED_Printf("/0CCR    : %5d", TIM11->CCR1);
+		Custom_OLED_Printf("/1curECOD: %5d", TIM3->CNT);
+		Custom_OLED_Printf("/2tarECOD: %5f", targetEncoderValueR);
+		Custom_OLED_Printf("/3pCoef  : %5f", pCoef);
+		Custom_OLED_Printf("/4dCoef  : %5f", dCoef);
+
+	}
+	MotorR_Stop();
+	Speed_Control_Stop();
+	Sensor_Stop();
+}
+
+
+
+
+
+void Motor_Test_Speed() {
+
+	// pd 제어에 사용하는 변수 초기화
+	levelMaxCCR = TIM10->ARR + 1;
+	prevErrorL = 0;
+	prevErrorR = 0;
+	prevErrorDiffL = 0;
+	prevErrorDiffR = 0;
+	targetEncoderValueL = ENCODER_VALUE_ADJUST_THRESHOLD_MID;
+	targetEncoderValueR = ENCODER_VALUE_ADJUST_THRESHOLD_MID;
+	TIM3->CNT = ENCODER_VALUE_ADJUST_THRESHOLD_MID;
+	TIM4->CNT = ENCODER_VALUE_ADJUST_THRESHOLD_MID;
+	pCoef = P_COEF_INIT;
+	dCoef = D_COEF_INIT;
+
+	dutyRatioSignL = 1;
+	dutyRatioSignR = 1;
+
+	pCoef = P_COEF_INIT;
+	dCoef = D_COEF_INIT;
 
 	// 가속도 변수 초기화
 	targetAccele = 1;
@@ -282,13 +416,9 @@ void Motor_Test_Speed() {
 	decele = 1;
 	curSpeed = 0;
 
-	// 좌우모터 포지션 값을 0으로 초기화
-	positionVal = 0;
-	limitedPositionVal = 0;
-	curInlineVal = 0;
-	curveDeceleCoef = 20000;
 
 	Motor_Start();
+	Sensor_Start();
 	Speed_Control_Start();
 
 	for (;;) {
@@ -312,6 +442,7 @@ void Motor_Test_Speed() {
 	}
 
 	Speed_Control_Stop();
+	Sensor_Stop();
 	Motor_Stop();
 
 

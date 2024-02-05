@@ -5,10 +5,14 @@
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_tim.h:2134:22:LL_TIM_OC_SetCompareCH2	16	static
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_tim.h:3457:22:LL_TIM_EnableIT_UPDATE	16	static
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_tim.h:3468:22:LL_TIM_DisableIT_UPDATE	16	static
-/Users/j93es/workspace/c/line-tracer/DC_Tracer/Dc-Nucleo-Linetracer/External Library/Inc/custom_delay.h:20:22:Custom_Delay_us	16	static
-/Users/j93es/workspace/c/line-tracer/DC_Tracer/Dc-Nucleo-Linetracer/External Library/Inc/custom_delay.h:28:22:Custom_Delay_ms	16	static
-../Main/Src/motor.c:9:6:Motor_Power_Off	4	static
-../Main/Src/motor.c:19:6:Motor_Start	8	static
-../Main/Src/motor.c:44:6:Motor_Stop	8	static
-../Main/Src/motor.c:71:6:Speed_Control_Start	8	static
-../Main/Src/motor.c:79:6:Speed_Control_Stop	8	static
+../Main/Src/motor.c:11:6:MotorL_Start	8	static
+../Main/Src/motor.c:24:6:MotorR_Start	8	static
+../Main/Src/motor.c:38:6:Motor_Start	8	static
+../Main/Src/motor.c:48:6:MotorL_Power_Off	4	static
+../Main/Src/motor.c:54:6:MotorR_Power_Off	4	static
+../Main/Src/motor.c:61:6:Motor_Power_Off	8	static
+../Main/Src/motor.c:74:6:MotorL_Stop	8	static
+../Main/Src/motor.c:88:6:MotorR_Stop	8	static
+../Main/Src/motor.c:102:6:Motor_Stop	8	static
+../Main/Src/motor.c:114:6:Speed_Control_Start	8	static
+../Main/Src/motor.c:122:6:Speed_Control_Stop	8	static

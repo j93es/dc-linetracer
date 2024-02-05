@@ -169,12 +169,17 @@ static void Pre_Drive_Var_Init() {
 	 */
 
 	// pd 제어에 사용하는 변수 초기화
-	levelMaxCCR_L = TIM10->ARR + 1;
-	levelMaxCCR_R = TIM11->ARR + 1;
+	levelMaxCCR = TIM10->ARR + 1;
 	prevErrorL = 0;
 	prevErrorR = 0;
-	targetEncoderValueL = 0;
-	targetEncoderValueR = 0;
+	prevErrorDiffL = 0;
+	prevErrorDiffR = 0;
+	targetEncoderValueL = ENCODER_VALUE_ADJUST_THRESHOLD_MID;
+	targetEncoderValueR = ENCODER_VALUE_ADJUST_THRESHOLD_MID;
+	TIM3->CNT = ENCODER_VALUE_ADJUST_THRESHOLD_MID;
+	TIM4->CNT = ENCODER_VALUE_ADJUST_THRESHOLD_MID;
+	pCoef = P_COEF_INIT;
+	dCoef = D_COEF_INIT;
 
 	dutyRatioSignL = 1;
 	dutyRatioSignR = 1;

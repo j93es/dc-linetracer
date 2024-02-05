@@ -14,6 +14,8 @@
 ../Main/Src/linetracer_test.c:135:6:Battery_Test_Voltage	8	static
 ../Main/Src/linetracer_test.c:161:6:MotorR_Test_Duty	24	static
 ../Main/Src/linetracer_test.c:211:6:MotorL_Test_Duty	24	static
-../Main/Src/linetracer_test.c:264:6:Motor_Test_Speed	16	static
-../Main/Src/linetracer_test.c:373:6:Drive_Test_Position	16	static
-../Main/Src/linetracer_test.c:400:6:Mark_Live_Test	16	static
+../Main/Src/linetracer_test.c:265:6:MotorL_Test_PD	24	static
+../Main/Src/linetracer_test.c:327:6:MotorR_Test_PD	24	static
+../Main/Src/linetracer_test.c:389:6:Motor_Test_Speed	16	static
+../Main/Src/linetracer_test.c:504:6:Drive_Test_Position	16	static
+../Main/Src/linetracer_test.c:531:6:Mark_Live_Test	16	static

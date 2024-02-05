@@ -12,11 +12,12 @@
 
 
 // pd 제어에 사용하는 변수
-volatile int32_t		levelMaxCCR_L;
-volatile int32_t		levelMaxCCR_R;
+volatile int32_t		levelMaxCCR;
 
 volatile int32_t		prevErrorL = 0;
 volatile int32_t		prevErrorR = 0;
+volatile int32_t		prevErrorDiffL = 0;
+volatile int32_t		prevErrorDiffR = 0;
 volatile float			targetEncoderValueL = 0;
 volatile float			targetEncoderValueR = 0;
 volatile float			pCoef = P_COEF_INIT;

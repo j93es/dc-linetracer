@@ -21,8 +21,8 @@
 
 
 // pd 제어 매크로
-#define P_COEF_INIT					0.2f;
-#define D_COEF_INIT					0.1f;
+#define P_COEF_INIT					0.35f;
+#define D_COEF_INIT					0.8f;
 
 
 // 속도와 관련된 매크로
@@ -40,46 +40,22 @@
 
 
 // POSITION_COEF(포지션 상수)를 도출하기 위한 매크로
-#define TIRE_RADIUS					0.026f					// m
+#define TIRE_RADIUS					0.036f					// m
 #define POSITION_COEF_INIT			0.00006f
 
-/*
- * (2 * l(m) * 3.14159) / (t(s) * 200) = v(m/s) * (arr+1)
- *
- * t =  1 / 1Mhz = 1 / 1,000,000 = 타이머 주기
- * 1 / (t * 200) = 5,000
- *
- * l(m) = 타이어 반지름
- * 2 * l * 3.14159
- *
- * v * (arr + 1) = SPEED_COEF
- */
-//#define SPEED_COEF					( 31415.92f * TIRE_RADIUS )
 
-/*
- * (2 * l(m) * 3.14159) / (t(s) * 400) = v(m/s) * (arr+1)
- *
- * t =  1 / 1Mhz = 1 / 1,000,000 = 타이머 주기
- * 1 / (t * 400) = 2,500
- *
- * l(m) = 타이어 반지름
- * 2 * l * 3.14159
- *
- * v * (arr + 1) = SPEED_COEF
- */
-#define SPEED_COEF					( 15707.96f * TIRE_RADIUS )
+// motor
+#define MOTOR_CONTROL_INTERVAL_S	0.0005f
+#define ENCODER_VALUE_PER_CIRCLE	2048
+#define MOTOR_GEAR_RATIO			( 17.f / 69.f )
+#define TICK_PER_M					( ENCODER_VALUE_PER_CIRCLE / (TIRE_RADIUS * 3.141592f) / MOTOR_GEAR_RATIO )
 
 
-// 1 m 당 tick 개수
-/*
- * 200(바퀴가 1바퀴 도는데 소요되는 tick 개수) * { 1(m) / (2 * TIRE_RADIUS * 3.14159) }(1바퀴의 거리) == { 1m 가는데 소요되는 바퀴 회전 횟수 }
- */
-//#define TICK_PER_M					( 31.831f / TIRE_RADIUS )
+// encoder adjust
+#define ENCODER_VALUE_ADJUST_THRESHOLD_MAX	57344
+#define ENCODER_VALUE_ADJUST_THRESHOLD_MID	32768
+#define ENCODER_VALUE_ADJUST_THRESHOLD_MIN	8192
 
-/*
- * 400(바퀴가 1바퀴 도는데 소요되는 tick 개수) * { 1(m) / (2 * TIRE_RADIUS * 3.14159) }(1바퀴의 거리) == { 1m 가는데 소요되는 바퀴 회전 횟수 }
- */
-#define TICK_PER_M					( 63.662f / TIRE_RADIUS )
 
 
 // 1차 주행인지 2차주행 판단 매크로
@@ -213,10 +189,11 @@ typedef struct	s_driveData {
 
 
 // pd 제어에 사용하는 변수
-extern volatile int32_t 	levelMaxCCR_L;
-extern volatile int32_t 	levelMaxCCR_R;
+extern volatile int32_t 	levelMaxCCR;
 extern volatile int32_t		prevErrorL;
 extern volatile int32_t		prevErrorR;
+extern volatile int32_t		prevErrorDiffL;
+extern volatile int32_t		prevErrorDiffR;
 extern volatile float		targetEncoderValueL;
 extern volatile float		targetEncoderValueR;
 extern volatile float		pCoef;

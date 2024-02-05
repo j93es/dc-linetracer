@@ -6,17 +6,9 @@
 
 
 
-void Motor_Power_Off() {
-
-	TIM10->CCR1 = 0;
-	TIM11->CCR1 = 0;
-}
 
 
-
-
-
-void Motor_Start() {
+void MotorL_Start() {
 
 	// motorL pwm start
 	LL_TIM_EnableCounter(TIM10);
@@ -25,8 +17,11 @@ void Motor_Start() {
 
 	// motorL encoder start
 	LL_TIM_EnableCounter(TIM4);
+}
 
 
+
+void MotorR_Start() {
 
 	// motorR pwm start
 	LL_TIM_EnableCounter(TIM11);
@@ -40,14 +35,45 @@ void Motor_Start() {
 
 
 
+void Motor_Start() {
 
-void Motor_Stop() {
+	MotorL_Start();
+	MotorR_Start();
+}
+
+
+
+
+
+void MotorL_Power_Off() {
 
 	TIM10->CCR1 = 0;
+}
+
+
+void MotorR_Power_Off() {
+
 	TIM11->CCR1 = 0;
+}
 
 
-	Custom_Delay_ms(1);
+
+void Motor_Power_Off() {
+
+	MotorL_Power_Off();
+	MotorR_Power_Off();
+}
+
+
+
+
+
+
+
+
+void MotorL_Stop() {
+
+	MotorL_Power_Off();
 
 	// motorL pwm end
 	LL_TIM_DisableCounter(TIM10);
@@ -55,7 +81,13 @@ void Motor_Stop() {
 
 	// motorL encoder end
 	LL_TIM_DisableCounter(TIM4);
+}
 
+
+
+void MotorR_Stop() {
+
+	MotorR_Power_Off();
 
 	// motorR pwm end
 	LL_TIM_DisableCounter(TIM11);
@@ -64,6 +96,17 @@ void Motor_Stop() {
 	// motorR encoder end
 	LL_TIM_DisableCounter(TIM3);
 }
+
+
+
+void Motor_Stop() {
+
+	MotorL_Stop();
+	MotorR_Stop();
+}
+
+
+
 
 
 

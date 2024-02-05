@@ -128,9 +128,10 @@ __STATIC_INLINE void	Make_Inline_Val(float finalSpeed) {
 // 500us마다 호출됨.
 __STATIC_INLINE void	Drive_TIM9_IRQ() {
 
-	// 가속도 및 속도 제어
-	Drive_Speed_Accele_Control();
-
+	/* origin */
+//	// 가속도 및 속도 제어
+//	Drive_Speed_Accele_Control();
+//
 //	// limitedPositionVal 값 업데이트
 //	Make_Limited_Position();
 //
@@ -143,11 +144,16 @@ __STATIC_INLINE void	Drive_TIM9_IRQ() {
 //	//position 값에 따른 좌우 모터 속도 조정
 //	float speedL = finalSpeed * (1 + (positionVal - curInlineVal) * positionCoef);
 //	float speedR = finalSpeed * (1 - (positionVal - curInlineVal) * positionCoef);
+//
+//	Motor_Speed_Control(speedL, speedR);
 
 
-	float speedL = curSpeed;
-	float speedR = curSpeed;
-	Motor_Speed_Control(speedL, speedR);
+	/* speed cntl test */
+	Drive_Speed_Accele_Control();
+	Motor_Speed_Control(curSpeed, curSpeed);
+
+	/* pd test */
+//	Motor_Speed_Control(0, 0);
 }
 
 

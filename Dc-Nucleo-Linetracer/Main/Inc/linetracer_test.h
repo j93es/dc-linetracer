@@ -19,6 +19,9 @@ void	Motor_Test_Velocity();
 void	MotorL_Test_Duty();
 void	MotorR_Test_Duty();
 
+void	MotorL_Test_PD();
+void	MotorR_Test_PD();
+
 void	Motor_Test_Speed();
 
 void	Battery_Test_Voltage();
