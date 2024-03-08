@@ -14,6 +14,7 @@
 
 #include "drive_data_tools.h"
 #include "drive_def_var.h"
+#include "drive_positioning.h"
 #include "drive_preset.h"
 #include "drive_speed_ctrl.h"
 #include "drive_state_machine.h"

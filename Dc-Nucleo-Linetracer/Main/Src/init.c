@@ -3,7 +3,7 @@
  */
 
 #include "header_init.h"
-
+#include "core_cm4.h"
 
 
 /*
@@ -19,6 +19,8 @@ int __io_putchar(int ch)
 
 
 void Init() {
+	CoreDebug->DEMCR |= CoreDebug_DEMCR_TRCENA_Msk;
+	DWT->CTRL |= DWT_CTRL_CYCCNTENA_Msk;
 	/*
 	 * STM 보드와 컴퓨터 간 UART 통신을 통해 컴퓨터 터미널로 디버깅할 수 있도록 USART2를 활성화한다.
 	 */
@@ -59,21 +61,23 @@ void Init() {
 	 * Custom_Switch_Read 함수 내부에는 1ms 딜레이가 존재하기 때문에, 이 함수를 주행 알고리즘 내부에 집어넣으면 성능이 크게 떨어지니 주의한.
 	 */
 	t_menuData menus[] = {
+			{ "Calibration    ", Sensor_Calibration },
+			{ "First Drive    ", First_Drive },
+			{ "Second Drive   ", Second_Drive },
+			{ "Test Raw       ", Sensor_Test_Raw },
+			{ "Test Normalized", Sensor_Test_Normalized },
+			{ "Test State     ", Sensor_Test_State },
+			{ "Test Voltage   ", Battery_Test_Voltage },
+			{ "Test Position  ", Drive_Test_Position },
 			{ "Test L PD      ", MotorL_Test_PD },
 			{ "Test R PD      ", MotorR_Test_PD },
 			{ "Test Speed     ", Motor_Test_Speed },
 			{ "Test L Duty    ", MotorL_Test_Duty },
 			{ "Test R Duty    ", MotorR_Test_Duty },
-			{ "Test Voltage   ", Battery_Test_Voltage },
-//			{ "Switch Test    ", Switch_Test },
-			{ "Calibration    ", Sensor_Calibration },
-//			{ "First Drive    ", First_Drive },
-			{ "Test Raw       ", Sensor_Test_Raw },
-			{ "Test Normalized", Sensor_Test_Normalized },
-			{ "Test State     ", Sensor_Test_State },
+			{ "Mark Live Test ", Mark_Live_Test },
+			{ "Drive Data     ", Print_Drive_Data },
 //			{ "Test Velocity  ", Motor_Test_Velocity },
-			{ "Test Position  ", Drive_Test_Position },
-//			{ "Current setting", Current_Setting },
+//			{ "Switch Test    ", Switch_Test },
 	};
 
 	uint8_t sw = 0;

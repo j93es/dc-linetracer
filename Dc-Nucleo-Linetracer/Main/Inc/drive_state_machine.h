@@ -13,39 +13,135 @@
 
 
 
+#define IR_SENSOR_MID		7
 
 
-__STATIC_INLINE void	Mark_Masking() {
 
-	lineMasking = LINE_MASKING_TOOL >> (positionIdxMin - 1);
-	rightMarkMasking = MARK_MASKING_TOOL >> GET_MIN(positionIdxMax + 3, IR_SENSOR_LEN - 2);
-	leftMarkMasking = MARK_MASKING_TOOL >> GET_MAX(positionIdxMin - 4, 0);
-	bothMarkMasking = rightMarkMasking | leftMarkMasking;
+__STATIC_INLINE void	Mark_Masking(int8_t curIrSensorMid) {
+
+	if (curIrSensorMid > IR_SENSOR_MID) {
+
+		int8_t moveLen = curIrSensorMid - IR_SENSOR_MID;
+
+		lineMasking = LINE_MASKING_INIT >> moveLen;
+		leftMarkMasking = LEFT_MARK_MASKING_INIT >> moveLen;
+		rightMarkMasking = RIGHT_MARK_MASKING_INIT >> moveLen;
+		bothMarkMasking = leftMarkMasking | rightMarkMasking;
+
+	} else {
+
+		int8_t moveLen = IR_SENSOR_MID - curIrSensorMid;
+
+		lineMasking = LINE_MASKING_INIT << moveLen;
+		leftMarkMasking = LEFT_MARK_MASKING_INIT << moveLen;
+		rightMarkMasking = RIGHT_MARK_MASKING_INIT << moveLen;
+		bothMarkMasking = leftMarkMasking | rightMarkMasking;
+
+	}
+
+	markAreaMasking = ~(lineMasking << 1 | lineMasking >> 1);
+}
+
+
+
+__STATIC_INLINE void	Mark_Accumming(int8_t curIrSensorMid) {
+
+	// 0 0 0 0  0 0 0 0  0 0 0 0  0 0 0 0
+	// ~
+	// 7 => 4
+	// 8 => 3
+	// 9 => 2
+	// 10 => 1
+	// 11 => 0
+	// 12 <= 1
+	// 13 <= 2
+	// 14 <= 3
+	// 15 <= 4
+	if (curIrSensorMid < 11) {
+
+		irSensorStateSum |= (irSensorState & lineMasking) >> (11 - curIrSensorMid);
+	} else {
+
+		irSensorStateSum |= (irSensorState & lineMasking) << (curIrSensorMid - 11);
+	}
+
+
+
+	if ( __builtin_popcount(irSensorState & leftMarkMasking) != 0) {
+
+		irSensorStateSum |= 0x80;
+	}
+
+	if ( __builtin_popcount(irSensorState & rightMarkMasking) != 0) {
+
+		irSensorStateSum |= 0x01;
+	}
+
+}
+
+
+__STATIC_INLINE void	Mark_Accumming_Reset() {
+
+	irSensorStateSum = 0x00;
 }
 
 
 
 
+
+
+
+
+__STATIC_INLINE uint8_t	Is_Line_Out() {
+
+	if (irSensorState == 0x00) {
+		return CUSTOM_TRUE;
+	}
+
+	return CUSTOM_FALSE;
+}
+
+
+
+
+__STATIC_INLINE uint8_t	Is_Passed_Marker() {
+
+	if ( __builtin_popcount(irSensorState & markAreaMasking) == 0 ) {
+		return CUSTOM_TRUE;
+	}
+
+	return CUSTOM_FALSE;
+}
+
+
+
+
+
+
+
+
+
 // end line, right mark, left mark, straight를 판별하고 정해진 동작을 실행하는 함수
-__STATIC_INLINE void	Decision(uint16_t sensorStateSum) {
+__STATIC_INLINE void	Decision() {
 
 	// cross
-	if (sensorStateSum == ALL_MARK_MASKING) {
+	if (irSensorStateSum == 0xff) {
 
 		markState = MARK_CROSS;
 	}
 
 
 	// end mark
-	// if ( ((sensorStateSum >> 0) & 0x01) && ((sensorStateSum >> 7) & 0x01) )
-	else if ( (sensorStateSum & bothMarkMasking) == bothMarkMasking ) {
+	else if ((irSensorStateSum & 0x81) == 0x81) {
 
 		markState = MARK_END;
+		endMarkCnt++;
+
 	}
 
 
 	// left mark
-	else if ( (sensorStateSum & leftMarkMasking) == leftMarkMasking ) {
+	else if ((irSensorStateSum & 0x80) == 0x80) {
 
 
 		// 이전 마크가 왼쪽 곡선 마크였다면 곡선주행 종료
@@ -61,7 +157,7 @@ __STATIC_INLINE void	Decision(uint16_t sensorStateSum) {
 
 
 	// right mark
-	else if ( (sensorStateSum & rightMarkMasking) == rightMarkMasking ) {
+	else if ((irSensorStateSum & 0x01) == 0x01) {
 
 		// 이전 마크가 오른쪽 곡선 마크였다면 곡선주행 종료
 		if (markState == MARK_CURVE_R) {
@@ -79,9 +175,16 @@ __STATIC_INLINE void	Decision(uint16_t sensorStateSum) {
 
 
 
+
+
+
 __STATIC_INLINE void	Drive_State_Machine() {
 
-	static uint32_t	lineOutStartTime;
+	static uint32_t	lineOutStartTime = 0;
+
+	int8_t	curIrSensorMid = positionIdxMax - WINDOW_SIZE_HALF;
+
+	Mark_Masking(curIrSensorMid);
 
 
 	switch (driveState) {
@@ -89,26 +192,22 @@ __STATIC_INLINE void	Drive_State_Machine() {
 
 		case DRIVE_STATE_IDLE :
 
-				Mark_Masking();
-
 				// 라인 센서 4개 이상 인식
-				if (__builtin_popcount(state & lineMasking) >= 4) {
+				if (__builtin_popcount(irSensorState & lineMasking) >= 4) {
 
-					sensorStateSum = 0x00;
-
+					Mark_Accumming_Reset();
 					driveState = DRIVE_STATE_CROSS;
 				}
 
 				// 라인 센서 4개 이하 and 마크 센서 1개 이상
-				else if (__builtin_popcount(state & bothMarkMasking) != 0) {
+				else if (__builtin_popcount(irSensorState & bothMarkMasking) >= 1) {
 
-					sensorStateSum = 0x00;
-
+					Mark_Accumming_Reset();
 					driveState = DRIVE_STATE_MARKER;
 				}
 
 				// 라인아웃되거나 잠깐 떳을 때
-				else if (state == 0x00) {
+				else if (Is_Line_Out()) {
 
 					lineOutStartTime = uwTick;
 
@@ -124,10 +223,11 @@ __STATIC_INLINE void	Drive_State_Machine() {
 		case DRIVE_STATE_CROSS:
 
 				// accum
-				sensorStateSum |= state;
+				Mark_Accumming(curIrSensorMid);
 
 				// 모든 센서를 읽었고 마크 센서가 선을 지나쳤을 때 IDLE
-				if (sensorStateSum == ALL_MARK_MASKING && __builtin_popcount(state & bothMarkMasking) == 0) {
+				if ( (irSensorStateSum == 0xff && Is_Passed_Marker()) \
+					|| Is_Line_Out() ) {
 
 					driveState = DRIVE_STATE_DECISION;
 				}
@@ -141,10 +241,10 @@ __STATIC_INLINE void	Drive_State_Machine() {
 		case DRIVE_STATE_MARKER :
 
 				// accum
-				sensorStateSum |= state;
+				Mark_Accumming(curIrSensorMid);
 
 				// 마커 센서가 0개 일 때
-				if (__builtin_popcount(state & bothMarkMasking) == 0) {
+				if (Is_Passed_Marker() || Is_Line_Out()) {
 
 					driveState = DRIVE_STATE_DECISION;
 				}
@@ -157,7 +257,7 @@ __STATIC_INLINE void	Drive_State_Machine() {
 
 		case DRIVE_STATE_DECISION :
 
-				Decision(sensorStateSum);
+				Decision();
 
 				driveState = DRIVE_STATE_IDLE;
 
@@ -169,7 +269,9 @@ __STATIC_INLINE void	Drive_State_Machine() {
 
 		case DRIVE_DECISION_LINE_OUT :
 
-				if (state != 0x00) {
+				markState = MARK_LINE_OUT;
+
+				if (!Is_Line_Out()) {
 
 					driveState = DRIVE_STATE_IDLE;
 				}

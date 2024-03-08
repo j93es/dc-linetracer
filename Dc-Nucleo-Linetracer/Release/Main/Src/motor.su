@@ -1,10 +1,18 @@
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_tim.h:1124:22:LL_TIM_EnableCounter	16	static
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_tim.h:1135:22:LL_TIM_DisableCounter	16	static
+../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_tim.h:1609:22:LL_TIM_CC_EnableChannel	16	static
+../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_tim.h:1634:22:LL_TIM_CC_DisableChannel	16	static
+../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_tim.h:2134:22:LL_TIM_OC_SetCompareCH2	16	static
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_tim.h:3457:22:LL_TIM_EnableIT_UPDATE	16	static
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_tim.h:3468:22:LL_TIM_DisableIT_UPDATE	16	static
-/Users/j93es/workspace/c/step_tracer_masterCode/Nucleo-Linetracer/External Library/Inc/custom_gpio.h:54:20:Custom_GPIO_Set_t	16	static
-../Main/Src/motor.c:37:6:Motor_Power_Off	8	static
-../Main/Src/motor.c:54:6:Motor_Start	8	static
-../Main/Src/motor.c:66:6:Motor_Stop	8	static
-../Main/Src/motor.c:84:6:Speed_Control_Start	8	static
-../Main/Src/motor.c:92:6:Speed_Control_Stop	8	static
+../Main/Src/motor.c:11:6:MotorL_Start	8	static
+../Main/Src/motor.c:24:6:MotorR_Start	8	static
+../Main/Src/motor.c:38:6:Motor_Start	8	static
+../Main/Src/motor.c:48:6:MotorL_Power_Off	4	static
+../Main/Src/motor.c:54:6:MotorR_Power_Off	4	static
+../Main/Src/motor.c:61:6:Motor_Power_Off	8	static
+../Main/Src/motor.c:74:6:MotorL_Stop	8	static
+../Main/Src/motor.c:88:6:MotorR_Stop	8	static
+../Main/Src/motor.c:102:6:Motor_Stop	8	static
+../Main/Src/motor.c:114:6:Speed_Control_Start	8	static
+../Main/Src/motor.c:122:6:Speed_Control_Stop	8	static

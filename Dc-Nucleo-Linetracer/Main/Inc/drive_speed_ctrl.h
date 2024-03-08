@@ -13,6 +13,9 @@
 #include "main.h"
 #include "custom_delay.h"
 #include "motor.h"
+#include "core_cm4.h"
+
+
 
 
 
@@ -23,7 +26,7 @@ __STATIC_INLINE void	Drive_Speed_Accele_Control() {
 
 		// 속도를 targetSpeed 까지 올린 후, curAccele을 0으로 변환
 		// 혹은 직선 가속 후 targetSpeed 까지 도달하지 못하고 감속한 후 감속이 종료되었으면 , curAccele을 0으로 변환
-		curAccele = 0;
+		curAccele = 0.f;
 	}
 
 	else if (curSpeed < targetSpeed) {
@@ -37,7 +40,7 @@ __STATIC_INLINE void	Drive_Speed_Accele_Control() {
 		}
 
 		// 속도 제어
-		curSpeed += curAccele / 2000;
+		curSpeed += curAccele * MOTOR_CONTROL_INTERVAL_S;
 
 		if (curSpeed > targetSpeed) {
 
@@ -49,7 +52,7 @@ __STATIC_INLINE void	Drive_Speed_Accele_Control() {
 	else {
 
 		// 속도 제어
-		curSpeed -= decele / 2000;
+		curSpeed -= decele * MOTOR_CONTROL_INTERVAL_S;
 
 		if (curSpeed < targetSpeed) {
 
@@ -64,17 +67,12 @@ __STATIC_INLINE void	Drive_Speed_Accele_Control() {
 //limitedPositionVal 값 업데이트
 __STATIC_INLINE void	Make_Limited_Position() {
 
-	uint32_t absPositionVal = ABS(positionVal - curInlineVal);
-
-	if (limitedPositionVal == absPositionVal) {
-
-		return ;
-	}
+	volatile int32_t absPositionVal = ABS(positionVal - curInlineVal);
 
 	// 곡선에 진입을 시작했을 때 빠르게 curve decel을 해줌
-	else if (limitedPositionVal < absPositionVal) {
+	if (limitedPositionVal < absPositionVal) {
 
-		limitedPositionVal += 20;
+		limitedPositionVal += 100;
 		if (limitedPositionVal > absPositionVal) {
 			limitedPositionVal = absPositionVal;
 		}
@@ -83,7 +81,7 @@ __STATIC_INLINE void	Make_Limited_Position() {
 	// 곡선에서 벗어날 때 천천히 속도를 올려줌
 	else {
 
-		limitedPositionVal -= 10;
+		limitedPositionVal -= 50;
 		if (limitedPositionVal < absPositionVal) {
 			limitedPositionVal = absPositionVal;
 		}
@@ -101,12 +99,7 @@ __STATIC_INLINE void	Make_Inline_Val(float finalSpeed) {
 	 * 		= targetInlineVal * curSpeed / l(m) / 2000
 	 */
 
-	if (curInlineVal == targetInlineVal) {
-
-		return ;
-	}
-
-	else if (curInlineVal < targetInlineVal) {
+	if (curInlineVal < targetInlineVal) {
 
 		curInlineVal += 20;//targetInlineVal * finalSpeed / INLINE_POSITIONING_LEN / 2000;
 		if (curInlineVal > targetInlineVal) {
@@ -127,33 +120,45 @@ __STATIC_INLINE void	Make_Inline_Val(float finalSpeed) {
 
 // 500us마다 호출됨.
 __STATIC_INLINE void	Drive_TIM9_IRQ() {
+//	DWT->CYCCNT = 0;
 
-	/* origin */
-//	// 가속도 및 속도 제어
+//
 //	Drive_Speed_Accele_Control();
 //
-//	// limitedPositionVal 값 업데이트
-//	Make_Limited_Position();
-//
-//	// 포지션 값에 따른 감속
-//	float finalSpeed = curSpeed * curveDeceleCoef / (limitedPositionVal + curveDeceleCoef);
-//
-//	// inLine 값 생성
-//	Make_Inline_Val(finalSpeed);
-//
 //	//position 값에 따른 좌우 모터 속도 조정
-//	float speedL = finalSpeed * (1 + (positionVal - curInlineVal) * positionCoef);
-//	float speedR = finalSpeed * (1 - (positionVal - curInlineVal) * positionCoef);
+//	float finalSpeed = curSpeed * curveDeceleCoef / (ABS(positionVal) + curveDeceleCoef);
+//	float speedL = finalSpeed * (1 + positionVal * positionCoef);
+//	float speedR = finalSpeed * (1 - positionVal * positionCoef);
 //
 //	Motor_Speed_Control(speedL, speedR);
 
-
-	/* speed cntl test */
+	/* origin */
+//	// 가속도 및 속도 제어
 	Drive_Speed_Accele_Control();
-	Motor_Speed_Control(curSpeed, curSpeed);
+
+	// limitedPositionVal 값 업데이트
+	Make_Limited_Position();
+
+	// 포지션 값에 따른 감속
+	float finalSpeed = curSpeed * curveDeceleCoef / (limitedPositionVal + curveDeceleCoef);
+
+	// inLine 값 생성
+//	Make_Inline_Val(finalSpeed);
+
+	//position 값에 따른 좌우 모터 속도 조정
+	float speedL = finalSpeed * (1 + (positionVal - curInlineVal) * positionCoef);
+	float speedR = finalSpeed * (1 - (positionVal - curInlineVal) * positionCoef);
+
+	Motor_Speed_Control(speedL, speedR);
+
+
+//	/* speed cntl test */
+//	Drive_Speed_Accele_Control();
+//	Motor_Speed_Control(curSpeed, curSpeed);
 
 	/* pd test */
 //	Motor_Speed_Control(0, 0);
+//	uint32_t tickElapsed = DWT->CYCCNT;
 }
 
 
@@ -164,7 +169,7 @@ __STATIC_INLINE void	Drive_TIM9_IRQ() {
 __STATIC_INLINE void	Drive_Fit_In(float s, float pinSpeed) {
 
 	targetSpeed = pinSpeed;
-	decele = ABS( (pinSpeed - curSpeed) * (pinSpeed + curSpeed) ) / (2 * s);
+	decele = ABS( (pinSpeed - curSpeed) * (pinSpeed + curSpeed) ) / (2.f * s);
 }
 
 
@@ -182,9 +187,12 @@ __STATIC_INLINE uint8_t	Is_Drive_End(uint8_t exitEcho) {
 			//Drive_Speed_Cntl();
 		}
 
-		Custom_Delay_ms(DRIVE_END_DELAY_TIME_MS);
+		Custom_Delay_ms(1000);
+
 
 		if (endMarkCnt >= 2) {
+
+			optimizeLevel++;
 
 			exitEcho = EXIT_ECHO_END_MARK;
 		}

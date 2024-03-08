@@ -107,12 +107,12 @@ void Sensor_Test_State() {
 		Custom_OLED_Printf("/0threshold: %3d", threshold);
 
 		Custom_OLED_Printf("/1%2x/r%2x/w%2x/r%2x/w%2x/r%2x/w%2x/r%2x/w", \
-			(state >> 7) & 1, (state >> 6) & 1, (state >> 5) & 1, (state >> 4) & 1, \
-			(state >> 3) & 1, (state >> 2) & 1, (state >> 1) & 1, (state >> 0) & 1);
+			(irSensorState >> 15) & 1, (irSensorState >> 14) & 1, (irSensorState >> 13) & 1, (irSensorState >> 12) & 1, \
+			(irSensorState >> 11) & 1, (irSensorState >> 10) & 1, (irSensorState >> 9) & 1, (irSensorState >> 8) & 1);
 
 		Custom_OLED_Printf("/3%2x/r%2x/w%2x/r%2x/w%2x/r%2x/w%2x/r%2x/w", \
-			(state >> 15) & 1, (state >> 14) & 1, (state >> 13) & 1, (state >> 12) & 1, \
-			(state >> 11) & 1, (state >> 10) & 1, (state >> 9) & 1, (state >> 8) & 1);
+			(irSensorState >> 7) & 1, (irSensorState >> 6) & 1, (irSensorState >> 5) & 1, (irSensorState >> 4) & 1, \
+			(irSensorState >> 3) & 1, (irSensorState >> 2) & 1, (irSensorState >> 1) & 1, (irSensorState >> 0) & 1);
 
 
 		if (sw == CUSTOM_SW_1) {
@@ -218,7 +218,6 @@ void MotorL_Test_Duty() {
 	const uint16_t level_max = TIM10->ARR + 1;
 	float duty_ratio = 0.0f;
 
-	TIM4->CNT = 30000;
 
 	for (;;) {
 
@@ -265,23 +264,11 @@ void MotorL_Test_Duty() {
 void MotorL_Test_PD() {
 
 	float coefChangeVal = 0.05;
-	float targetChangeVal = 50;
+	float targetChangeVal = 400;
 
-	// pd 제어에 사용하는 변수 초기화
-	levelMaxCCR = TIM10->ARR + 1;
-	prevErrorL = 0;
-	prevErrorR = 0;
-	prevErrorDiffL = 0;
-	prevErrorDiffR = 0;
-	targetEncoderValueL = ENCODER_VALUE_ADJUST_THRESHOLD_MID;
-	targetEncoderValueR = ENCODER_VALUE_ADJUST_THRESHOLD_MID;
-	TIM3->CNT = ENCODER_VALUE_ADJUST_THRESHOLD_MID;
-	TIM4->CNT = ENCODER_VALUE_ADJUST_THRESHOLD_MID;
-	pCoef = P_COEF_INIT;
-	dCoef = D_COEF_INIT;
+	Pre_Drive_Var_Init();
 
-	dutyRatioSignL = 1;
-	dutyRatioSignR = 1;
+	targetSpeed = 0;
 
 	Sensor_Start();
 	Speed_Control_Start();
@@ -303,12 +290,12 @@ void MotorL_Test_PD() {
 		} else if (sw == CUSTOM_SW_2_3) {
 			dCoef += coefChangeVal;
 		} else if (sw == CUSTOM_SW_3) {
-			targetEncoderValueL -= targetChangeVal;
+			targetEncoderValueL_cntl += targetChangeVal;
 		}
 
 		Custom_OLED_Printf("/0CCR    : %5d", TIM10->CCR1);
 		Custom_OLED_Printf("/1curECOD: %5d", TIM4->CNT);
-		Custom_OLED_Printf("/2tarECOD: %5f", targetEncoderValueL);
+		Custom_OLED_Printf("/2tarECOD: %5u", targetEncoderValueL_cntl);
 		Custom_OLED_Printf("/3pCoef  : %5f", pCoef);
 		Custom_OLED_Printf("/4dCoef  : %5f", dCoef);
 
@@ -329,23 +316,9 @@ void MotorR_Test_PD() {
 	float coefChangeVal = 0.05;
 	float targetChangeVal = 50;
 
-	// pd 제어에 사용하는 변수 초기화
-	levelMaxCCR = TIM10->ARR + 1;
-	prevErrorL = 0;
-	prevErrorR = 0;
-	prevErrorDiffL = 0;
-	prevErrorDiffR = 0;
-	targetEncoderValueL = ENCODER_VALUE_ADJUST_THRESHOLD_MID;
-	targetEncoderValueR = ENCODER_VALUE_ADJUST_THRESHOLD_MID;
-	TIM3->CNT = ENCODER_VALUE_ADJUST_THRESHOLD_MID;
-	TIM4->CNT = ENCODER_VALUE_ADJUST_THRESHOLD_MID;
-	pCoef = P_COEF_INIT;
-	dCoef = D_COEF_INIT;
+	Pre_Drive_Var_Init();
 
-	dutyRatioSignL = 1;
-	dutyRatioSignR = 1;
-
-
+	targetSpeed = 0;
 
 	Sensor_Start();
 	Speed_Control_Start();
@@ -367,12 +340,12 @@ void MotorR_Test_PD() {
 		} else if (sw == CUSTOM_SW_2_3) {
 			dCoef += coefChangeVal;
 		} else if (sw == CUSTOM_SW_3) {
-			targetEncoderValueR -= targetChangeVal;
+			targetEncoderValueR_cntl += targetChangeVal;
 		}
 
 		Custom_OLED_Printf("/0CCR    : %5d", TIM11->CCR1);
 		Custom_OLED_Printf("/1curECOD: %5d", TIM3->CNT);
-		Custom_OLED_Printf("/2tarECOD: %5f", targetEncoderValueR);
+		Custom_OLED_Printf("/2tarECOD: %5d", targetEncoderValueR_cntl);
 		Custom_OLED_Printf("/3pCoef  : %5f", pCoef);
 		Custom_OLED_Printf("/4dCoef  : %5f", dCoef);
 
@@ -388,24 +361,8 @@ void MotorR_Test_PD() {
 
 void Motor_Test_Speed() {
 
-	// pd 제어에 사용하는 변수 초기화
-	levelMaxCCR = TIM10->ARR + 1;
-	prevErrorL = 0;
-	prevErrorR = 0;
-	prevErrorDiffL = 0;
-	prevErrorDiffR = 0;
-	targetEncoderValueL = ENCODER_VALUE_ADJUST_THRESHOLD_MID;
-	targetEncoderValueR = ENCODER_VALUE_ADJUST_THRESHOLD_MID;
-	TIM3->CNT = ENCODER_VALUE_ADJUST_THRESHOLD_MID;
-	TIM4->CNT = ENCODER_VALUE_ADJUST_THRESHOLD_MID;
-	pCoef = P_COEF_INIT;
-	dCoef = D_COEF_INIT;
+	Pre_Drive_Var_Init();
 
-	dutyRatioSignL = 1;
-	dutyRatioSignR = 1;
-
-	pCoef = P_COEF_INIT;
-	dCoef = D_COEF_INIT;
 
 	// 가속도 변수 초기화
 	targetAccele = 1;
@@ -437,7 +394,7 @@ void Motor_Test_Speed() {
 		Custom_OLED_Printf("/0speed  : %3.2f", curSpeed);
 		Custom_OLED_Printf("/1CCR    : %5d", TIM10->CCR1);
 		Custom_OLED_Printf("/2curECOD: %5d", TIM4->CNT);
-		Custom_OLED_Printf("/3tarECOD: %5f", targetEncoderValueL);
+		Custom_OLED_Printf("/3tarECOD: %5f", targetEncoderValueL_cntl);
 
 	}
 
@@ -504,6 +461,8 @@ void Motor_Test_Speed() {
 void Drive_Test_Position() {
 	uint8_t	sw = 0;
 
+	uint8_t positioningIdx = 0;
+
 	Custom_OLED_Clear();
 	Sensor_Start();
 	Speed_Control_Start();
@@ -514,9 +473,12 @@ void Drive_Test_Position() {
 
 	while (CUSTOM_SW_3 != (sw = Custom_Switch_Read())) {
 
+		Positioning(&positioningIdx);
+
 		Custom_OLED_Printf("/0pos:     %7d", positionVal);
 		Custom_OLED_Printf("/2speedL:  %f", (1 + positionVal * positionCoef));
 		Custom_OLED_Printf("/3speedR:  %f", (1 - positionVal * positionCoef));
+		Custom_OLED_Printf("/4pos:     %7d", limitedPositionVal);
 	}
 	Speed_Control_Stop();
 	Sensor_Stop();
@@ -528,13 +490,16 @@ void Drive_Test_Position() {
 
 
 
-void Mark_Live_Test(void) {
+void Mark_Live_Test() {
 	uint8_t	sw = 0;
+
+	uint8_t positioningIdx = 0;
 
 	Sensor_Start();
 
     Custom_OLED_Clear();
-    Custom_OLED_Printf("/0Mark Live Test");
+
+    Pre_Drive_Var_Init();
 
 	positionIdxMax = 9;
 	positionIdxMin = 6;
@@ -543,47 +508,74 @@ void Mark_Live_Test(void) {
 
     	Drive_State_Machine();
 
+    	Positioning(&positioningIdx);
+
         switch (driveState) {
         case DRIVE_STATE_IDLE:
-        	Custom_OLED_Printf("/2STATE: IDLE     ");
+        	Custom_OLED_Printf("/0STATE: IDLE     ");
             break;
         case DRIVE_STATE_CROSS:
-        	Custom_OLED_Printf("/2STATE: CROSS    ");
+        	Custom_OLED_Printf("/0STATE: CROSS    ");
             break;
         case DRIVE_STATE_MARKER:
-        	Custom_OLED_Printf("/2STATE: MARK     ");
+        	Custom_OLED_Printf("/0STATE: MARK     ");
             break;
         case DRIVE_STATE_DECISION:
-        	Custom_OLED_Printf("/2STATE: DECISION ");
+        	Custom_OLED_Printf("/0STATE: DECISION ");
         	break;
         default:
-        	Custom_OLED_Printf("/2STATE: ------   ");
+        	Custom_OLED_Printf("/0STATE: ------   ");
             break;
         }
 
         switch (markState) {
 		case MARK_NONE:
-			Custom_OLED_Printf("/3MARK: NONE      ");
+			Custom_OLED_Printf("/1MARK: NONE      ");
 			break;
 		case MARK_STRAIGHT:
-			Custom_OLED_Printf("/3MARK: STRAIGHT  ");
+			Custom_OLED_Printf("/1MARK: STRAIGHT  ");
 			break;
         case MARK_CURVE_L:
-        	Custom_OLED_Printf("/3MARK: LEFT      ");
+        	Custom_OLED_Printf("/1MARK: LEFT      ");
             break;
         case MARK_CURVE_R:
-        	Custom_OLED_Printf("/3MARK: RIGHT     ");
+        	Custom_OLED_Printf("/1MARK: RIGHT     ");
             break;
         case MARK_END:
-        	Custom_OLED_Printf("/3MARK: END       ");
+        	Custom_OLED_Printf("/1MARK: END       ");
             break;
         case MARK_CROSS:
-        	Custom_OLED_Printf("/3MARK: CROSS     ");
+        	Custom_OLED_Printf("/1MARK: CROSS     ");
+            break;
+        case MARK_LINE_OUT:
+            Custom_OLED_Printf("/1MARK: LINE OUT  ");
             break;
         default:
-        	Custom_OLED_Printf("/3MARK: ------    ");
+        	Custom_OLED_Printf("/1MARK: ------    ");
         	break;
         }
+
+    	uint16_t masking = lineMasking;
+
+    	Custom_OLED_Printf("/2%x/r%x/w%x/r%x/w%x/r%x/w%x/r%x/w",  \
+    				(masking >> 15) & 1, (masking >> 14) & 1, (masking >> 13) & 1, (masking >> 12) & 1, \
+    				(masking >> 11) & 1, (masking >> 10) & 1, (masking >> 9) & 1, (masking >> 8) & 1);
+
+    	Custom_OLED_Printf("/3%x/r%x/w%x/r%x/w%x/r%x/w%x/r%x/w", \
+    				(masking >> 7) & 1, (masking >> 6) & 1, (masking >> 5) & 1, (masking >> 4) & 1, \
+    				(masking >> 3) & 1, (masking >> 2) & 1, (masking >> 1) & 1, (masking >> 0) & 1);
+
+
+
+    	masking = markAreaMasking;
+
+    	Custom_OLED_Printf("/4%x/r%x/w%x/r%x/w%x/r%x/w%x/r%x/w",  \
+    				(masking >> 15) & 1, (masking >> 14) & 1, (masking >> 13) & 1, (masking >> 12) & 1, \
+    				(masking >> 11) & 1, (masking >> 10) & 1, (masking >> 9) & 1, (masking >> 8) & 1);
+
+    	Custom_OLED_Printf("/5%x/r%x/w%x/r%x/w%x/r%x/w%x/r%x/w", \
+    				(masking >> 7) & 1, (masking >> 6) & 1, (masking >> 5) & 1, (masking >> 4) & 1, \
+    				(masking >> 3) & 1, (masking >> 2) & 1, (masking >> 1) & 1, (masking >> 0) & 1);
     }
 
     Sensor_Stop();

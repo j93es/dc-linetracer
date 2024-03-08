@@ -12,9 +12,6 @@ static void Pre_Drive_Var_Adjust_Second_Drive();
 static void Pre_Drive_Var_Adjust_Switch_Cntl(t_driveMenu_Int *intValues, t_driveMenu_Float *floatValues, \
 											uint8_t intValCnt, uint8_t floatValCnt, uint8_t isEnd);
 
-// 주행 전 초기값 대입
-static void Pre_Drive_Var_Init();
-
 
 
 
@@ -51,7 +48,7 @@ static void Pre_Drive_Var_Adjust_First_Drive() {
 			{ "Pit In Len",			&pitInLen,			0.01f },
 			{ "Target Speed",		&targetSpeed_init,	0.05f },
 			{ "CurveDecel Coef",	&curveDeceleCoef,	500 },
-			//{ "Position Coef",		&positionCoef,		0.000001f },
+			{ "Position Coef",		&positionCoef,		0.000001f },
 	};
 	uint8_t floatValCnt = sizeof(floatValues) / sizeof(t_driveMenu_Float);
 
@@ -161,7 +158,7 @@ static void Pre_Drive_Var_Adjust_Switch_Cntl(t_driveMenu_Int *intValues, t_drive
 
 
 // 주행 전 초기값 대입
-static void Pre_Drive_Var_Init() {
+void Pre_Drive_Var_Init() {
 
 
 	/*
@@ -172,17 +169,14 @@ static void Pre_Drive_Var_Init() {
 	levelMaxCCR = TIM10->ARR + 1;
 	prevErrorL = 0;
 	prevErrorR = 0;
-	prevErrorDiffL = 0;
-	prevErrorDiffR = 0;
-	targetEncoderValueL = ENCODER_VALUE_ADJUST_THRESHOLD_MID;
-	targetEncoderValueR = ENCODER_VALUE_ADJUST_THRESHOLD_MID;
-	TIM3->CNT = ENCODER_VALUE_ADJUST_THRESHOLD_MID;
-	TIM4->CNT = ENCODER_VALUE_ADJUST_THRESHOLD_MID;
+	targetEncoderValueL_cntl = 10000;
+	targetEncoderValueR_cntl = 10000;
+	TIM3->CNT = targetEncoderValueL_cntl;
+	TIM4->CNT = targetEncoderValueR_cntl;
+	prevCurEncoderValueL = targetEncoderValueL_cntl;
+	prevCurEncoderValueR = targetEncoderValueR_cntl;
 	pCoef = P_COEF_INIT;
 	dCoef = D_COEF_INIT;
-
-	dutyRatioSignL = 1;
-	dutyRatioSignR = 1;
 
 	// 가속도 변수 초기화
 	targetAccele = targetAccele_init;
@@ -224,15 +218,18 @@ static void Pre_Drive_Var_Init() {
 	// 현재까지 읽은 크로스 개수 업데이트
 	crossCnt = 0;
 
-	// 현재 마크가 시작된 tick
-	markStartTick_L = 0;
-	markStartTick_R = 0;
-
 	// 엔드마크 읽은 개수 초기화
 	endMarkCnt = 0;
 
 	// driveData 인덱스 초기화
 	driveDataIdx = 0;
+
+
+	lineMasking = LINE_MASKING_INIT;
+	rightMarkMasking = RIGHT_MARK_MASKING_INIT;
+	leftMarkMasking = LEFT_MARK_MASKING_INIT;
+	bothMarkMasking = RIGHT_MARK_MASKING_INIT | LEFT_MARK_MASKING_INIT;
+	markAreaMasking = MARK_AREA_MASKING_INIT;
 
 
 	// 1차 주행에서만 초기화할 변수

@@ -12,19 +12,16 @@
 
 
 // pd 제어에 사용하는 변수
-volatile int32_t		levelMaxCCR;
+volatile uint32_t		levelMaxCCR;
 
 volatile int32_t		prevErrorL = 0;
 volatile int32_t		prevErrorR = 0;
-volatile int32_t		prevErrorDiffL = 0;
-volatile int32_t		prevErrorDiffR = 0;
-volatile float			targetEncoderValueL = 0;
-volatile float			targetEncoderValueR = 0;
+volatile t_encoder		targetEncoderValueL_cntl = 0;
+volatile t_encoder		targetEncoderValueR_cntl = 0;
+volatile t_encoder		prevCurEncoderValueL = 0;
+volatile t_encoder		prevCurEncoderValueR = 0;
 volatile float			pCoef = P_COEF_INIT;
 volatile float			dCoef = D_COEF_INIT;
-
-volatile uint8_t		dutyRatioSignL = 1;
-volatile uint8_t		dutyRatioSignR = 1;
 
 
 
@@ -59,18 +56,11 @@ volatile float			boostSpeed = BOOST_SPEED_INIT;
 volatile float			curveDeceleCoef = CURVE_DECELE_COEF_INIT;
 
 
-// state machine 비트 마스킹
-volatile uint16_t		lineMasking			= LINE_MASKING_INIT;
-volatile uint16_t		rightMarkMasking	= RIGHT_MARK_MASKING_INIT;
-volatile uint16_t		leftMarkMasking		= LEFT_MARK_MASKING_INIT;
-volatile uint16_t		bothMarkMasking		= RIGHT_MARK_MASKING_INIT | LEFT_MARK_MASKING_INIT;
-
-
 
 
 // 현재 모터에 몇번 상이 잡혔는 지를 카운트하는 변수
-volatile int64_t		curTick_L = 0;
-volatile int64_t		curTick_R = 0;
+volatile t_tick			curTick_L = 0;
+volatile t_tick			curTick_R = 0;
 
 
 
@@ -93,6 +83,15 @@ uint8_t					markState = MARK_STRAIGHT;
 
 // state machine 의 상태
 uint8_t					driveState = DRIVE_STATE_IDLE;
+
+
+// mark masking
+// state machine 비트 마스킹
+uint16_t				lineMasking = LINE_MASKING_INIT;
+uint16_t				rightMarkMasking = RIGHT_MARK_MASKING_INIT;
+uint16_t				leftMarkMasking = LEFT_MARK_MASKING_INIT;
+uint16_t				bothMarkMasking = RIGHT_MARK_MASKING_INIT | LEFT_MARK_MASKING_INIT;
+uint16_t				markAreaMasking = MARK_AREA_MASKING_INIT;
 
 
 // 2차주행 컨트롤 변수
@@ -138,11 +137,6 @@ uint16_t				crossCnt = 0;
 uint8_t					optimizeLevel = OPTIMIZE_LEVEL_NONE;
 
 
-// 현재 마크가 시작된 tick
-uint32_t				markStartTick_L = 0;
-uint32_t				markStartTick_R = 0;
-
-
 //end mark를 몇 번 봤는지 카운트하는 변수
 uint8_t					endMarkCnt = 0;
 
@@ -153,7 +147,7 @@ float					pitInLen = PIT_IN_LEN_INIT;
 
 // state machine 에서 사용
 //센서 값 누적
-uint16_t				sensorStateSum = 0x00;
+uint8_t					irSensorStateSum = 0x00;
 
 
 // 2차 주행 직선가속에서 사용

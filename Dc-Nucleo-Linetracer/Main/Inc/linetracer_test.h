@@ -31,6 +31,7 @@ void	Drive_Test_Position();
 void	Drive_Test_Info_Oled();
 
 void	Current_Setting();
+void	Mark_Live_Test();
 
 
 

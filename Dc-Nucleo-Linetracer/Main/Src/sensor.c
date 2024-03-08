@@ -10,10 +10,10 @@ volatile uint8_t	sensorRawVals[IR_SENSOR_LEN];
 
 volatile uint8_t	sensorNormVals[IR_SENSOR_LEN];
 volatile uint8_t	normalizeCoef[IR_SENSOR_LEN];
-volatile uint8_t	whiteMaxs[IR_SENSOR_LEN];
-volatile uint8_t	blackMaxs[IR_SENSOR_LEN];
+volatile uint8_t	whiteMaxs[IR_SENSOR_LEN] = { 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255 };
+volatile uint8_t	blackMaxs[IR_SENSOR_LEN] = { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 };
 
-volatile uint16_t	state = 0x00;
+volatile uint16_t	irSensorState = 0x00;
 volatile uint8_t	threshold = THRESHOLD_INIT;
 
 volatile int32_t	positionTable[IR_SENSOR_LEN] = { -30000, -26000, -22000, -18000, -14000, -10000, -6000, -2000, \
@@ -100,6 +100,9 @@ void Sensor_Calibration() {
 	// Calculate ADC coefficients
 	for (uint8_t i = 0; i < IR_SENSOR_LEN; i++) {
 		normalizeCoef[i] = whiteMaxs[i] - blackMaxs[i];
+		if (normalizeCoef[i] == 0) {
+			normalizeCoef[i] = 1;
+		}
 	}
 
 	Custom_OLED_Clear();

@@ -21,8 +21,9 @@
 
 
 // pd 제어 매크로
-#define P_COEF_INIT					0.35f;
-#define D_COEF_INIT					0.8f;
+#define P_COEF_INIT					0.4f
+#define D_COEF_INIT					0.4f
+#define T_ENCODER_MAX				65536
 
 
 // 속도와 관련된 매크로
@@ -31,30 +32,24 @@
 #define ACCELE_INIT					7.0f
 #define DECELE_INIT					6.0f
 
-#define TARGET_SPEED_INIT			2.45f
+#define TARGET_SPEED_INIT			2.f
 #define BOOST_SPEED_INIT			4.5f
 
 
 // 커브에서 어느 정도 감속할지 결정하는 매크로
-#define CURVE_DECELE_COEF_INIT		22500.f
+#define CURVE_DECELE_COEF_INIT		16500.f
 
 
 // POSITION_COEF(포지션 상수)를 도출하기 위한 매크로
 #define TIRE_RADIUS					0.036f					// m
-#define POSITION_COEF_INIT			0.00006f
+#define POSITION_COEF_INIT			0.00005f
 
 
 // motor
 #define MOTOR_CONTROL_INTERVAL_S	0.0005f
-#define ENCODER_VALUE_PER_CIRCLE	2048
+#define ENCODER_VALUE_PER_CIRCLE	2048.f
 #define MOTOR_GEAR_RATIO			( 17.f / 69.f )
 #define TICK_PER_M					( ENCODER_VALUE_PER_CIRCLE / (TIRE_RADIUS * 3.141592f) / MOTOR_GEAR_RATIO )
-
-
-// encoder adjust
-#define ENCODER_VALUE_ADJUST_THRESHOLD_MAX	57344
-#define ENCODER_VALUE_ADJUST_THRESHOLD_MID	32768
-#define ENCODER_VALUE_ADJUST_THRESHOLD_MIN	8192
 
 
 
@@ -65,11 +60,10 @@
 
 // state machine 비트 마스킹
 #define LINE_MASKING_INIT			0b0000011111100000
-#define RIGHT_MARK_MASKING_INIT		0b0000000000001100
-#define LEFT_MARK_MASKING_INIT		0b0011000000000000
-#define LINE_MASKING_TOOL			0b1111110000000000
-#define MARK_MASKING_TOOL			0b1100000000000000
+#define RIGHT_MARK_MASKING_INIT		0b0000000000001110
+#define LEFT_MARK_MASKING_INIT		0b0111000000000000
 #define ALL_MARK_MASKING			0b1111111111111111
+#define MARK_AREA_MASKING_INIT		0b1111000000001111
 
 
 
@@ -123,13 +117,13 @@
 
 
 // 피트인 관련 매크로
-#define PIT_IN_LEN_INIT				0.18f
+#define PIT_IN_LEN_INIT				0.2f
 #define PIT_IN_TARGET_SPEED			MIN_SPEED
 
 
 // 주행이 종료되었을 때 모터 종료 딜레이
 #define DRIVE_END_DELAY_SPEED		0.1f
-#define DRIVE_END_DELAY_TIME_MS		200
+#define DRIVE_END_DELAY_TIME_MS		0
 
 
 // 2차 주행에서 어느 정도 지나면 가감속할 지 결정하는 매크로
@@ -162,14 +156,17 @@
 
 
 
+typedef uint16_t		t_encoder;
+typedef int32_t			t_tick;
+
 
 
 // 1차주행, 2차 주행의 driveData 구조체
 typedef struct	s_driveData {
 
 		// 현재 마크에서 이동한 tick(거리)
-		uint16_t	tickCnt_L;
-		uint16_t	tickCnt_R;
+		t_tick	tickCnt_L;
+		t_tick	tickCnt_R;
 
 		// 현재 마크의 상태
 		uint8_t		markState;
@@ -189,18 +186,15 @@ typedef struct	s_driveData {
 
 
 // pd 제어에 사용하는 변수
-extern volatile int32_t 	levelMaxCCR;
+extern volatile uint32_t 	levelMaxCCR;
 extern volatile int32_t		prevErrorL;
 extern volatile int32_t		prevErrorR;
-extern volatile int32_t		prevErrorDiffL;
-extern volatile int32_t		prevErrorDiffR;
-extern volatile float		targetEncoderValueL;
-extern volatile float		targetEncoderValueR;
+extern volatile t_encoder	targetEncoderValueL_cntl;
+extern volatile t_encoder	targetEncoderValueR_cntl;
+extern volatile t_encoder	prevCurEncoderValueL;
+extern volatile t_encoder	prevCurEncoderValueR;
 extern volatile float		pCoef;
 extern volatile float		dCoef;
-
-extern volatile uint8_t		dutyRatioSignL;
-extern volatile uint8_t		dutyRatioSignR;
 
 
 // 초기의 속도 값에 관한 변수
@@ -233,12 +227,12 @@ extern volatile float		curveDeceleCoef;
 
 
 // 현재 모터에 몇번 상이 잡혔는지를 카운트하는 변수
-extern volatile int64_t		curTick_L;
-extern volatile int64_t		curTick_R;
+extern volatile t_tick		curTick_L;
+extern volatile t_tick		curTick_R;
 
 
 // 2차 주행 inline
-extern volatile int32_t		targetInlineVal ;
+extern volatile int32_t		targetInlineVal;
 extern volatile int32_t		curInlineVal;
 
 
@@ -254,11 +248,13 @@ extern volatile int32_t		curInlineVal;
 extern uint8_t				markState;
 
 
+
 // state machine 비트 마스킹
-extern volatile uint16_t	lineMasking;
-extern volatile uint16_t	rightMarkMasking;
-extern volatile uint16_t	leftMarkMasking;
-extern volatile uint16_t	bothMarkMasking;
+extern uint16_t				lineMasking;
+extern uint16_t				rightMarkMasking;
+extern uint16_t				leftMarkMasking;
+extern uint16_t				bothMarkMasking;
+extern uint16_t				markAreaMasking;
 
 
 
@@ -309,11 +305,6 @@ extern uint16_t				crossCntTableBuffer[MAX_CROSS_CNT];
 extern uint16_t				crossCnt;
 
 
-// 현재 마크가 시작된 tick
-extern uint32_t				markStartTick_L;
-extern uint32_t				markStartTick_R;
-
-
 //end mark를 몇 번 봤는지 카운트하는 변수
 extern uint8_t				endMarkCnt;
 
@@ -324,7 +315,7 @@ extern float				pitInLen;
 
 // state machine 에서 사용
 //센서 값 누적
-extern uint16_t				sensorStateSum;
+extern uint8_t				irSensorStateSum;
 
 
 // 2차 주행 직선가속에서 사용

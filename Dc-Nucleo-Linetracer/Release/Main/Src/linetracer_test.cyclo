@@ -1,13 +1,29 @@
-../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_tim.h:1446:22:LL_TIM_SetAutoReload	1
-/Users/j93es/workspace/c/step_tracer_masterCode/Nucleo-Linetracer/External Library/Inc/custom_delay.h:20:22:Custom_Delay_us	2
-/Users/j93es/workspace/c/step_tracer_masterCode/Nucleo-Linetracer/External Library/Inc/custom_delay.h:28:22:Custom_Delay_ms	1
-/Users/j93es/workspace/c/step_tracer_masterCode/Nucleo-Linetracer/Main/Inc/drive_speed_ctrl.h:108:22:Motor_L_Speed_Control	1
-/Users/j93es/workspace/c/step_tracer_masterCode/Nucleo-Linetracer/Main/Inc/drive_speed_ctrl.h:113:22:Motor_R_Speed_Control	1
-/Users/j93es/workspace/c/step_tracer_masterCode/Nucleo-Linetracer/External Library/Inc/custom_gpio.h:54:20:Custom_GPIO_Set_t	2
-../Main/Src/linetracer_test.c:25:6:Sensor_Test_Raw	2
-../Main/Src/linetracer_test.c:47:6:Sensor_Test_Normalized	2
-../Main/Src/linetracer_test.c:67:6:Sensor_Test_State	6
-../Main/Src/linetracer_test.c:111:6:Motor_Test_Phase	4
-../Main/Src/linetracer_test.c:178:6:Motor_Test_Velocity	4
-../Main/Src/linetracer_test.c:218:6:Drive_Test_Position	2
-../Main/Src/linetracer_test.c:248:6:Current_Setting	3
+../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_tim.h:1124:22:LL_TIM_EnableCounter	1
+../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_tim.h:1135:22:LL_TIM_DisableCounter	1
+../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_tim.h:1609:22:LL_TIM_CC_EnableChannel	1
+../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_tim.h:1634:22:LL_TIM_CC_DisableChannel	1
+../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_tim.h:2134:22:LL_TIM_OC_SetCompareCH2	1
+/Users/j93es/workspace/c/line-tracer/DC_Tracer/Dc-Nucleo-Linetracer/External Library/Inc/custom_gpio.h:23:20:Custom_GPIO_Set	2
+/Users/j93es/workspace/c/line-tracer/DC_Tracer/Dc-Nucleo-Linetracer/Main/Inc/drive_positioning.h:14:22:Position_Windowing	1
+/Users/j93es/workspace/c/line-tracer/DC_Tracer/Dc-Nucleo-Linetracer/Main/Inc/drive_positioning.h:26:22:Sum_Position_Val	3
+/Users/j93es/workspace/c/line-tracer/DC_Tracer/Dc-Nucleo-Linetracer/Main/Inc/drive_positioning.h:38:22:Make_Position_Val	1
+/Users/j93es/workspace/c/line-tracer/DC_Tracer/Dc-Nucleo-Linetracer/Main/Inc/drive_positioning.h:47:22:Positioning	4
+/Users/j93es/workspace/c/line-tracer/DC_Tracer/Dc-Nucleo-Linetracer/Main/Inc/drive_state_machine.h:20:22:Mark_Masking	2
+/Users/j93es/workspace/c/line-tracer/DC_Tracer/Dc-Nucleo-Linetracer/Main/Inc/drive_state_machine.h:47:22:Mark_Accumming	4
+/Users/j93es/workspace/c/line-tracer/DC_Tracer/Dc-Nucleo-Linetracer/Main/Inc/drive_state_machine.h:83:22:Mark_Accumming_Reset	1
+/Users/j93es/workspace/c/line-tracer/DC_Tracer/Dc-Nucleo-Linetracer/Main/Inc/drive_state_machine.h:95:25:Is_Line_Out	2
+/Users/j93es/workspace/c/line-tracer/DC_Tracer/Dc-Nucleo-Linetracer/Main/Inc/drive_state_machine.h:105:25:Is_Passed_Marker	2
+/Users/j93es/workspace/c/line-tracer/DC_Tracer/Dc-Nucleo-Linetracer/Main/Inc/drive_state_machine.h:123:22:Decision	7
+/Users/j93es/workspace/c/line-tracer/DC_Tracer/Dc-Nucleo-Linetracer/Main/Inc/drive_state_machine.h:179:22:Drive_State_Machine	16
+../Main/Src/linetracer_test.c:10:6:Switch_Test	8
+../Main/Src/linetracer_test.c:49:6:Sensor_Test_Raw	2
+../Main/Src/linetracer_test.c:75:6:Sensor_Test_Normalized	2
+../Main/Src/linetracer_test.c:99:6:Sensor_Test_State	6
+../Main/Src/linetracer_test.c:135:6:Battery_Test_Voltage	2
+../Main/Src/linetracer_test.c:161:6:MotorR_Test_Duty	7
+../Main/Src/linetracer_test.c:211:6:MotorL_Test_Duty	7
+../Main/Src/linetracer_test.c:264:6:MotorL_Test_PD	7
+../Main/Src/linetracer_test.c:314:6:MotorR_Test_PD	7
+../Main/Src/linetracer_test.c:362:6:Motor_Test_Speed	4
+../Main/Src/linetracer_test.c:461:6:Drive_Test_Position	2
+../Main/Src/linetracer_test.c:492:6:Mark_Live_Test	13

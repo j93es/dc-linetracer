@@ -7,7 +7,7 @@
 #include "header_init.h"
 
 
-__STATIC_INLINE void	Second_Drive_Ctrl();
+__STATIC_INLINE void	Second_Drive_Cntl();
 __STATIC_INLINE void	Set_Second_Drive_Data();
 __STATIC_INLINE void	Second_Drive_Straight_Boost_Cntl();
 __STATIC_INLINE void	Second_Drive_Curve_Inline_Cntl();
@@ -23,6 +23,8 @@ void Second_Drive() {
 	uint32_t startTime = 0;
 	uint32_t endTime = 0;
 
+	uint8_t positioningIdx = 0;
+
 
 	Custom_OLED_Clear();
 
@@ -37,8 +39,10 @@ void Second_Drive() {
 
 		//Drive_Test_Info_Oled();
 
+		Positioning(&positioningIdx);
+
 		Drive_State_Machine();
-		Second_Drive_Ctrl();
+		Second_Drive_Cntl();
 
 		//Drive_Speed_Cntl();
 		if ( EXIT_ECHO_IDLE != (exitEcho = Is_Drive_End(exitEcho)) ) {
@@ -72,84 +76,22 @@ void Second_Drive() {
 }
 
 
-
-
-__STATIC_INLINE void Second_Drive_Ctrl() {
-
-	if (markState == MARK_LINE_OUT) {
-
-		return ;
-	}
-
-	// markState가 변경되었을 경우
-	else if (markState != driveData[driveDataIdx].markState) {
-
-		// driveData 값 업데이트
-		Set_Second_Drive_Data();
-	}
-
-	// 주행에서 마크를 정상적으로 읽었을 경우
-	else if (isReadAllMark == CUSTOM_TRUE) {
-
-		// 직선일 경우
-		if (markState == MARK_STRAIGHT) {
-
-			// 직선가속
-			Second_Drive_Straight_Boost_Cntl();
-		}
-
-		// 커브일 경우
-		else if (markState == MARK_CURVE_L || markState == MARK_CURVE_R) {
-
-			// 곡선 인라인
-			Second_Drive_Curve_Inline_Cntl();
-		}
-	}
-
-	// 마크를 비정상적으로 읽었을 때
-	else if (isReadAllMark == CUSTOM_FALSE) {
-
-		targetInlineVal = 0;
-	}
-}
+__STATIC_INLINE void Second_Drive_Cntl() {
 
 
 
 
-
-__STATIC_INLINE void Set_Second_Drive_Data() {
-
-	// 크로스, 엔드마크가 아닐 경우
-	if (markState != MARK_CROSS && markState != MARK_END) {
-
-		// 현재 마크가 시작된 틱값 변경
-		markStartTick_L = curTick_L;
-		markStartTick_R = curTick_R;
-
-		// drivePtr 값 인덱스 증가
-		driveDataIdx += 1;
+	switch (markState) {
 
 
-		// 주행중 markState와 1차 주행에서 저장된 markState가 동일하지 않다면 비정상적으로 읽었다고 판단
-		if (markState != driveData[driveDataIdx].markState) {
 
-			// 마크 인식 정상 여부를 업데이트
-			isReadAllMark = CUSTOM_FALSE;
+		case MARK_LINE_OUT:
 
-			starightBoostCntl = BOOST_CNTL_IDLE;
+			break;
 
-			targetSpeed = targetSpeed_init;
 
-			curveInlineCntl = INLINE_CNTL_IDLE;
 
-			targetInlineVal = 0;
-		}
-	}
-
-	else {
-
-		// 크로스일 경우
-		if (markState == MARK_CROSS) {
+		case MARK_CROSS:
 
 			// 마크 복구
 			if (isReadAllMark == CUSTOM_FALSE) {
@@ -175,18 +117,203 @@ __STATIC_INLINE void Set_Second_Drive_Data() {
 			}
 
 			crossCnt += 1;
-		}
 
-		// 엔드마크일 경우
-		else if (markState == MARK_END){
+			// 크로스, 엔드마크는 읽은 후 이전 상태로 되돌림
+			markState = driveData[driveDataIdx].markState;
 
-			endMarkCnt += 1;
-		}
+			break;
 
-		// 크로스, 엔드마크는 읽은 후 이전 상태로 되돌림
-		markState = driveData[driveDataIdx].markState;
+
+
+
+		case MARK_END:
+
+			// 크로스, 엔드마크는 읽은 후 이전 상태로 되돌림
+			markState = driveData[driveDataIdx].markState;
+
+			break;
+
+
+
+		case MARK_STRAIGHT:
+
+			Set_Second_Drive_Data();
+
+			if (isReadAllMark == CUSTOM_TRUE) {
+
+				// 직선가속
+				Second_Drive_Straight_Boost_Cntl();
+			}
+
+			break;
+
+
+
+		case MARK_CURVE_L:
+		case MARK_CURVE_R:
+
+			Set_Second_Drive_Data();
+
+			if (isReadAllMark == CUSTOM_TRUE) {
+
+				// 곡선 인라인
+				Second_Drive_Curve_Inline_Cntl();
+			}
+			break;
 	}
 }
+
+
+
+
+__STATIC_INLINE void Set_Second_Drive_Data() {
+
+	// markState가 변경되었을 경우
+	if (markState != driveDataBuffer[driveDataIdx].markState) {
+
+		// 현재 마크가 시작된 틱값 변경
+		curTick_L = 0;
+		curTick_R = 0;
+
+		// drivePtr 값 인덱스 증가
+		driveDataIdx += 1;
+
+
+		// 주행중 markState와 1차 주행에서 저장된 markState가 동일하지 않다면 비정상적으로 읽었다고 판단
+		if (markState != driveData[driveDataIdx].markState) {
+
+			// 마크 인식 정상 여부를 업데이트
+			isReadAllMark = CUSTOM_FALSE;
+
+			starightBoostCntl = BOOST_CNTL_IDLE;
+
+			targetSpeed = targetSpeed_init;
+
+			curveInlineCntl = INLINE_CNTL_IDLE;
+
+			targetInlineVal = 0;
+		}
+	}
+
+}
+
+
+
+
+
+
+//__STATIC_INLINE void Second_Drive_Cntl() {
+//
+//	if (markState == MARK_LINE_OUT) {
+//
+//		return ;
+//	}
+//
+//	// markState가 변경되었을 경우
+//	else if (markState != driveData[driveDataIdx].markState) {
+//
+//		// driveData 값 업데이트
+//		Set_Second_Drive_Data();
+//	}
+//
+//	// 주행에서 마크를 정상적으로 읽었을 경우
+//	else if (isReadAllMark == CUSTOM_TRUE) {
+//
+//		// 직선일 경우
+//		if (markState == MARK_STRAIGHT) {
+//
+//			// 직선가속
+//			Second_Drive_Straight_Boost_Cntl();
+//		}
+//
+//		// 커브일 경우
+//		else if (markState == MARK_CURVE_L || markState == MARK_CURVE_R) {
+//
+//			// 곡선 인라인
+//			Second_Drive_Curve_Inline_Cntl();
+//		}
+//	}
+//
+//	// 마크를 비정상적으로 읽었을 때
+//	else if (isReadAllMark == CUSTOM_FALSE) {
+//
+//		targetInlineVal = 0;
+//	}
+//}
+//
+//
+//
+//
+//
+//__STATIC_INLINE void Set_Second_Drive_Data() {
+//
+//	// 크로스, 엔드마크가 아닐 경우
+//	if (markState != MARK_CROSS && markState != MARK_END) {
+//
+//		// 현재 마크가 시작된 틱값 변경
+//		curTick_L = 0;
+//		curTick_R = 0;
+//
+//		// drivePtr 값 인덱스 증가
+//		driveDataIdx += 1;
+//
+//
+//		// 주행중 markState와 1차 주행에서 저장된 markState가 동일하지 않다면 비정상적으로 읽었다고 판단
+//		if (markState != driveData[driveDataIdx].markState) {
+//
+//			// 마크 인식 정상 여부를 업데이트
+//			isReadAllMark = CUSTOM_FALSE;
+//
+//			starightBoostCntl = BOOST_CNTL_IDLE;
+//
+//			targetSpeed = targetSpeed_init;
+//
+//			curveInlineCntl = INLINE_CNTL_IDLE;
+//
+//			targetInlineVal = 0;
+//		}
+//	}
+//
+//	else {
+//
+//		// 크로스일 경우
+//		if (markState == MARK_CROSS) {
+//
+//			// 마크 복구
+//			if (isReadAllMark == CUSTOM_FALSE) {
+//
+//				// crossCntTable의 crossCnt 번째의 인덱스가 비어있지 않음 경우
+//				if (crossCntTable[crossCnt] != 0) {
+//
+//					/*
+//					 *    n번째 크로스(crossCnt)		0		1		...		50
+//					 *    m번째 마크(driveDataIdx)		4(3)	6(5)	...		98
+//					 *
+//					 *    (0번째 마크에서 크로스를 읽었을 때 1번째 마크로 저장되도록 함, 0은 값이 없는 상태를 나타냄)
+//					 */
+//					driveDataIdx = crossCntTable[crossCnt] - 1;
+//
+//					// 부스트, 인라인 주행 컨트롤 변수 초기화
+//					starightBoostCntl = BOOST_CNTL_IDLE;
+//					curveInlineCntl = INLINE_CNTL_IDLE;
+//
+//					// isReadAllMark update
+//					isReadAllMark = CUSTOM_TRUE;
+//				}
+//			}
+//
+//			crossCnt += 1;
+//		}
+//
+//		// 엔드마크일 경우
+//		else if (markState == MARK_END){
+//
+//		}
+//
+//		// 크로스, 엔드마크는 읽은 후 이전 상태로 되돌림
+//		markState = driveData[driveDataIdx].markState;
+//	}
+//}
 
 
 
@@ -214,31 +341,26 @@ __STATIC_INLINE void Second_Drive_Straight_Boost_Cntl() {
 					if (optimizeLevel >= OPTIMIZE_LEVEL_STRAIGHT) {
 
 
-						finalDeceleEndTick_L =	markStartTick_L + driveData[driveDataIdx].tickCnt_L \
+						finalDeceleEndTick_L =	driveData[driveDataIdx].tickCnt_L \
 												- GET_MIN(deceleEndTick, deceleEndRatio * driveData[driveDataIdx].tickCnt_L);
 
-						finalDeceleEndTick_R =	markStartTick_R + driveData[driveDataIdx].tickCnt_R \
+						finalDeceleEndTick_R =	driveData[driveDataIdx].tickCnt_R \
 												- GET_MIN(deceleEndTick, deceleEndRatio * driveData[driveDataIdx].tickCnt_R);
 
 						// 최소 부스트 거리 이상일 때
 						if (curTick_L < finalDeceleEndTick_L - acceleStartTick \
 						 && curTick_R < finalDeceleEndTick_R - acceleStartTick) {
 
-							// decele 이후 다시 가속하는 것을 방지
-							if (curTick_L < finalDeceleEndTick_L \
-							 && curTick_R < finalDeceleEndTick_R) {
+							// deceleEndTickCoef 업데이트
+							deceleEndTickCoef = 2 * decele / TICK_PER_M;
 
-								// deceleEndTickCoef 업데이트
-								deceleEndTickCoef = 2 * decele / TICK_PER_M;
+							deceleEndTickCoef_L =	deceleEndTickCoef * finalDeceleEndTick_L \
+													+ targetSpeed_init * targetSpeed_init;
 
-								deceleEndTickCoef_L =	deceleEndTickCoef * finalDeceleEndTick_L \
-														+ targetSpeed_init * targetSpeed_init;
+							deceleEndTickCoef_R =	deceleEndTickCoef * finalDeceleEndTick_R \
+													+ targetSpeed_init * targetSpeed_init;
 
-								deceleEndTickCoef_R =	deceleEndTickCoef * finalDeceleEndTick_R \
-														+ targetSpeed_init * targetSpeed_init;
-
-								starightBoostCntl = BOOST_CNTL_ACCELE;
-							}
+							starightBoostCntl = BOOST_CNTL_ACCELE;
 						}
 					}
 
@@ -249,8 +371,8 @@ __STATIC_INLINE void Second_Drive_Straight_Boost_Cntl() {
 			case BOOST_CNTL_ACCELE :
 
 					// 직선 구간 진입 후 ACCELE_START_TICK만큼 지났을 때 부스트
-					if (curTick_L > markStartTick_L + acceleStartTick \
-					 && curTick_R > markStartTick_R + acceleStartTick) {
+					if (curTick_L > acceleStartTick \
+					 && curTick_R > acceleStartTick) {
 
 						// boostSpeed로 가속
 						targetSpeed = boostSpeed;
@@ -294,8 +416,8 @@ __STATIC_INLINE void Second_Drive_Straight_Boost_Cntl() {
 			case BOOST_CNTL_END :
 
 					// 직선이 10cm 남았을 경우
-					if (curTick_L > markStartTick_L + driveData[driveDataIdx].tickCnt_L - 0.1 * TICK_PER_M \
-					 || curTick_R > markStartTick_R + driveData[driveDataIdx].tickCnt_R - 0.1 * TICK_PER_M) {
+					if (curTick_L > driveData[driveDataIdx].tickCnt_L - 0.1 * TICK_PER_M \
+					 || curTick_R > driveData[driveDataIdx].tickCnt_R - 0.1 * TICK_PER_M) {
 
 						// 부스트 중 차체가 떳을 때 크로스를 못읽는 경우를 방지함
 						crossCnt = driveData[driveDataIdx].crossCnt;
@@ -314,12 +436,12 @@ __STATIC_INLINE void Second_Drive_Straight_Boost_Cntl() {
 __STATIC_INLINE void Second_Drive_Curve_Inline_Cntl() {
 
 	// 곡서 인라인에서 포지션을 다시 원래대로 돌려놓아야하는 길이
-	static int32_t inlinePositioningTick_L;
-	static int32_t inlinePositioningTick_R;
+	static float inlinePositioningTick_L;
+	static float inlinePositioningTick_R;
 
 	// inline이 종료되어야 하는 시점에서의 curTick
-	static int32_t inlineEndTick_L;
-	static int32_t inlineEndTick_R;
+	static float inlineEndTick_L;
+	static float inlineEndTick_R;
 
 
 	// 곡선 인라인
@@ -334,8 +456,8 @@ __STATIC_INLINE void Second_Drive_Curve_Inline_Cntl() {
 						// 곡선이 36cm 미만일 때 (90도 곡선 미만일 경우)
 						//if (driveData[driveDataIdx].tickCnt_L + driveData[driveDataIdx].tickCnt_R < 2 * 0.36 * TICK_PER_M) {
 
-							inlineEndTick_L = (1 - INLINE_END_RATIO) * driveData[driveDataIdx].tickCnt_L + markStartTick_L;
-							inlineEndTick_R = (1 - INLINE_END_RATIO) * driveData[driveDataIdx].tickCnt_R + markStartTick_R;
+							inlineEndTick_L = (1 - INLINE_END_RATIO) * driveData[driveDataIdx].tickCnt_L;
+							inlineEndTick_R = (1 - INLINE_END_RATIO) * driveData[driveDataIdx].tickCnt_R;
 
 							// 곡선 막판에 인라인 재진입 방지
 							if (curTick_L < inlineEndTick_L \
@@ -369,8 +491,8 @@ __STATIC_INLINE void Second_Drive_Curve_Inline_Cntl() {
 					 || curTick_R > inlineEndTick_R \
 					 || curInlineVal == targetInlineVal) {
 
-						inlinePositioningTick_L = curTick_L - markStartTick_L;
-						inlinePositioningTick_R = curTick_R - markStartTick_R;
+						inlinePositioningTick_L = curTick_L;
+						inlinePositioningTick_R = curTick_R;
 
 						curveInlineCntl = INLINE_CNTL_CURVE_OUT;
 					}

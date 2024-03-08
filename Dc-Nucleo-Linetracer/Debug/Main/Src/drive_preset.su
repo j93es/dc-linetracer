@@ -1,6 +1,6 @@
-../Main/Src/drive_preset.c:23:6:Pre_Drive_Setting	8	static
-../Main/Src/drive_preset.c:40:13:Pre_Drive_Var_Adjust_First_Drive	128	static
-../Main/Src/drive_preset.c:65:13:Pre_Drive_Var_Adjust_Second_Drive	184	static
-../Main/Src/drive_preset.c:98:13:Pre_Drive_Var_Adjust_Switch_Cntl	40	static
-../Main/Src/drive_preset.c:164:13:Pre_Drive_Var_Init	24	static
-../Main/Src/drive_preset.c:282:6:Time_Attack_Setting	80	static
+../Main/Src/drive_preset.c:20:6:Pre_Drive_Setting	8	static
+../Main/Src/drive_preset.c:37:13:Pre_Drive_Var_Adjust_First_Drive	152	static
+../Main/Src/drive_preset.c:62:13:Pre_Drive_Var_Adjust_Second_Drive	184	static
+../Main/Src/drive_preset.c:95:13:Pre_Drive_Var_Adjust_Switch_Cntl	40	static
+../Main/Src/drive_preset.c:161:6:Pre_Drive_Var_Init	32	static
+../Main/Src/drive_preset.c:279:6:Time_Attack_Setting	80	static
