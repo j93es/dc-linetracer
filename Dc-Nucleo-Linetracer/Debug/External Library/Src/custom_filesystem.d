@@ -1,7 +1,7 @@
 External Library/Src/custom_filesystem.o: \
  ../External\ Library/Src/custom_filesystem.c \
- /Users/j93es/workspace/c/line-tracer/DC_Tracer/Dc-Nucleo-Linetracer/External\ Library/Inc/custom_filesystem.h \
- /Users/j93es/workspace/c/line-tracer/DC_Tracer/Dc-Nucleo-Linetracer/External\ Library/Inc/custom_flash.h \
+ /Users/j93es/workspace/dc-linetracer/Dc-Nucleo-Linetracer/External\ Library/Inc/custom_filesystem.h \
+ /Users/j93es/workspace/dc-linetracer/Dc-Nucleo-Linetracer/External\ Library/Inc/custom_flash.h \
  ../Core/Inc/main.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_adc.h \
  ../Drivers/CMSIS/Device/ST/STM32F4xx/Include/stm32f4xx.h \
@@ -25,9 +25,9 @@ External Library/Src/custom_filesystem.o: \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_tim.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_usart.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_gpio.h \
- /Users/j93es/workspace/c/line-tracer/DC_Tracer/Dc-Nucleo-Linetracer/External\ Library/Inc/custom_exception.h
-/Users/j93es/workspace/c/line-tracer/DC_Tracer/Dc-Nucleo-Linetracer/External\ Library/Inc/custom_filesystem.h:
-/Users/j93es/workspace/c/line-tracer/DC_Tracer/Dc-Nucleo-Linetracer/External\ Library/Inc/custom_flash.h:
+ /Users/j93es/workspace/dc-linetracer/Dc-Nucleo-Linetracer/External\ Library/Inc/custom_exception.h
+/Users/j93es/workspace/dc-linetracer/Dc-Nucleo-Linetracer/External\ Library/Inc/custom_filesystem.h:
+/Users/j93es/workspace/dc-linetracer/Dc-Nucleo-Linetracer/External\ Library/Inc/custom_flash.h:
 ../Core/Inc/main.h:
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_adc.h:
 ../Drivers/CMSIS/Device/ST/STM32F4xx/Include/stm32f4xx.h:
@@ -51,4 +51,4 @@ External Library/Src/custom_filesystem.o: \
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_tim.h:
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_usart.h:
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_gpio.h:
-/Users/j93es/workspace/c/line-tracer/DC_Tracer/Dc-Nucleo-Linetracer/External\ Library/Inc/custom_exception.h:
+/Users/j93es/workspace/dc-linetracer/Dc-Nucleo-Linetracer/External\ Library/Inc/custom_exception.h:

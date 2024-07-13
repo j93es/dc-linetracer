@@ -67,7 +67,7 @@ __STATIC_INLINE void	Drive_Speed_Accele_Control() {
 //limitedPositionVal 값 업데이트
 __STATIC_INLINE void	Make_Limited_Position() {
 
-	volatile int32_t absPositionVal = ABS(positionVal - curInlineVal);
+	int32_t absPositionVal = ABS(positionVal - curInlineVal);
 
 	// 곡선에 진입을 시작했을 때 빠르게 curve decel을 해줌
 	if (limitedPositionVal < absPositionVal) {
@@ -122,18 +122,9 @@ __STATIC_INLINE void	Make_Inline_Val(float finalSpeed) {
 __STATIC_INLINE void	Drive_TIM9_IRQ() {
 //	DWT->CYCCNT = 0;
 
-//
-//	Drive_Speed_Accele_Control();
-//
-//	//position 값에 따른 좌우 모터 속도 조정
-//	float finalSpeed = curSpeed * curveDeceleCoef / (ABS(positionVal) + curveDeceleCoef);
-//	float speedL = finalSpeed * (1 + positionVal * positionCoef);
-//	float speedR = finalSpeed * (1 - positionVal * positionCoef);
-//
-//	Motor_Speed_Control(speedL, speedR);
 
 	/* origin */
-//	// 가속도 및 속도 제어
+	// 가속도 및 속도 제어
 	Drive_Speed_Accele_Control();
 
 	// limitedPositionVal 값 업데이트
@@ -143,21 +134,20 @@ __STATIC_INLINE void	Drive_TIM9_IRQ() {
 	float finalSpeed = curSpeed * curveDeceleCoef / (limitedPositionVal + curveDeceleCoef);
 
 	// inLine 값 생성
-//	Make_Inline_Val(finalSpeed);
+	Make_Inline_Val(finalSpeed);
+
+	int32_t finalPositionValue = limitedPositionVal;
+	if (positionVal < 0) {
+		finalPositionValue = -1 * limitedPositionVal;
+	}
+	finalPositionValue -= curInlineVal;
 
 	//position 값에 따른 좌우 모터 속도 조정
-	float speedL = finalSpeed * (1 + (positionVal - curInlineVal) * positionCoef);
-	float speedR = finalSpeed * (1 - (positionVal - curInlineVal) * positionCoef);
+	float speedL = finalSpeed * (1 + finalPositionValue * positionCoef);
+	float speedR = finalSpeed * (1 - finalPositionValue * positionCoef);
 
 	Motor_Speed_Control(speedL, speedR);
 
-
-//	/* speed cntl test */
-//	Drive_Speed_Accele_Control();
-//	Motor_Speed_Control(curSpeed, curSpeed);
-
-	/* pd test */
-//	Motor_Speed_Control(0, 0);
 //	uint32_t tickElapsed = DWT->CYCCNT;
 }
 

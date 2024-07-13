@@ -97,6 +97,9 @@ __STATIC_INLINE uint8_t	Sensor_ADC_Midian_Filter() {
 	if (sensorMidian[1] > sensorMidian[2]) {
 		INT_SWAP(sensorMidian[1], sensorMidian[2]);
 	}
+	if (sensorMidian[0] > sensorMidian[1]) {
+		INT_SWAP(sensorMidian[0], sensorMidian[1]);
+	}
 
 	return sensorMidian[1] >> 4;
 }
@@ -204,6 +207,9 @@ __STATIC_INLINE void	Make_Battery_Voltage() {
 __STATIC_INLINE void	Sensor_TIM5_IRQ() {
 	static uint8_t	tim5Idx = 0;
 
+	// 다음 IR LED 켜기
+	GPIOC->ODR = (GPIOC->ODR & ~0x07) | tim5Idx | 0x08;
+
 	Make_Sensor_Raw_Vals(tim5Idx);
 
 	// 선택한 IR LED 끄기
@@ -222,9 +228,6 @@ __STATIC_INLINE void	Sensor_TIM5_IRQ() {
 
 	// 인덱스 증가
 	tim5Idx = (tim5Idx + 1) & 0x07;
-
-	// 다음 IR LED 켜기
-	GPIOC->ODR = (GPIOC->ODR & ~0x07) | tim5Idx | 0x08;
 }
 //
 //	0 0 0 0 // 0 0 0 0 // 0 0 0 0 // 0 0 0 0
