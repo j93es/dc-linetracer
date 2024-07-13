@@ -5,7 +5,7 @@
 /Users/j93es/workspace/dc-linetracer/Dc-Nucleo-Linetracer/External Library/Inc/custom_delay.h:20:22:Custom_Delay_us	16	static
 /Users/j93es/workspace/dc-linetracer/Dc-Nucleo-Linetracer/External Library/Inc/custom_delay.h:28:22:Custom_Delay_ms	16	static
 /Users/j93es/workspace/dc-linetracer/Dc-Nucleo-Linetracer/Main/Inc/drive_speed_ctrl.h:159:22:Drive_Fit_In	16	static
-/Users/j93es/workspace/dc-linetracer/Dc-Nucleo-Linetracer/Main/Inc/drive_speed_ctrl.h:169:25:Is_Drive_End	16	static
+/Users/j93es/workspace/dc-linetracer/Dc-Nucleo-Linetracer/Main/Inc/drive_speed_ctrl.h:169:25:Is_Drive_End	4	static
 /Users/j93es/workspace/dc-linetracer/Dc-Nucleo-Linetracer/Main/Inc/drive_state_machine.h:20:22:Mark_Masking	24	static
 /Users/j93es/workspace/dc-linetracer/Dc-Nucleo-Linetracer/Main/Inc/drive_state_machine.h:47:22:Mark_Accumming	16	static
 /Users/j93es/workspace/dc-linetracer/Dc-Nucleo-Linetracer/Main/Inc/drive_state_machine.h:83:22:Mark_Accumming_Reset	4	static
@@ -14,7 +14,7 @@
 /Users/j93es/workspace/dc-linetracer/Dc-Nucleo-Linetracer/Main/Inc/drive_state_machine.h:125:22:Decision	4	static
 /Users/j93es/workspace/dc-linetracer/Dc-Nucleo-Linetracer/Main/Inc/drive_state_machine.h:181:22:Drive_State_Machine	16	static
 ../Main/Src/first_drive.c:18:6:First_Drive	16	static
-../Main/Src/first_drive.c:63:22:First_Drive_Cntl	8	static
-../Main/Src/first_drive.c:125:22:Set_First_Drive_Data	4	static
-../Main/Src/first_drive.c:236:13:First_Drive_Data_Cntl	32	static
-../Main/Src/first_drive.c:304:13:First_Drive_Data_Update_Cntl	32	static
+../Main/Src/first_drive.c:71:22:First_Drive_Cntl	8	static
+../Main/Src/first_drive.c:133:22:Set_First_Drive_Data	4	static
+../Main/Src/first_drive.c:244:13:First_Drive_Data_Cntl	32	static
+../Main/Src/first_drive.c:312:13:First_Drive_Data_Update_Cntl	32	static

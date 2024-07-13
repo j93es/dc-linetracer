@@ -37,12 +37,12 @@
 
 
 // 커브에서 어느 정도 감속할지 결정하는 매크로
-#define CURVE_DECELE_COEF_INIT		16500.f
+#define CURVE_DECELE_COEF_INIT		24500.f
 
 
 // POSITION_COEF(포지션 상수)를 도출하기 위한 매크로
 #define TIRE_RADIUS					0.036f					// m
-#define POSITION_COEF_INIT			0.00005f
+#define POSITION_COEF_INIT			0.00006f
 
 
 // motor
@@ -117,13 +117,13 @@
 
 
 // 피트인 관련 매크로
-#define PIT_IN_LEN_INIT				0.2f
+#define PIT_IN_LEN_INIT				0.24f
 #define PIT_IN_TARGET_SPEED			MIN_SPEED
 
 
 // 주행이 종료되었을 때 모터 종료 딜레이
-#define DRIVE_END_DELAY_SPEED		0.1f
-#define DRIVE_END_DELAY_TIME_MS		0
+#define DRIVE_END_DELAY_SPEED		0.2f
+#define DRIVE_END_DELAY_TIME_MS		1000
 
 
 // 2차 주행에서 어느 정도 지나면 가감속할 지 결정하는 매크로
@@ -141,7 +141,7 @@
 // 인라인 주행 관련 매크로
 #define ABS_INLINE_TARGET_POSITION	4000
 #define INLINE_END_RATIO			0.2f
-//#define INLINE_POSITIONING_LEN		0.05f
+#define INLINE_POSITIONING_LEN		0.1f
 
 
 

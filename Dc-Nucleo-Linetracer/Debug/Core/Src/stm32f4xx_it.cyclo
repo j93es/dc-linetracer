@@ -6,13 +6,13 @@
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_tim.h:3182:22:LL_TIM_ClearFlag_UPDATE	1
 /Users/j93es/workspace/dc-linetracer/Dc-Nucleo-Linetracer/External Library/Inc/custom_gpio.h:23:20:Custom_GPIO_Set	2
 /Users/j93es/workspace/dc-linetracer/Dc-Nucleo-Linetracer/Main/Inc/sensor.h:73:26:ADC_Read	2
-/Users/j93es/workspace/dc-linetracer/Dc-Nucleo-Linetracer/Main/Inc/sensor.h:87:25:Sensor_ADC_Midian_Filter	3
-/Users/j93es/workspace/dc-linetracer/Dc-Nucleo-Linetracer/Main/Inc/sensor.h:109:22:Make_Sensor_Raw_Vals	1
-/Users/j93es/workspace/dc-linetracer/Dc-Nucleo-Linetracer/Main/Inc/sensor.h:122:22:Make_Sensor_Norm_Vals	3
-/Users/j93es/workspace/dc-linetracer/Dc-Nucleo-Linetracer/Main/Inc/sensor.h:143:22:Make_Sensor_State	1
-/Users/j93es/workspace/dc-linetracer/Dc-Nucleo-Linetracer/Main/Inc/sensor.h:159:23:Make_Voltage_Raw_Val	1
-/Users/j93es/workspace/dc-linetracer/Dc-Nucleo-Linetracer/Main/Inc/sensor.h:166:22:Make_Battery_Voltage	7
-/Users/j93es/workspace/dc-linetracer/Dc-Nucleo-Linetracer/Main/Inc/sensor.h:204:22:Sensor_TIM5_IRQ	2
+/Users/j93es/workspace/dc-linetracer/Dc-Nucleo-Linetracer/Main/Inc/sensor.h:87:25:Sensor_ADC_Midian_Filter	4
+/Users/j93es/workspace/dc-linetracer/Dc-Nucleo-Linetracer/Main/Inc/sensor.h:112:22:Make_Sensor_Raw_Vals	1
+/Users/j93es/workspace/dc-linetracer/Dc-Nucleo-Linetracer/Main/Inc/sensor.h:125:22:Make_Sensor_Norm_Vals	3
+/Users/j93es/workspace/dc-linetracer/Dc-Nucleo-Linetracer/Main/Inc/sensor.h:146:22:Make_Sensor_State	1
+/Users/j93es/workspace/dc-linetracer/Dc-Nucleo-Linetracer/Main/Inc/sensor.h:162:23:Make_Voltage_Raw_Val	1
+/Users/j93es/workspace/dc-linetracer/Dc-Nucleo-Linetracer/Main/Inc/sensor.h:169:22:Make_Battery_Voltage	7
+/Users/j93es/workspace/dc-linetracer/Dc-Nucleo-Linetracer/Main/Inc/sensor.h:207:22:Sensor_TIM5_IRQ	2
 /Users/j93es/workspace/dc-linetracer/Dc-Nucleo-Linetracer/Main/Inc/motor.h:40:25:Get_Encoder_Value_Gap	3
 /Users/j93es/workspace/dc-linetracer/Dc-Nucleo-Linetracer/Main/Inc/motor.h:57:22:Motor_Speed_Control	5
 /Users/j93es/workspace/dc-linetracer/Dc-Nucleo-Linetracer/Main/Inc/drive_speed_ctrl.h:23:22:Drive_Speed_Accele_Control	6

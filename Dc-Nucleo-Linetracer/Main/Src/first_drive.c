@@ -42,7 +42,15 @@ void First_Drive() {
 		First_Drive_Cntl();
 
 		//Drive_Speed_Cntl();
-		if ( EXIT_ECHO_IDLE != (exitEcho = Is_Drive_End(exitEcho)) ) {
+		if ( EXIT_ECHO_IDLE != (exitEcho = Is_Drive_End()) ) {
+
+			Drive_Fit_In(pitInLen, PIT_IN_TARGET_SPEED);
+
+			while (curSpeed > DRIVE_END_DELAY_SPEED) {
+				//Drive_Speed_Cntl();
+			}
+
+			Custom_Delay_ms(DRIVE_END_DELAY_TIME_MS);
 
 			break;
 		}

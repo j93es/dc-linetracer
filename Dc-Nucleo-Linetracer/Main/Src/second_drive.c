@@ -45,7 +45,15 @@ void Second_Drive() {
 		Second_Drive_Cntl();
 
 		//Drive_Speed_Cntl();
-		if ( EXIT_ECHO_IDLE != (exitEcho = Is_Drive_End(exitEcho)) ) {
+		if ( EXIT_ECHO_IDLE != (exitEcho = Is_Drive_End()) ) {
+
+			Drive_Fit_In(pitInLen, PIT_IN_TARGET_SPEED);
+
+			while (curSpeed > DRIVE_END_DELAY_SPEED) {
+				//Drive_Speed_Cntl();
+			}
+
+			Custom_Delay_ms(DRIVE_END_DELAY_TIME_MS);
 
 			endTime = uwTick;
 			break;
@@ -62,14 +70,12 @@ void Second_Drive() {
 
 	if (exitEcho == EXIT_ECHO_END_MARK) {
 		Custom_OLED_Printf("/0end mark");
+		Custom_OLED_Printf("/1cross: %u", crossCnt);
+		Custom_OLED_Printf("/2time: %u", endTime - startTime);
 	}
 	else {
 		Custom_OLED_Printf("/0line out");
 	}
-
-	Custom_OLED_Printf("/1cross: %u", crossCnt);
-
-	Custom_OLED_Printf("%u", endTime - startTime);
 
 	while (CUSTOM_SW_3 != Custom_Switch_Read());
 	Custom_OLED_Clear();

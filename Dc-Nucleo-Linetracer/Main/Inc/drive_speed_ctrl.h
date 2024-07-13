@@ -101,7 +101,7 @@ __STATIC_INLINE void	Make_Inline_Val(float finalSpeed) {
 
 	if (curInlineVal < targetInlineVal) {
 
-		curInlineVal += 20;//targetInlineVal * finalSpeed / INLINE_POSITIONING_LEN / 2000;
+		curInlineVal += targetInlineVal * finalSpeed * MOTOR_CONTROL_INTERVAL_S / INLINE_POSITIONING_LEN;
 		if (curInlineVal > targetInlineVal) {
 			curInlineVal = targetInlineVal;
 		}
@@ -109,7 +109,7 @@ __STATIC_INLINE void	Make_Inline_Val(float finalSpeed) {
 
 	else {
 
-		curInlineVal -= 20;//targetInlineVal * finalSpeed / INLINE_POSITIONING_LEN / 2000;;
+		curInlineVal -= targetInlineVal * finalSpeed * MOTOR_CONTROL_INTERVAL_S / INLINE_POSITIONING_LEN;
 		if (curInlineVal < targetInlineVal) {
 			curInlineVal = targetInlineVal;
 		}
@@ -166,33 +166,20 @@ __STATIC_INLINE void	Drive_Fit_In(float s, float pinSpeed) {
 
 
 
-__STATIC_INLINE uint8_t	Is_Drive_End(uint8_t exitEcho) {
+__STATIC_INLINE uint8_t	Is_Drive_End() {
 
-	// endMark || lineOut
-	if (endMarkCnt >= 2 || markState == MARK_LINE_OUT) {
+	if (endMarkCnt >= 2) {
 
-		Drive_Fit_In(pitInLen, PIT_IN_TARGET_SPEED);
+		optimizeLevel++;
 
-		while (curSpeed > DRIVE_END_DELAY_SPEED) {
-			//Drive_Speed_Cntl();
-		}
+		return EXIT_ECHO_END_MARK;
+	}
+	if (markState == MARK_LINE_OUT) {
 
-		Custom_Delay_ms(1000);
-
-
-		if (endMarkCnt >= 2) {
-
-			optimizeLevel++;
-
-			exitEcho = EXIT_ECHO_END_MARK;
-		}
-		else {
-
-			exitEcho = EXIT_ECHO_LINE_OUT;
-		}
+		return EXIT_ECHO_LINE_OUT;
 	}
 
-	return exitEcho;
+	return EXIT_ECHO_IDLE;
 }
 
 

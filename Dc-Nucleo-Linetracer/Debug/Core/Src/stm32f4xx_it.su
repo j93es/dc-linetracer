@@ -7,12 +7,12 @@
 /Users/j93es/workspace/dc-linetracer/Dc-Nucleo-Linetracer/External Library/Inc/custom_gpio.h:23:20:Custom_GPIO_Set	24	static
 /Users/j93es/workspace/dc-linetracer/Dc-Nucleo-Linetracer/Main/Inc/sensor.h:73:26:ADC_Read	16	static
 /Users/j93es/workspace/dc-linetracer/Dc-Nucleo-Linetracer/Main/Inc/sensor.h:87:25:Sensor_ADC_Midian_Filter	16	static
-/Users/j93es/workspace/dc-linetracer/Dc-Nucleo-Linetracer/Main/Inc/sensor.h:109:22:Make_Sensor_Raw_Vals	24	static
-/Users/j93es/workspace/dc-linetracer/Dc-Nucleo-Linetracer/Main/Inc/sensor.h:122:22:Make_Sensor_Norm_Vals	16	static
-/Users/j93es/workspace/dc-linetracer/Dc-Nucleo-Linetracer/Main/Inc/sensor.h:143:22:Make_Sensor_State	24	static
-/Users/j93es/workspace/dc-linetracer/Dc-Nucleo-Linetracer/Main/Inc/sensor.h:159:23:Make_Voltage_Raw_Val	8	static
-/Users/j93es/workspace/dc-linetracer/Dc-Nucleo-Linetracer/Main/Inc/sensor.h:166:22:Make_Battery_Voltage	32	static
-/Users/j93es/workspace/dc-linetracer/Dc-Nucleo-Linetracer/Main/Inc/sensor.h:204:22:Sensor_TIM5_IRQ	8	static
+/Users/j93es/workspace/dc-linetracer/Dc-Nucleo-Linetracer/Main/Inc/sensor.h:112:22:Make_Sensor_Raw_Vals	24	static
+/Users/j93es/workspace/dc-linetracer/Dc-Nucleo-Linetracer/Main/Inc/sensor.h:125:22:Make_Sensor_Norm_Vals	16	static
+/Users/j93es/workspace/dc-linetracer/Dc-Nucleo-Linetracer/Main/Inc/sensor.h:146:22:Make_Sensor_State	24	static
+/Users/j93es/workspace/dc-linetracer/Dc-Nucleo-Linetracer/Main/Inc/sensor.h:162:23:Make_Voltage_Raw_Val	8	static
+/Users/j93es/workspace/dc-linetracer/Dc-Nucleo-Linetracer/Main/Inc/sensor.h:169:22:Make_Battery_Voltage	32	static
+/Users/j93es/workspace/dc-linetracer/Dc-Nucleo-Linetracer/Main/Inc/sensor.h:207:22:Sensor_TIM5_IRQ	8	static
 /Users/j93es/workspace/dc-linetracer/Dc-Nucleo-Linetracer/Main/Inc/motor.h:40:25:Get_Encoder_Value_Gap	24	static
 /Users/j93es/workspace/dc-linetracer/Dc-Nucleo-Linetracer/Main/Inc/motor.h:57:22:Motor_Speed_Control	64	static
 /Users/j93es/workspace/dc-linetracer/Dc-Nucleo-Linetracer/Main/Inc/drive_speed_ctrl.h:23:22:Drive_Speed_Accele_Control	4	static
