@@ -22,9 +22,9 @@ External Library/Src/custom_oled.o: \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_tim.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_usart.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_gpio.h \
- /Users/j93es/workspace/dc-linetracer/Dc-Nucleo-Linetracer/External\ Library/Inc/custom_gpio.h \
- /Users/j93es/workspace/dc-linetracer/Dc-Nucleo-Linetracer/External\ Library/Inc/starfont.h \
- /Users/j93es/workspace/dc-linetracer/Dc-Nucleo-Linetracer/External\ Library/Inc/custom_oled.h
+ /Users/j93es/workspace/imbedded/dc-linetracer/Dc-Nucleo-Linetracer/External\ Library/Inc/custom_gpio.h \
+ /Users/j93es/workspace/imbedded/dc-linetracer/Dc-Nucleo-Linetracer/External\ Library/Inc/starfont.h \
+ /Users/j93es/workspace/imbedded/dc-linetracer/Dc-Nucleo-Linetracer/External\ Library/Inc/custom_oled.h
 ../Core/Inc/main.h:
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_adc.h:
 ../Drivers/CMSIS/Device/ST/STM32F4xx/Include/stm32f4xx.h:
@@ -48,6 +48,6 @@ External Library/Src/custom_oled.o: \
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_tim.h:
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_usart.h:
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_gpio.h:
-/Users/j93es/workspace/dc-linetracer/Dc-Nucleo-Linetracer/External\ Library/Inc/custom_gpio.h:
-/Users/j93es/workspace/dc-linetracer/Dc-Nucleo-Linetracer/External\ Library/Inc/starfont.h:
-/Users/j93es/workspace/dc-linetracer/Dc-Nucleo-Linetracer/External\ Library/Inc/custom_oled.h:
+/Users/j93es/workspace/imbedded/dc-linetracer/Dc-Nucleo-Linetracer/External\ Library/Inc/custom_gpio.h:
+/Users/j93es/workspace/imbedded/dc-linetracer/Dc-Nucleo-Linetracer/External\ Library/Inc/starfont.h:
+/Users/j93es/workspace/imbedded/dc-linetracer/Dc-Nucleo-Linetracer/External\ Library/Inc/custom_oled.h:

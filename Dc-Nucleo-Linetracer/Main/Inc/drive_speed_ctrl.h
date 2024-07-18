@@ -136,15 +136,9 @@ __STATIC_INLINE void	Drive_TIM9_IRQ() {
 	// inLine 값 생성
 	Make_Inline_Val(finalSpeed);
 
-	int32_t finalPositionValue = limitedPositionVal;
-	if (positionVal < 0) {
-		finalPositionValue = -1 * limitedPositionVal;
-	}
-	finalPositionValue -= curInlineVal;
-
 	//position 값에 따른 좌우 모터 속도 조정
-	float speedL = finalSpeed * (1 + finalPositionValue * positionCoef);
-	float speedR = finalSpeed * (1 - finalPositionValue * positionCoef);
+	float speedL = finalSpeed * (1 + (positionVal - curInlineVal) * positionCoef);
+	float speedR = finalSpeed * (1 - (positionVal - curInlineVal) * positionCoef);
 
 	Motor_Speed_Control(speedL, speedR);
 

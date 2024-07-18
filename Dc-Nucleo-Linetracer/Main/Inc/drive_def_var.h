@@ -32,12 +32,12 @@
 #define ACCELE_INIT					7.0f
 #define DECELE_INIT					6.0f
 
-#define TARGET_SPEED_INIT			2.f
+#define TARGET_SPEED_INIT			2.45f
 #define BOOST_SPEED_INIT			4.5f
 
 
 // 커브에서 어느 정도 감속할지 결정하는 매크로
-#define CURVE_DECELE_COEF_INIT		24500.f
+#define CURVE_DECELE_COEF_INIT		21500.f
 
 
 // POSITION_COEF(포지션 상수)를 도출하기 위한 매크로
@@ -117,7 +117,7 @@
 
 
 // 피트인 관련 매크로
-#define PIT_IN_LEN_INIT				0.24f
+#define PIT_IN_LEN_INIT				0.16f
 #define PIT_IN_TARGET_SPEED			MIN_SPEED
 
 

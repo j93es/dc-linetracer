@@ -22,14 +22,14 @@ Core/Src/stm32f4xx_it.o: ../Core/Src/stm32f4xx_it.c ../Core/Inc/main.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_usart.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_gpio.h \
  ../Core/Inc/stm32f4xx_it.h \
- /Users/j93es/workspace/dc-linetracer/Dc-Nucleo-Linetracer/Main/Inc/motor.h \
- /Users/j93es/workspace/dc-linetracer/Dc-Nucleo-Linetracer/External\ Library/Inc/custom_gpio.h \
- /Users/j93es/workspace/dc-linetracer/Dc-Nucleo-Linetracer/Main/Inc/sensor.h \
- /Users/j93es/workspace/dc-linetracer/Dc-Nucleo-Linetracer/Main/Inc/drive_def_var.h \
- /Users/j93es/workspace/dc-linetracer/Dc-Nucleo-Linetracer/Main/Inc/sensor.h \
- /Users/j93es/workspace/dc-linetracer/Dc-Nucleo-Linetracer/Main/Inc/drive_speed_ctrl.h \
- /Users/j93es/workspace/dc-linetracer/Dc-Nucleo-Linetracer/External\ Library/Inc/custom_delay.h \
- /Users/j93es/workspace/dc-linetracer/Dc-Nucleo-Linetracer/Main/Inc/motor.h
+ /Users/j93es/workspace/imbedded/dc-linetracer/Dc-Nucleo-Linetracer/Main/Inc/motor.h \
+ /Users/j93es/workspace/imbedded/dc-linetracer/Dc-Nucleo-Linetracer/External\ Library/Inc/custom_gpio.h \
+ /Users/j93es/workspace/imbedded/dc-linetracer/Dc-Nucleo-Linetracer/Main/Inc/sensor.h \
+ /Users/j93es/workspace/imbedded/dc-linetracer/Dc-Nucleo-Linetracer/Main/Inc/drive_def_var.h \
+ /Users/j93es/workspace/imbedded/dc-linetracer/Dc-Nucleo-Linetracer/Main/Inc/sensor.h \
+ /Users/j93es/workspace/imbedded/dc-linetracer/Dc-Nucleo-Linetracer/Main/Inc/drive_speed_ctrl.h \
+ /Users/j93es/workspace/imbedded/dc-linetracer/Dc-Nucleo-Linetracer/External\ Library/Inc/custom_delay.h \
+ /Users/j93es/workspace/imbedded/dc-linetracer/Dc-Nucleo-Linetracer/Main/Inc/motor.h
 ../Core/Inc/main.h:
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_adc.h:
 ../Drivers/CMSIS/Device/ST/STM32F4xx/Include/stm32f4xx.h:
@@ -54,11 +54,11 @@ Core/Src/stm32f4xx_it.o: ../Core/Src/stm32f4xx_it.c ../Core/Inc/main.h \
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_usart.h:
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_gpio.h:
 ../Core/Inc/stm32f4xx_it.h:
-/Users/j93es/workspace/dc-linetracer/Dc-Nucleo-Linetracer/Main/Inc/motor.h:
-/Users/j93es/workspace/dc-linetracer/Dc-Nucleo-Linetracer/External\ Library/Inc/custom_gpio.h:
-/Users/j93es/workspace/dc-linetracer/Dc-Nucleo-Linetracer/Main/Inc/sensor.h:
-/Users/j93es/workspace/dc-linetracer/Dc-Nucleo-Linetracer/Main/Inc/drive_def_var.h:
-/Users/j93es/workspace/dc-linetracer/Dc-Nucleo-Linetracer/Main/Inc/sensor.h:
-/Users/j93es/workspace/dc-linetracer/Dc-Nucleo-Linetracer/Main/Inc/drive_speed_ctrl.h:
-/Users/j93es/workspace/dc-linetracer/Dc-Nucleo-Linetracer/External\ Library/Inc/custom_delay.h:
-/Users/j93es/workspace/dc-linetracer/Dc-Nucleo-Linetracer/Main/Inc/motor.h:
+/Users/j93es/workspace/imbedded/dc-linetracer/Dc-Nucleo-Linetracer/Main/Inc/motor.h:
+/Users/j93es/workspace/imbedded/dc-linetracer/Dc-Nucleo-Linetracer/External\ Library/Inc/custom_gpio.h:
+/Users/j93es/workspace/imbedded/dc-linetracer/Dc-Nucleo-Linetracer/Main/Inc/sensor.h:
+/Users/j93es/workspace/imbedded/dc-linetracer/Dc-Nucleo-Linetracer/Main/Inc/drive_def_var.h:
+/Users/j93es/workspace/imbedded/dc-linetracer/Dc-Nucleo-Linetracer/Main/Inc/sensor.h:
+/Users/j93es/workspace/imbedded/dc-linetracer/Dc-Nucleo-Linetracer/Main/Inc/drive_speed_ctrl.h:
+/Users/j93es/workspace/imbedded/dc-linetracer/Dc-Nucleo-Linetracer/External\ Library/Inc/custom_delay.h:
+/Users/j93es/workspace/imbedded/dc-linetracer/Dc-Nucleo-Linetracer/Main/Inc/motor.h:
