@@ -207,7 +207,7 @@ __STATIC_INLINE void	Make_Battery_Voltage() {
 __STATIC_INLINE void	Sensor_TIM5_IRQ() {
 	static uint8_t	tim5Idx = 0;
 
-	// 다음 IR LED 켜기
+	// IR LED 켜기
 	GPIOC->ODR = (GPIOC->ODR & ~0x07) | tim5Idx | 0x08;
 
 	Make_Sensor_Raw_Vals(tim5Idx);

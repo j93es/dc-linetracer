@@ -47,7 +47,7 @@
 
 // motor
 #define MOTOR_CONTROL_INTERVAL_S	0.0005f
-#define ENCODER_VALUE_PER_CIRCLE	2048.f
+#define ENCODER_VALUE_PER_CIRCLE	2048
 #define MOTOR_GEAR_RATIO			( 17.f / 69.f )
 #define TICK_PER_M					( ENCODER_VALUE_PER_CIRCLE / (TIRE_RADIUS * 3.141592f) / MOTOR_GEAR_RATIO )
 
@@ -92,7 +92,7 @@
 #define BOOST_CNTL_END				3
 
 
-// 부스트 컨트롤 매크로
+// 인라인 컨트롤 매크로
 #define INLINE_CNTL_IDLE			0
 #define INLINE_CNTL_CURVE_IN		1
 #define INLINE_CNTL_CURVE_OUT		2
@@ -128,8 +128,8 @@
 
 // 2차 주행에서 어느 정도 지나면 가감속할 지 결정하는 매크로
 
-// 직선에 진입한 후 어느정도 이동한 후 가속할지
-#define ACCELE_START_TICK_INIT		( 0.1f * TICK_PER_M )
+//// 직선에 진입한 후 어느정도 이동한 후 가속할지
+#define ACCELE_START_TICK_INIT		( 0.05f * TICK_PER_M )
 
 // 감속 안전거리 (최소 20cm 이상)
 #define DECELE_END_TICK_INIT		( 0.2f * TICK_PER_M )
@@ -152,6 +152,9 @@
 
 // 최대 크로스 개수
 #define MAX_CROSS_CNT				128
+
+
+#define LAST_STRAIGHT_TARGET_SPEED	2.4f
 
 
 

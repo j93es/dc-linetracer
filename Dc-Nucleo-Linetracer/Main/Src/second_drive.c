@@ -208,124 +208,6 @@ __STATIC_INLINE void Set_Second_Drive_Data() {
 
 
 
-//__STATIC_INLINE void Second_Drive_Cntl() {
-//
-//	if (markState == MARK_LINE_OUT) {
-//
-//		return ;
-//	}
-//
-//	// markState가 변경되었을 경우
-//	else if (markState != driveData[driveDataIdx].markState) {
-//
-//		// driveData 값 업데이트
-//		Set_Second_Drive_Data();
-//	}
-//
-//	// 주행에서 마크를 정상적으로 읽었을 경우
-//	else if (isReadAllMark == CUSTOM_TRUE) {
-//
-//		// 직선일 경우
-//		if (markState == MARK_STRAIGHT) {
-//
-//			// 직선가속
-//			Second_Drive_Straight_Boost_Cntl();
-//		}
-//
-//		// 커브일 경우
-//		else if (markState == MARK_CURVE_L || markState == MARK_CURVE_R) {
-//
-//			// 곡선 인라인
-//			Second_Drive_Curve_Inline_Cntl();
-//		}
-//	}
-//
-//	// 마크를 비정상적으로 읽었을 때
-//	else if (isReadAllMark == CUSTOM_FALSE) {
-//
-//		targetInlineVal = 0;
-//	}
-//}
-//
-//
-//
-//
-//
-//__STATIC_INLINE void Set_Second_Drive_Data() {
-//
-//	// 크로스, 엔드마크가 아닐 경우
-//	if (markState != MARK_CROSS && markState != MARK_END) {
-//
-//		// 현재 마크가 시작된 틱값 변경
-//		curTick_L = 0;
-//		curTick_R = 0;
-//
-//		// drivePtr 값 인덱스 증가
-//		driveDataIdx += 1;
-//
-//
-//		// 주행중 markState와 1차 주행에서 저장된 markState가 동일하지 않다면 비정상적으로 읽었다고 판단
-//		if (markState != driveData[driveDataIdx].markState) {
-//
-//			// 마크 인식 정상 여부를 업데이트
-//			isReadAllMark = CUSTOM_FALSE;
-//
-//			starightBoostCntl = BOOST_CNTL_IDLE;
-//
-//			targetSpeed = targetSpeed_init;
-//
-//			curveInlineCntl = INLINE_CNTL_IDLE;
-//
-//			targetInlineVal = 0;
-//		}
-//	}
-//
-//	else {
-//
-//		// 크로스일 경우
-//		if (markState == MARK_CROSS) {
-//
-//			// 마크 복구
-//			if (isReadAllMark == CUSTOM_FALSE) {
-//
-//				// crossCntTable의 crossCnt 번째의 인덱스가 비어있지 않음 경우
-//				if (crossCntTable[crossCnt] != 0) {
-//
-//					/*
-//					 *    n번째 크로스(crossCnt)		0		1		...		50
-//					 *    m번째 마크(driveDataIdx)		4(3)	6(5)	...		98
-//					 *
-//					 *    (0번째 마크에서 크로스를 읽었을 때 1번째 마크로 저장되도록 함, 0은 값이 없는 상태를 나타냄)
-//					 */
-//					driveDataIdx = crossCntTable[crossCnt] - 1;
-//
-//					// 부스트, 인라인 주행 컨트롤 변수 초기화
-//					starightBoostCntl = BOOST_CNTL_IDLE;
-//					curveInlineCntl = INLINE_CNTL_IDLE;
-//
-//					// isReadAllMark update
-//					isReadAllMark = CUSTOM_TRUE;
-//				}
-//			}
-//
-//			crossCnt += 1;
-//		}
-//
-//		// 엔드마크일 경우
-//		else if (markState == MARK_END){
-//
-//		}
-//
-//		// 크로스, 엔드마크는 읽은 후 이전 상태로 되돌림
-//		markState = driveData[driveDataIdx].markState;
-//	}
-//}
-
-
-
-
-
-
 
 __STATIC_INLINE void Second_Drive_Straight_Boost_Cntl() {
 
@@ -335,6 +217,7 @@ __STATIC_INLINE void Second_Drive_Straight_Boost_Cntl() {
 	static float	deceleEndTickCoef_R;
 	static float	finalDeceleEndTick_L;
 	static float	finalDeceleEndTick_R;
+	static uint8_t	isLastStraight = CUSTOM_FALSE;
 
 
 	// 직선 가속
@@ -342,6 +225,11 @@ __STATIC_INLINE void Second_Drive_Straight_Boost_Cntl() {
 
 			// 초기 상태
 			case BOOST_CNTL_IDLE :
+
+					isLastStraight = CUSTOM_FALSE;
+					if (driveData[driveDataIdx + 1].markState == MARK_END) {
+						isLastStraight = CUSTOM_TRUE;
+					}
 
 					// 최적화 레벨이 직선 가속 이상 일 때
 					if (optimizeLevel >= OPTIMIZE_LEVEL_STRAIGHT) {
@@ -353,21 +241,7 @@ __STATIC_INLINE void Second_Drive_Straight_Boost_Cntl() {
 						finalDeceleEndTick_R =	driveData[driveDataIdx].tickCnt_R \
 												- GET_MIN(deceleEndTick, deceleEndRatio * driveData[driveDataIdx].tickCnt_R);
 
-						// 최소 부스트 거리 이상일 때
-						if (curTick_L < finalDeceleEndTick_L - acceleStartTick \
-						 && curTick_R < finalDeceleEndTick_R - acceleStartTick) {
-
-							// deceleEndTickCoef 업데이트
-							deceleEndTickCoef = 2 * decele / TICK_PER_M;
-
-							deceleEndTickCoef_L =	deceleEndTickCoef * finalDeceleEndTick_L \
-													+ targetSpeed_init * targetSpeed_init;
-
-							deceleEndTickCoef_R =	deceleEndTickCoef * finalDeceleEndTick_R \
-													+ targetSpeed_init * targetSpeed_init;
-
-							starightBoostCntl = BOOST_CNTL_ACCELE;
-						}
+						starightBoostCntl = BOOST_CNTL_ACCELE;
 					}
 
 					break ;
@@ -376,9 +250,25 @@ __STATIC_INLINE void Second_Drive_Straight_Boost_Cntl() {
 			// 부스트 가속 컨드롤
 			case BOOST_CNTL_ACCELE :
 
-					// 직선 구간 진입 후 ACCELE_START_TICK만큼 지났을 때 부스트
 					if (curTick_L > acceleStartTick \
 					 && curTick_R > acceleStartTick) {
+
+						// deceleEndTickCoef 업데이트
+						deceleEndTickCoef = 2 * decele / TICK_PER_M;
+
+						deceleEndTickCoef_L =	deceleEndTickCoef * finalDeceleEndTick_L \
+												+ targetSpeed_init * targetSpeed_init;
+
+						deceleEndTickCoef_R =	deceleEndTickCoef * finalDeceleEndTick_R \
+												+ targetSpeed_init * targetSpeed_init;
+
+						if (isLastStraight) {
+							deceleEndTickCoef_L =	deceleEndTickCoef * finalDeceleEndTick_L \
+													+ LAST_STRAIGHT_TARGET_SPEED * LAST_STRAIGHT_TARGET_SPEED;
+
+							deceleEndTickCoef_R =	deceleEndTickCoef * finalDeceleEndTick_R \
+													+ LAST_STRAIGHT_TARGET_SPEED * LAST_STRAIGHT_TARGET_SPEED;
+						}
 
 						// boostSpeed로 가속
 						targetSpeed = boostSpeed;
@@ -408,8 +298,13 @@ __STATIC_INLINE void Second_Drive_Straight_Boost_Cntl() {
 					if (deceleEndTickCoef_L < curSpeed * curSpeed + curTick_L * deceleEndTickCoef \
 					 || deceleEndTickCoef_R < curSpeed * curSpeed + curTick_R * deceleEndTickCoef) {
 
-						// targetSpeed_init로 감속
-						targetSpeed = targetSpeed_init;
+						if (!isLastStraight) {
+							// targetSpeed_init로 감속
+							targetSpeed = targetSpeed_init;
+						} else {
+
+							targetSpeed = LAST_STRAIGHT_TARGET_SPEED;
+						}
 
 						starightBoostCntl = BOOST_CNTL_END;
 					}
@@ -426,7 +321,7 @@ __STATIC_INLINE void Second_Drive_Straight_Boost_Cntl() {
 					 || curTick_R > driveData[driveDataIdx].tickCnt_R - 0.1 * TICK_PER_M) {
 
 						// 부스트 중 차체가 떳을 때 크로스를 못읽는 경우를 방지함
-						crossCnt = driveData[driveDataIdx].crossCnt;
+//						crossCnt = driveData[driveDataIdx].crossCnt;
 
 						starightBoostCntl = BOOST_CNTL_IDLE;
 					}

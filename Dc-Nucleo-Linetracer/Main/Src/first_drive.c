@@ -107,6 +107,9 @@ __STATIC_INLINE void First_Drive_Cntl() {
 
 				// 종료 시점에서의 읽은 크로스의 개수
 				driveDataBuffer[driveDataIdx].crossCnt = crossCnt;
+
+				driveDataBuffer[driveDataIdx + 1].markState = MARK_END;
+				driveDataBuffer[driveDataIdx + 1].crossCnt = crossCnt;
 			}
 
 			// 크로스, 엔드마크는 읽은 후 이전 상태로 되돌림

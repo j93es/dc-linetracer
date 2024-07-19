@@ -32,7 +32,7 @@ __STATIC_INLINE void	Drive_Speed_Accele_Control() {
 	else if (curSpeed < targetSpeed) {
 
 		// 가속도 제어
-		curAccele += 0.01f;
+		curAccele += 0.05f;
 
 		if (curAccele > targetAccele) {
 
