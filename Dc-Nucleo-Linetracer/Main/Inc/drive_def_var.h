@@ -32,22 +32,22 @@
 #define ACCELE_INIT					7.0f
 #define DECELE_INIT					6.0f
 
-#define TARGET_SPEED_INIT			2.45f
-#define BOOST_SPEED_INIT			4.5f
+#define TARGET_SPEED_INIT			2.8f
+#define BOOST_SPEED_INIT			5.f
 
 
 // 커브에서 어느 정도 감속할지 결정하는 매크로
-#define CURVE_DECELE_COEF_INIT		21500.f
+#define CURVE_DECELE_COEF_INIT		24500.f
 
 
 // POSITION_COEF(포지션 상수)를 도출하기 위한 매크로
 #define TIRE_RADIUS					0.036f					// m
-#define POSITION_COEF_INIT			0.00006f
+#define POSITION_COEF_INIT			0.00005f
 
 
 // motor
 #define MOTOR_CONTROL_INTERVAL_S	0.0005f
-#define ENCODER_VALUE_PER_CIRCLE	2048
+#define ENCODER_VALUE_PER_CIRCLE	2048.f
 #define MOTOR_GEAR_RATIO			( 17.f / 69.f )
 #define TICK_PER_M					( ENCODER_VALUE_PER_CIRCLE / (TIRE_RADIUS * 3.141592f) / MOTOR_GEAR_RATIO )
 
@@ -63,7 +63,6 @@
 #define RIGHT_MARK_MASKING_INIT		0b0000000000001110
 #define LEFT_MARK_MASKING_INIT		0b0111000000000000
 #define ALL_MARK_MASKING			0b1111111111111111
-#define MARK_AREA_MASKING_INIT		0b1111000000001111
 
 
 
@@ -117,7 +116,7 @@
 
 
 // 피트인 관련 매크로
-#define PIT_IN_LEN_INIT				0.16f
+#define PIT_IN_LEN_INIT				0.1f
 #define PIT_IN_TARGET_SPEED			MIN_SPEED
 
 
@@ -146,7 +145,7 @@
 
 
 // 1차주행, 2차 주행의 driveData 관련 매크로
-#define MAX_DRIVE_DATA_LEN			512
+#define MAX_DRIVE_DATA_LEN			320
 #define T_DRIVE_DATA_INIT			{ 0, 0, MARK_NONE, 0 }
 
 

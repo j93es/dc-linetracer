@@ -91,7 +91,7 @@ uint16_t				lineMasking = LINE_MASKING_INIT;
 uint16_t				rightMarkMasking = RIGHT_MARK_MASKING_INIT;
 uint16_t				leftMarkMasking = LEFT_MARK_MASKING_INIT;
 uint16_t				bothMarkMasking = RIGHT_MARK_MASKING_INIT | LEFT_MARK_MASKING_INIT;
-uint16_t				markAreaMasking = MARK_AREA_MASKING_INIT;
+uint16_t				markAreaMasking =  ~(LINE_MASKING_INIT << 1 | LINE_MASKING_INIT >> 1);;
 
 
 // 2차주행 컨트롤 변수

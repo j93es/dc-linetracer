@@ -229,7 +229,7 @@ void Pre_Drive_Var_Init() {
 	rightMarkMasking = RIGHT_MARK_MASKING_INIT;
 	leftMarkMasking = LEFT_MARK_MASKING_INIT;
 	bothMarkMasking = RIGHT_MARK_MASKING_INIT | LEFT_MARK_MASKING_INIT;
-	markAreaMasking = MARK_AREA_MASKING_INIT;
+	markAreaMasking = ~(lineMasking << 1 | lineMasking >> 1);
 
 
 	// 1차 주행에서만 초기화할 변수

@@ -47,6 +47,7 @@ void First_Drive() {
 			Drive_Fit_In(pitInLen, PIT_IN_TARGET_SPEED);
 
 			while (curSpeed > DRIVE_END_DELAY_SPEED) {
+				Positioning(&positioningIdx);
 				//Drive_Speed_Cntl();
 			}
 
@@ -93,11 +94,17 @@ __STATIC_INLINE void First_Drive_Cntl() {
 			// 크로스, 엔드마크는 읽은 후 이전 상태로 되돌림
 			markState = driveDataBuffer[driveDataIdx].markState;
 
+			// 크로스, 엔드마크는 읽은 후 마커를 강제로 직선으로 변경
+			// markState = MARK_STRAIGHT;
+			// driveDataBuffer[driveDataIdx].markState = MARK_STRAIGHT;
+
 			break;
 
 
 
 		case MARK_END:
+
+//			endMarkCnt++;
 
 			if (endMarkCnt >= 2) {
 
@@ -108,12 +115,20 @@ __STATIC_INLINE void First_Drive_Cntl() {
 				// 종료 시점에서의 읽은 크로스의 개수
 				driveDataBuffer[driveDataIdx].crossCnt = crossCnt;
 
-				driveDataBuffer[driveDataIdx + 1].markState = MARK_END;
-				driveDataBuffer[driveDataIdx + 1].crossCnt = crossCnt;
+				driveDataIdx += 1;
+
+				driveDataBuffer[driveDataIdx].markState = MARK_END;
+				driveDataBuffer[driveDataIdx].crossCnt = crossCnt;
+				driveDataBuffer[driveDataIdx].tickCnt_L = 0;
+				driveDataBuffer[driveDataIdx].tickCnt_R = 0;
 			}
 
 			// 크로스, 엔드마크는 읽은 후 이전 상태로 되돌림
 			markState = driveDataBuffer[driveDataIdx].markState;
+
+			// 크로스, 엔드마크는 읽은 후 마커를 강제로 직선으로 변경
+//			markState = MARK_STRAIGHT;
+//			driveDataBuffer[driveDataIdx].markState = MARK_STRAIGHT;
 
 			break;
 

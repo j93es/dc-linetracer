@@ -8,4 +8,4 @@
 /Users/j93es/workspace/imbedded/dc-linetracer/Dc-Nucleo-Linetracer/External Library/Inc/custom_delay.h:28:22:Custom_Delay_ms	16	static
 ../Main/Src/sensor.c:29:6:Sensor_Start	8	static
 ../Main/Src/sensor.c:42:6:Sensor_Stop	8	static
-../Main/Src/sensor.c:52:6:Sensor_Calibration	56	static
+../Main/Src/sensor.c:55:6:Sensor_Calibration	56	static

@@ -26,7 +26,7 @@
 #define	THRESHOLD_MAX 			250
 #define	THRESHOLD_MIN			20
 #define	THRESHOLD_CHANGE_VAL	5
-#define	THRESHOLD_INIT			90
+#define	THRESHOLD_INIT			120
 
 
 extern volatile uint8_t		sensorRawVals[IR_SENSOR_LEN];
@@ -45,38 +45,21 @@ extern volatile float		sensingVoltage;
 
 
 
-
-
-
 void	Sensor_Start();
 void	Sensor_Stop();
 void	Sensor_Calibration();
 
 
 
-
-
-// 이상해 졌을 시, ioc 파일 nvic->tim5 subpriority 를 2로 맞추고 아래 주석처리된 코드를 사용해야함
-//__STATIC_INLINE uint16_t	ADC_Read() {
-//	uint16_t adcValue;
-//	__disable_irq();
-//	LL_ADC_ClearFlag_EOCS(ADC1);
-//	LL_ADC_REG_StartConversionSWStart(ADC1);
-//	while (!LL_ADC_IsActiveFlag_EOCS(ADC1));
-//	adcValue = LL_ADC_REG_ReadConversionData12(ADC1);
-//	LL_ADC_ClearFlag_EOCS(ADC1);
-//	__enable_irq();
-//	return adcValue;
-//}
-
-
 __STATIC_INLINE uint16_t	ADC_Read() {
 	uint16_t adcValue;
+	__disable_irq();
 	LL_ADC_ClearFlag_EOCS(ADC1);
 	LL_ADC_REG_StartConversionSWStart(ADC1);
 	while (!LL_ADC_IsActiveFlag_EOCS(ADC1));
 	adcValue = LL_ADC_REG_ReadConversionData12(ADC1);
 	LL_ADC_ClearFlag_EOCS(ADC1);
+	__enable_irq();
 	return adcValue;
 }
 
@@ -84,38 +67,77 @@ __STATIC_INLINE uint16_t	ADC_Read() {
 
 
 
-__STATIC_INLINE uint8_t	Sensor_ADC_Midian_Filter() {
-	uint16_t sensorMidian[3];
-
-	sensorMidian[0] = ADC_Read();
-	sensorMidian[1] = ADC_Read();
-	sensorMidian[2] = ADC_Read();
-
-	if (sensorMidian[0] > sensorMidian[1]) {
-		INT_SWAP(sensorMidian[0], sensorMidian[1]);
-	}
-	if (sensorMidian[1] > sensorMidian[2]) {
-		INT_SWAP(sensorMidian[1], sensorMidian[2]);
-	}
-	if (sensorMidian[0] > sensorMidian[1]) {
-		INT_SWAP(sensorMidian[0], sensorMidian[1]);
-	}
-
-	return sensorMidian[1] >> 4;
-}
-
-
-
-
-
-
 __STATIC_INLINE void	Make_Sensor_Raw_Vals(uint8_t idx) {
 
+	// IR LED 켜기
+	GPIOC->ODR = (GPIOC->ODR & ~0x07) | idx | 0x08;
+
+	uint16_t sensorMidianLeft[3];
+	uint16_t sensorMidianRight[3];
+
+
+
 	LL_ADC_REG_SetSequencerRanks(ADC1, LL_ADC_REG_RANK_1, LL_ADC_CHANNEL_7);
-	sensorRawVals[idx] = Sensor_ADC_Midian_Filter();
+	sensorMidianLeft[0] = ADC_Read();
 
 	LL_ADC_REG_SetSequencerRanks(ADC1, LL_ADC_REG_RANK_1, LL_ADC_CHANNEL_6);
-	sensorRawVals[idx + 8] = Sensor_ADC_Midian_Filter();
+	sensorMidianRight[0] = ADC_Read();
+
+
+
+	LL_ADC_REG_SetSequencerRanks(ADC1, LL_ADC_REG_RANK_1, LL_ADC_CHANNEL_7);
+	sensorMidianLeft[0] = ADC_Read();
+
+	LL_ADC_REG_SetSequencerRanks(ADC1, LL_ADC_REG_RANK_1, LL_ADC_CHANNEL_6);
+	sensorMidianRight[0] = ADC_Read();
+
+
+
+	LL_ADC_REG_SetSequencerRanks(ADC1, LL_ADC_REG_RANK_1, LL_ADC_CHANNEL_7);
+	sensorMidianLeft[1] = ADC_Read();
+
+	LL_ADC_REG_SetSequencerRanks(ADC1, LL_ADC_REG_RANK_1, LL_ADC_CHANNEL_6);
+	sensorMidianRight[1] = ADC_Read();
+
+
+
+	LL_ADC_REG_SetSequencerRanks(ADC1, LL_ADC_REG_RANK_1, LL_ADC_CHANNEL_7);
+	sensorMidianLeft[2] = ADC_Read();
+
+	LL_ADC_REG_SetSequencerRanks(ADC1, LL_ADC_REG_RANK_1, LL_ADC_CHANNEL_6);
+	sensorMidianRight[2] = ADC_Read();
+
+
+
+	if (sensorMidianLeft[0] > sensorMidianLeft[1]) {
+		INT_SWAP(sensorMidianLeft[0], sensorMidianLeft[1]);
+	}
+	if (sensorMidianLeft[1] > sensorMidianLeft[2]) {
+		INT_SWAP(sensorMidianLeft[1], sensorMidianLeft[2]);
+	}
+	if (sensorMidianLeft[0] > sensorMidianLeft[1]) {
+		INT_SWAP(sensorMidianLeft[0], sensorMidianLeft[1]);
+	}
+
+
+
+	if (sensorMidianRight[0] > sensorMidianRight[1]) {
+		INT_SWAP(sensorMidianRight[0], sensorMidianRight[1]);
+	}
+	if (sensorMidianRight[1] > sensorMidianRight[2]) {
+		INT_SWAP(sensorMidianRight[1], sensorMidianRight[2]);
+	}
+	if (sensorMidianRight[0] > sensorMidianRight[1]) {
+		INT_SWAP(sensorMidianRight[0], sensorMidianRight[1]);
+	}
+
+
+
+	sensorRawVals[idx] = sensorMidianLeft[1] >> 4;
+	sensorRawVals[idx + 8] = sensorMidianRight[1] >> 4;
+
+	// 선택한 IR LED 끄기
+	GPIOC->ODR &= ~0x08;
 }
 
 
@@ -131,13 +153,15 @@ __STATIC_INLINE void	Make_Sensor_Norm_Vals(uint8_t idx) {
 */
 
 
-	if (sensorRawVals[idx] < blackMaxs[idx])
+	if (sensorRawVals[idx] < blackMaxs[idx]) {
 		sensorNormVals[idx] = 0;
-	else if (sensorRawVals[idx] > whiteMaxs[idx])
+	}
+	else if (sensorRawVals[idx] > whiteMaxs[idx]) {
 		sensorNormVals[idx] = 255;
-	else
+	}
+	else {
 		sensorNormVals[idx] = (255 * (sensorRawVals[idx] - blackMaxs[idx]) / normalizeCoef[idx]);
-
+	}
 }
 
 
@@ -145,23 +169,23 @@ __STATIC_INLINE void	Make_Sensor_Norm_Vals(uint8_t idx) {
 // sensor state 계산
 __STATIC_INLINE void	Make_Sensor_State(uint8_t idx) {
 
-	uint8_t stateMaskingIdx = 15 - idx;
+	uint8_t stateMaskingIdx = IR_SENSOR_LEN - 1 - idx;
 
-	irSensorState = ( irSensorState & ~(0x01 << stateMaskingIdx) ) | ( (sensorNormVals[idx] > threshold ? 1 : 0) << stateMaskingIdx );
+//	irSensorState = ( irSensorState & ~(0x01 << stateMaskingIdx) ) | ( (sensorNormVals[idx] > threshold ? 1 : 0) << stateMaskingIdx );
 
-//	if (sensorNormVals[idx] > threshold) {
-//		state |= 0x01 << (IR_SENSOR_LEN - 1 - idx);
-//	}
-//	else {
-//		state &= ~(0x01 << (IR_SENSOR_LEN - 1 - idx));
-//	}
+	if (sensorNormVals[idx] > threshold) {
+		irSensorState |= 0x01 << stateMaskingIdx;
+	}
+	else {
+		irSensorState &= ~(0x01 << stateMaskingIdx);
+	}
 }
 
 
 
 __STATIC_INLINE float	Make_Voltage_Raw_Val() {
 	LL_ADC_REG_SetSequencerRanks(ADC1, LL_ADC_REG_RANK_1, LL_ADC_CHANNEL_8);
-	return 3.3f * 21.f * (float)ADC_Read() / 4095.f;
+	return 3.3f * 21.f * (float)ADC_Read() / 4096.f;
 }
 
 
@@ -207,13 +231,7 @@ __STATIC_INLINE void	Make_Battery_Voltage() {
 __STATIC_INLINE void	Sensor_TIM5_IRQ() {
 	static uint8_t	tim5Idx = 0;
 
-	// IR LED 켜기
-	GPIOC->ODR = (GPIOC->ODR & ~0x07) | tim5Idx | 0x08;
-
 	Make_Sensor_Raw_Vals(tim5Idx);
-
-	// 선택한 IR LED 끄기
-	GPIOC->ODR &= ~0x08;
 
 	Make_Sensor_Norm_Vals(tim5Idx);
 	Make_Sensor_Norm_Vals(tim5Idx + 8);
@@ -226,10 +244,16 @@ __STATIC_INLINE void	Sensor_TIM5_IRQ() {
 	}
 
 
-	// 인덱스 증가
-	tim5Idx = (tim5Idx + 1) & 0x07;
+//	다음의 순서로 센서를 읽음 { 0, 2, 4, 6, 1, 3, 5, 7 };
+//	인덱스 증가
+	tim5Idx += 2;
+
+	if (tim5Idx == 9) {
+		tim5Idx = 0;
+	}
+	else if (tim5Idx == 8) {
+		tim5Idx = 1;
+	}
 }
-//
-//	0 0 0 0 // 0 0 0 0 // 0 0 0 0 // 0 0 0 0
 
 #endif /* INC_SENSOR_H_ */

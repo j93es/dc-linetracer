@@ -43,6 +43,9 @@ void Sensor_Stop() {
 	LL_ADC_Disable(ADC1);
 	LL_TIM_DisableCounter(TIM5);
 	LL_TIM_DisableIT_UPDATE(TIM5);
+
+	// 선택한 IR LED 끄기
+	GPIOC->ODR &= ~0x08;
 }
 
 

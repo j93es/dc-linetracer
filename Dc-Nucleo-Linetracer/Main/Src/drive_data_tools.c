@@ -59,7 +59,7 @@ void Print_Drive_Data() {
 
 	Custom_OLED_Clear();
 
-	i = 1;
+	i = 0;
 
 	while(CUSTOM_SW_3 != (sw = Custom_Switch_Read())) {
 
@@ -73,14 +73,7 @@ void Print_Drive_Data() {
 		}
 		else if (driveData[i].markState == MARK_STRAIGHT) {
 
-			// 이전 상태가 좌측 곡선이었을 경우
-			if (driveData[i-1].markState == MARK_CURVE_L) {
-				Custom_OLED_Printf("/0mark L");
-			}
-			// 이전 상태가 우측 곡선이었을 경우
-			else if (driveData[i-1].markState == MARK_CURVE_R) {
-				Custom_OLED_Printf("/0mark R");
-			}
+			Custom_OLED_Printf("/0straight");
 		}
 
 		Custom_OLED_Printf("/1L: %9u", driveData[i].tickCnt_L);

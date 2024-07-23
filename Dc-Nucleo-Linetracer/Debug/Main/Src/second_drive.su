@@ -14,7 +14,7 @@
 /Users/j93es/workspace/imbedded/dc-linetracer/Dc-Nucleo-Linetracer/Main/Inc/drive_state_machine.h:125:22:Decision	4	static
 /Users/j93es/workspace/imbedded/dc-linetracer/Dc-Nucleo-Linetracer/Main/Inc/drive_state_machine.h:181:22:Drive_State_Machine	16	static
 ../Main/Src/second_drive.c:19:6:Second_Drive	24	static
-../Main/Src/second_drive.c:85:22:Second_Drive_Cntl	8	static
-../Main/Src/second_drive.c:175:22:Set_Second_Drive_Data	4	static
-../Main/Src/second_drive.c:212:22:Second_Drive_Straight_Boost_Cntl	16	static
-../Main/Src/second_drive.c:337:22:Second_Drive_Curve_Inline_Cntl	4	static
+../Main/Src/second_drive.c:88:22:Second_Drive_Cntl	8	static
+../Main/Src/second_drive.c:178:22:Set_Second_Drive_Data	4	static
+../Main/Src/second_drive.c:333:22:Second_Drive_Straight_Boost_Cntl	16	static
+../Main/Src/second_drive.c:445:22:Second_Drive_Curve_Inline_Cntl	4	static

@@ -196,6 +196,7 @@ __STATIC_INLINE void	Drive_State_Machine() {
 				if (__builtin_popcount(irSensorState & lineMasking) >= 4) {
 
 					Mark_Accumming_Reset();
+					Mark_Accumming(curIrSensorMid);
 					driveState = DRIVE_STATE_CROSS;
 				}
 
@@ -203,6 +204,7 @@ __STATIC_INLINE void	Drive_State_Machine() {
 				else if (__builtin_popcount(irSensorState & bothMarkMasking) >= 1) {
 
 					Mark_Accumming_Reset();
+					Mark_Accumming(curIrSensorMid);
 					driveState = DRIVE_STATE_MARKER;
 				}
 
