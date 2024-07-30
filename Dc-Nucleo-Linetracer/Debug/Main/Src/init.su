@@ -5,4 +5,4 @@
 /Users/j93es/workspace/imbedded/dc-linetracer/Dc-Nucleo-Linetracer/External Library/Inc/custom_delay.h:28:22:Custom_Delay_ms	16	static
 /Users/j93es/workspace/imbedded/dc-linetracer/Dc-Nucleo-Linetracer/External Library/Inc/custom_delay.h:39:22:Custom_Delay_Init_SysTick	4	static
 ../Main/Src/init.c:12:5:__io_putchar	16	static
-../Main/Src/init.c:21:6:Init	312	static
+../Main/Src/init.c:21:6:Init	336	static

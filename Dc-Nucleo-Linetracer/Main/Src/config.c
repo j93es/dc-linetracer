@@ -14,12 +14,16 @@
 // pd 제어에 사용하는 변수
 volatile uint32_t		levelMaxCCR;
 
-volatile int32_t		prevErrorL = 0;
-volatile int32_t		prevErrorR = 0;
-volatile t_encoder		targetEncoderValueL_cntl = 0;
-volatile t_encoder		targetEncoderValueR_cntl = 0;
-volatile t_encoder		prevCurEncoderValueL = 0;
-volatile t_encoder		prevCurEncoderValueR = 0;
+volatile float			positionCmdL = 0;
+volatile float			positionL = 0;
+volatile float			positionCmdR = 0;
+volatile float			positionR = 0;
+//volatile int32_t		prevErrorL = 0;
+//volatile int32_t		prevErrorR = 0;
+//volatile t_encoder		targetEncoderValueL_cntl = 0;
+//volatile t_encoder		targetEncoderValueR_cntl = 0;
+volatile t_encoder		prevEncoderValueL = 0;
+volatile t_encoder		prevEncoderValueR = 0;
 volatile float			pCoef = P_COEF_INIT;
 volatile float			dCoef = D_COEF_INIT;
 
@@ -51,7 +55,8 @@ volatile float			decele = DECELE_INIT;
 
 volatile float			targetSpeed = TARGET_SPEED_INIT;
 volatile float			curSpeed = MIN_SPEED;
-volatile float			boostSpeed = BOOST_SPEED_INIT;
+volatile float			starightBoostSpeed = STRAIGHT_BOOST_SPEED_INIT;
+volatile float			curveBoostSpeed = CURVE_BOOST_SPEED_INIT;
 
 volatile float			curveDeceleCoef = CURVE_DECELE_COEF_INIT;
 
@@ -71,7 +76,6 @@ volatile int32_t		curInlineVal = 0;
 
 
 
-
 /*
  * 주행문에서 쓰는 변수
  */
@@ -82,7 +86,7 @@ uint8_t					markState = MARK_STRAIGHT;
 
 
 // state machine 의 상태
-uint8_t					driveState = DRIVE_STATE_IDLE;
+uint8_t					markStateMachine = MARK_STATE_MACHINE_IDLE;
 
 
 // mark masking
@@ -96,6 +100,7 @@ uint16_t				markAreaMasking =  ~(LINE_MASKING_INIT << 1 | LINE_MASKING_INIT >> 1
 
 // 2차주행 컨트롤 변수
 uint8_t					starightBoostCntl = BOOST_CNTL_IDLE;
+uint8_t					curveBoostCntl = BOOST_CNTL_IDLE;
 uint8_t					curveInlineCntl = INLINE_CNTL_IDLE;
 
 
@@ -134,7 +139,9 @@ uint16_t				crossCnt = 0;
 
 
 // 직선 주행, 곡선 인라인 최적화 레벨
-uint8_t					optimizeLevel = OPTIMIZE_LEVEL_NONE;
+uint8_t					isStraightBoostEnabled = CUSTOM_FALSE;
+uint8_t					isCurveBoostEnabled = CUSTOM_FALSE;
+uint8_t					isInlineDriveEnabled = CUSTOM_FALSE;
 
 
 //end mark를 몇 번 봤는지 카운트하는 변수
@@ -158,3 +165,5 @@ float					deceleEndTick = DECELE_END_TICK_INIT;
 
 // 안전 비율
 float					deceleEndRatio = DECELE_END_RATIO_INIT;
+
+float					isLastStraight = CUSTOM_FALSE;

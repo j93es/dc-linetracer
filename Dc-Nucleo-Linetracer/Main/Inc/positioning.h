@@ -2,10 +2,10 @@
  * drive_positioning.h
  */
 
-#ifndef INC_DRIVE_POSITIONING_H_
-#define INC_DRIVE_POSITIONING_H_
+#ifndef INC_POSITIONING_H_
+#define INC_POSITIONING_H_
 
-#include "drive_def_var.h"
+#include <config.h>
 #include "main.h"
 #include "motor.h"
 

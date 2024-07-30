@@ -6,8 +6,10 @@
 #define INC_SENSOR_H_
 
 
+#include <config.h>
 #include "main.h"
-#include "drive_def_var.h"
+
+#include "core_cm4.h"
 
 
 #define INT_SWAP(a, b)			{ a ^= b; b ^= a; a ^= b; }
@@ -146,22 +148,22 @@ __STATIC_INLINE void	Make_Sensor_Raw_Vals(uint8_t idx) {
 // normalized value 계산
 __STATIC_INLINE void	Make_Sensor_Norm_Vals(uint8_t idx) {
 
-/*
- * 	sensorNormVals[idx] = ( (255 * (sensorRawVals[idx] - blackMaxs[idx]) / normalizeCoef[idx]) \
- * 		& ( (sensorRawVals[idx] < blackMaxs[idx]) - 0x01 )  ) \
- * 		| ( (sensorRawVals[idx] < whiteMaxs[idx]) - 0x01 );
-*/
+
+ 	sensorNormVals[idx] = ( (255 * (sensorRawVals[idx] - blackMaxs[idx]) / normalizeCoef[idx]) \
+ 		& ( (sensorRawVals[idx] < blackMaxs[idx] ? 1 : 0) - 0x01 )  ) \
+ 		| ( (sensorRawVals[idx] < whiteMaxs[idx] ? 1 : 0) - 0x01 );
 
 
-	if (sensorRawVals[idx] < blackMaxs[idx]) {
-		sensorNormVals[idx] = 0;
-	}
-	else if (sensorRawVals[idx] > whiteMaxs[idx]) {
-		sensorNormVals[idx] = 255;
-	}
-	else {
-		sensorNormVals[idx] = (255 * (sensorRawVals[idx] - blackMaxs[idx]) / normalizeCoef[idx]);
-	}
+
+//	if (sensorRawVals[idx] < blackMaxs[idx]) {
+//		sensorNormVals[idx] = 0;
+//	}
+//	else if (sensorRawVals[idx] > whiteMaxs[idx]) {
+//		sensorNormVals[idx] = 255;
+//	}
+//	else {
+//		sensorNormVals[idx] = (255 * (sensorRawVals[idx] - blackMaxs[idx]) / normalizeCoef[idx]);
+//	}
 }
 
 
@@ -171,14 +173,14 @@ __STATIC_INLINE void	Make_Sensor_State(uint8_t idx) {
 
 	uint8_t stateMaskingIdx = IR_SENSOR_LEN - 1 - idx;
 
-//	irSensorState = ( irSensorState & ~(0x01 << stateMaskingIdx) ) | ( (sensorNormVals[idx] > threshold ? 1 : 0) << stateMaskingIdx );
+	irSensorState = ( irSensorState & ~(0x01 << stateMaskingIdx) ) | ( (sensorNormVals[idx] > threshold ? 1 : 0) << stateMaskingIdx );
 
-	if (sensorNormVals[idx] > threshold) {
-		irSensorState |= 0x01 << stateMaskingIdx;
-	}
-	else {
-		irSensorState &= ~(0x01 << stateMaskingIdx);
-	}
+//	if (sensorNormVals[idx] > threshold) {
+//		irSensorState |= 0x01 << stateMaskingIdx;
+//	}
+//	else {
+//		irSensorState &= ~(0x01 << stateMaskingIdx);
+//	}
 }
 
 
@@ -217,6 +219,9 @@ __STATIC_INLINE void	Make_Battery_Voltage() {
 				FLOAT_SWAP(sensingVoltageMidian[0], sensingVoltageMidian[1]);
 			}
 
+			if (sensingVoltageMidian[1] == 0) {
+				sensingVoltageMidian[1] = 0.001f;
+			}
 			sensingVoltage = sensingVoltageMidian[1];
 			sensingVoltageIdx = 0;
 
@@ -229,6 +234,8 @@ __STATIC_INLINE void	Make_Battery_Voltage() {
 
 
 __STATIC_INLINE void	Sensor_TIM5_IRQ() {
+	DWT->CYCCNT = 0;
+
 	static uint8_t	tim5Idx = 0;
 
 	Make_Sensor_Raw_Vals(tim5Idx);

@@ -8,22 +8,25 @@
 
 
 
+#include <config.h>
+#include <drive_speed_cntl.h>
+#include <inline_drive.h>
+#include <mark.h>
+#include <positioning.h>
 #include <stdint.h>
 #include <stdbool.h>
 
 
+#include "curve_boost.h"
 #include "drive_data_tools.h"
-#include "drive_def_var.h"
-#include "drive_positioning.h"
 #include "drive_preset.h"
-#include "drive_speed_ctrl.h"
-#include "drive_state_machine.h"
 #include "first_drive.h"
 #include "init.h"
 #include "linetracer_test.h"
 #include "motor.h"
 #include "second_drive.h"
 #include "sensor.h"
+#include "straight_boost.h"
 
 #include "main.h"
 #include "custom_delay.h"

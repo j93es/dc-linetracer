@@ -97,6 +97,97 @@ void Print_Drive_Data() {
 	Custom_OLED_Clear();
 }
 
+void Print_Drive_Data_Buffer() {
+	uint32_t i = 1;
+	uint8_t sw = 0;
+	uint16_t markCnt_L = 0;
+	uint16_t markCnt_R = 0;
+	uint16_t crossCnt = 0;
+
+	// 마크 개수 세기
+	for (i = 1; driveDataBuffer[i].markState != MARK_NONE; i += 1) {
+
+		// 현재상태가 좌측 곡선인 경우
+		if (driveDataBuffer[i].markState == MARK_CURVE_L) {
+
+			markCnt_L += 1;
+		}
+
+		// 현재상태가 우측 곡선인 경우
+		else if (driveDataBuffer[i].markState == MARK_CURVE_R) {
+
+			markCnt_R += 1;
+		}
+
+		// 직선 (인덱스가 1부터 시작하기에 지정되지 않은 메모리에 접근하는 행동을 방지함)
+		else if (driveDataBuffer[i].markState == MARK_STRAIGHT) {
+
+			// 이전 상태가 좌측 곡선이었을 경우
+			if (driveDataBuffer[i-1].markState == MARK_CURVE_L) {
+				markCnt_L += 1;
+			}
+			// 이전 상태가 우측 곡선이었을 경우
+			else if (driveDataBuffer[i-1].markState == MARK_CURVE_R) {
+				markCnt_R += 1;
+			}
+		}
+	}
+
+	for (i = 0; crossCntTableBuffer[i] != 0 && i < MAX_CROSS_CNT; i++) {
+		crossCnt++;
+	}
+
+
+	// OLED에 변수명 변수값 출력
+	Custom_OLED_Clear();
+	Custom_OLED_Printf("/0mark L:   %d", markCnt_L);
+	Custom_OLED_Printf("/1mark R:   %d", markCnt_R);
+	Custom_OLED_Printf("/2cross:    %d", crossCnt);
+
+	while (CUSTOM_SW_3 != Custom_Switch_Read());
+
+
+
+	Custom_OLED_Clear();
+
+	i = 0;
+
+	while(CUSTOM_SW_3 != (sw = Custom_Switch_Read())) {
+
+		if (driveDataBuffer[i].markState == MARK_CURVE_L) {
+
+			Custom_OLED_Printf("/0mark L");
+		}
+		else if (driveDataBuffer[i].markState == MARK_CURVE_R) {
+
+			Custom_OLED_Printf("/0mark R");
+		}
+		else if (driveDataBuffer[i].markState == MARK_STRAIGHT) {
+
+			Custom_OLED_Printf("/0straight");
+		}
+
+		Custom_OLED_Printf("/1L: %9u", driveDataBuffer[i].tickCnt_L);
+		Custom_OLED_Printf("/2R: %9u", driveDataBuffer[i].tickCnt_R);
+		Custom_OLED_Printf("/3C: %5u", driveDataBuffer[i].crossCnt);
+
+		if (sw == CUSTOM_SW_1) {
+
+			i -= 1;
+		}
+		else if (sw == CUSTOM_SW_2) {
+
+			i += 1;
+		}
+
+		if (driveDataBuffer[i].markState == MARK_NONE) {
+			break ;
+		}
+	}
+
+	Custom_OLED_Clear();
+}
+
 
 /*
 void Save_Drive_Data_Flash() {

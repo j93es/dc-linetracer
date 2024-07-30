@@ -2,14 +2,14 @@
  * drive_speed_ctrl.h
  */
 
-#ifndef INC_DRIVE_SPEED_CTRL_H_
-#define INC_DRIVE_SPEED_CTRL_H_
+#ifndef INC_DRIVE_SPEED_CNTL_H_
+#define INC_DRIVE_SPEED_CNTL_H_
 
 
 
 
 
-#include "drive_def_var.h"
+#include <config.h>
 #include "main.h"
 #include "custom_delay.h"
 #include "motor.h"
@@ -32,7 +32,7 @@ __STATIC_INLINE void	Drive_Speed_Accele_Control() {
 	else if (curSpeed < targetSpeed) {
 
 		// 가속도 제어
-		curAccele += 0.03f;
+		curAccele += 0.04f;
 
 		if (curAccele > targetAccele) {
 
@@ -101,7 +101,7 @@ __STATIC_INLINE void	Make_Inline_Val(float finalSpeed) {
 
 	if (curInlineVal < targetInlineVal) {
 
-		curInlineVal += targetInlineVal * finalSpeed * MOTOR_CONTROL_INTERVAL_S / INLINE_POSITIONING_LEN;
+		curInlineVal += (float)targetInlineVal * finalSpeed * MOTOR_CONTROL_INTERVAL_S / INLINE_POSITIONING_TICK / TICK_PER_M;
 		if (curInlineVal > targetInlineVal) {
 			curInlineVal = targetInlineVal;
 		}
@@ -109,7 +109,7 @@ __STATIC_INLINE void	Make_Inline_Val(float finalSpeed) {
 
 	else {
 
-		curInlineVal -= targetInlineVal * finalSpeed * MOTOR_CONTROL_INTERVAL_S / INLINE_POSITIONING_LEN;
+		curInlineVal -= (float)targetInlineVal * finalSpeed * MOTOR_CONTROL_INTERVAL_S / INLINE_POSITIONING_TICK / TICK_PER_M;
 		if (curInlineVal < targetInlineVal) {
 			curInlineVal = targetInlineVal;
 		}
@@ -164,8 +164,6 @@ __STATIC_INLINE uint8_t	Is_Drive_End() {
 
 	if (endMarkCnt >= 2) {
 
-		optimizeLevel++;
-
 		return EXIT_ECHO_END_MARK;
 	}
 	if (markState == MARK_LINE_OUT) {
@@ -180,4 +178,4 @@ __STATIC_INLINE uint8_t	Is_Drive_End() {
 
 
 
-#endif /* INC_DRIVE_SPEED_CTRL_H_ */
+#endif /* INC_DRIVE_SPEED_CNTL_H_ */

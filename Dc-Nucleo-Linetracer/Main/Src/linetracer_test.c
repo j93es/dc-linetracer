@@ -263,8 +263,8 @@ void MotorL_Test_Duty() {
 
 void MotorL_Test_PD() {
 
-	float coefChangeVal = 0.05;
-	float targetChangeVal = 400;
+	float coefChangeVal = 5;
+	float targetChangeVal = 100;
 
 	Pre_Drive_Var_Init();
 
@@ -286,16 +286,16 @@ void MotorL_Test_PD() {
 		} else if (sw == CUSTOM_SW_2) {
 			pCoef += coefChangeVal;
 		} else if (sw == CUSTOM_SW_1_2) {
-			dCoef -= coefChangeVal;
+			dCoef -= coefChangeVal / 1000.f;
 		} else if (sw == CUSTOM_SW_2_3) {
-			dCoef += coefChangeVal;
+			dCoef += coefChangeVal / 1000.f;
 		} else if (sw == CUSTOM_SW_3) {
-			targetEncoderValueL_cntl += targetChangeVal;
+			positionCmdL += targetChangeVal * RADIAN_PER_TICK;
 		}
 
 		Custom_OLED_Printf("/0CCR    : %5d", TIM10->CCR1);
 		Custom_OLED_Printf("/1curECOD: %5d", TIM4->CNT);
-		Custom_OLED_Printf("/2tarECOD: %5u", targetEncoderValueL_cntl);
+		Custom_OLED_Printf("/2tarECOD: %5f", positionCmdL);
 		Custom_OLED_Printf("/3pCoef  : %5f", pCoef);
 		Custom_OLED_Printf("/4dCoef  : %5f", dCoef);
 
@@ -313,8 +313,8 @@ void MotorL_Test_PD() {
 
 void MotorR_Test_PD() {
 
-	float coefChangeVal = 0.05;
-	float targetChangeVal = 50;
+	float coefChangeVal = 5;
+	float targetChangeVal = 200;
 
 	Pre_Drive_Var_Init();
 
@@ -336,16 +336,16 @@ void MotorR_Test_PD() {
 		} else if (sw == CUSTOM_SW_2) {
 			pCoef += coefChangeVal;
 		} else if (sw == CUSTOM_SW_1_2) {
-			dCoef -= coefChangeVal;
+			dCoef -= coefChangeVal / 1000.f;
 		} else if (sw == CUSTOM_SW_2_3) {
-			dCoef += coefChangeVal;
+			dCoef += coefChangeVal / 1000.f;
 		} else if (sw == CUSTOM_SW_3) {
-			targetEncoderValueR_cntl += targetChangeVal;
+			positionCmdR += targetChangeVal * RADIAN_PER_TICK;
 		}
 
 		Custom_OLED_Printf("/0CCR    : %5d", TIM11->CCR1);
 		Custom_OLED_Printf("/1curECOD: %5d", TIM3->CNT);
-		Custom_OLED_Printf("/2tarECOD: %5d", targetEncoderValueR_cntl);
+		Custom_OLED_Printf("/2tarECOD: %5f", positionCmdR);
 		Custom_OLED_Printf("/3pCoef  : %5f", pCoef);
 		Custom_OLED_Printf("/4dCoef  : %5f", dCoef);
 
@@ -394,7 +394,9 @@ void Motor_Test_Speed() {
 		Custom_OLED_Printf("/0speed  : %3.2f", curSpeed);
 		Custom_OLED_Printf("/1CCR    : %5d", TIM10->CCR1);
 		Custom_OLED_Printf("/2curECOD: %5d", TIM4->CNT);
-		Custom_OLED_Printf("/3tarECOD: %5f", targetEncoderValueL_cntl);
+//		Custom_OLED_Printf("/3tarECOD: %5f", targetEncoderValueL_cntl)
+		Custom_OLED_Printf("/5%5f", positionL );
+		Custom_OLED_Printf("/5%5f", positionCmdL );
 
 	}
 
@@ -473,7 +475,9 @@ void Drive_Test_Position() {
 
 	while (CUSTOM_SW_3 != (sw = Custom_Switch_Read())) {
 
-		Positioning(&positioningIdx);
+		for (int i = 0; i < 8; i++) {
+			Positioning(&positioningIdx);
+		}
 
 		Custom_OLED_Printf("/0pos:     %7d", positionVal);
 		Custom_OLED_Printf("/2speedL:  %f", (1 + positionVal * positionCoef));
@@ -506,21 +510,21 @@ void Mark_Live_Test() {
 
     while (CUSTOM_SW_3 != (sw = Custom_Switch_Read())) {
 
-    	Drive_State_Machine();
+    	Mark();
 
     	Positioning(&positioningIdx);
 
-        switch (driveState) {
-        case DRIVE_STATE_IDLE:
+        switch (markStateMachine) {
+        case MARK_STATE_MACHINE_IDLE:
         	Custom_OLED_Printf("/0STATE: IDLE     ");
             break;
-        case DRIVE_STATE_CROSS:
+        case MARK_STATE_MACHINE_CROSS:
         	Custom_OLED_Printf("/0STATE: CROSS    ");
             break;
-        case DRIVE_STATE_MARKER:
+        case MARK_STATE_MACHINE_MARKER:
         	Custom_OLED_Printf("/0STATE: MARK     ");
             break;
-        case DRIVE_STATE_DECISION:
+        case MARK_STATE_MACHINE_DECISION:
         	Custom_OLED_Printf("/0STATE: DECISION ");
         	break;
         default:

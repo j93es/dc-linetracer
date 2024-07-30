@@ -7,11 +7,26 @@
 
 
 // 주행 전 초기값 조정
-static void Pre_Drive_Var_Adjust_First_Drive();
-static void Pre_Drive_Var_Adjust_Second_Drive();
-static void Pre_Drive_Var_Adjust_Switch_Cntl(t_driveMenu_Int *intValues, t_driveMenu_Float *floatValues, \
-											uint8_t intValCnt, uint8_t floatValCnt, uint8_t isEnd);
+static void Adjust_First_Drive();
+static void Adjust_Straight_Boost();
+static void Adjust_Curve_Boost();
 
+
+static void Adjust_Int_Val(t_driveMenu_Int *intValues, uint8_t intValCnt, uint8_t isEnd);
+static void Adjust_Float_Val(t_driveMenu_Float *floatValues, uint8_t intValCnt, uint8_t isEnd);
+
+
+
+
+void Drive_Optimize_Setting() {
+	t_driveMenu_Int		intValues[] = {
+			{ "straight boost",			&isStraightBoostEnabled,		1 },
+			{ "curve boost   ",			&isCurveBoostEnabled,			1 },
+			{ "inline drive  ",			&isInlineDriveEnabled,			1 },
+	};
+	uint8_t intValCnt = sizeof(intValues) / sizeof(t_driveMenu_Int);
+	Adjust_Int_Val(intValues, intValCnt, CUSTOM_FALSE);
+}
 
 
 
@@ -19,13 +34,15 @@ static void Pre_Drive_Var_Adjust_Switch_Cntl(t_driveMenu_Int *intValues, t_drive
 //주행 전 상수값 변경 절차
 void Pre_Drive_Setting() {
 
-	if (optimizeLevel >= OPTIMIZE_LEVEL_STRAIGHT) {
-		Pre_Drive_Var_Adjust_Second_Drive();
+	if (isStraightBoostEnabled) {
+		Adjust_Straight_Boost();
 	}
 
-	if (optimizeLevel >= OPTIMIZE_LEVEL_NONE) {
-		Pre_Drive_Var_Adjust_First_Drive();
+	if (isCurveBoostEnabled) {
+		Adjust_Curve_Boost();
 	}
+
+	Adjust_First_Drive();
 
 	Pre_Drive_Var_Init();
 
@@ -34,13 +51,14 @@ void Pre_Drive_Setting() {
 
 
 // 주행 전 초기값 조정
-static void Pre_Drive_Var_Adjust_First_Drive() {
+static void Adjust_First_Drive() {
 
 	t_driveMenu_Int		intValues[] = {
 
 			{ "Threshold",			&threshold,			10 },
 	};
 	uint8_t intValCnt = sizeof(intValues) / sizeof(t_driveMenu_Int);
+	Adjust_Int_Val(intValues, intValCnt, CUSTOM_FALSE);
 
 
 	t_driveMenu_Float	floatValues[] = {
@@ -51,29 +69,19 @@ static void Pre_Drive_Var_Adjust_First_Drive() {
 			{ "Position Coef",		&positionCoef,		0.000001f },
 	};
 	uint8_t floatValCnt = sizeof(floatValues) / sizeof(t_driveMenu_Float);
-
-
-
-	Pre_Drive_Var_Adjust_Switch_Cntl(intValues, floatValues, intValCnt, floatValCnt, CUSTOM_TRUE);
+	Adjust_Float_Val(floatValues, floatValCnt, CUSTOM_TRUE);
 }
 
 
 
-static void Pre_Drive_Var_Adjust_Second_Drive() {
+static void Adjust_Straight_Boost() {
 
 	float acceleStartLen = acceleStartTick / TICK_PER_M;
 	float deceleEndLen = deceleEndTick / TICK_PER_M;
 
-	t_driveMenu_Int		intValues[] = {
-
-			{ "optimize level",		&optimizeLevel,		1 },
-	};
-	uint8_t intValCnt = sizeof(intValues) / sizeof(t_driveMenu_Int);
-
-
 	t_driveMenu_Float	floatValues[] = {
 
-			{ "Boost Speed",		&boostSpeed,		0.25f },
+			{ "st boost V",		&starightBoostSpeed,	0.25f },
 			{ "Accele",				&targetAccele_init,	0.25f },
 			//{ "Decele",				&decele_init,		0.25f },
 			{ "acceleStart len",	&acceleStartLen,	0.025f },
@@ -81,10 +89,8 @@ static void Pre_Drive_Var_Adjust_Second_Drive() {
 			{ "decelEnd ratio",		&deceleEndRatio,	0.05f },
 	};
 	uint8_t floatValCnt = sizeof(floatValues) / sizeof(t_driveMenu_Float);
+	Adjust_Float_Val(floatValues, floatValCnt, CUSTOM_TRUE);
 
-
-
-	Pre_Drive_Var_Adjust_Switch_Cntl(intValues, floatValues, intValCnt, floatValCnt, CUSTOM_FALSE);
 
 	acceleStartTick = acceleStartLen * TICK_PER_M;
 	deceleEndTick = deceleEndLen * TICK_PER_M;
@@ -92,11 +98,22 @@ static void Pre_Drive_Var_Adjust_Second_Drive() {
 }
 
 
-static void Pre_Drive_Var_Adjust_Switch_Cntl(t_driveMenu_Int *intValues, t_driveMenu_Float *floatValues, \
-											uint8_t intValCnt, uint8_t floatValCnt, uint8_t isEnd) {
+static void Adjust_Curve_Boost() {
+
+
+	t_driveMenu_Float	floatValues[] = {
+
+			{ "cu boost V",		&curveBoostSpeed,		0.25f },
+	};
+	uint8_t floatValCnt = sizeof(floatValues) / sizeof(t_driveMenu_Float);
+	Adjust_Float_Val(floatValues, floatValCnt, CUSTOM_TRUE);
+}
+
+
+
+static void Adjust_Int_Val(t_driveMenu_Int *intValues, uint8_t intValCnt, uint8_t isEnd) {
 
 	uint8_t	sw = 0;
-
 
 	for (uint8_t i = 0; i < intValCnt; i++) {
 
@@ -111,6 +128,10 @@ static void Pre_Drive_Var_Adjust_Switch_Cntl(t_driveMenu_Int *intValues, t_drive
 				Custom_OLED_Printf("/2%s", intValues[i].valName);
 				Custom_OLED_Printf("/A/4%5d", *(intValues[i].val));
 
+				if (isEnd == CUSTOM_TRUE && i == intValCnt - 1) {
+					Custom_OLED_Printf("/g/0Ready to Drive");
+				}
+
 				// 변수 값 빼기
 				if (sw == CUSTOM_SW_1) {
 					*(intValues[i].val) -= intValues[i].changeVal;
@@ -123,6 +144,13 @@ static void Pre_Drive_Var_Adjust_Switch_Cntl(t_driveMenu_Int *intValues, t_drive
 		}
 	}
 
+	Custom_OLED_Clear();
+
+}
+
+static void Adjust_Float_Val(t_driveMenu_Float *floatValues, uint8_t floatValCnt, uint8_t isEnd) {
+
+	uint8_t	sw = 0;
 
 	for (uint8_t i = 0; i < floatValCnt; i++) {
 
@@ -167,14 +195,18 @@ void Pre_Drive_Var_Init() {
 
 	// pd 제어에 사용하는 변수 초기화
 	levelMaxCCR = TIM10->ARR + 1;
-	prevErrorL = 0;
-	prevErrorR = 0;
-	targetEncoderValueL_cntl = 10000;
-	targetEncoderValueR_cntl = 10000;
-	TIM3->CNT = targetEncoderValueL_cntl;
-	TIM4->CNT = targetEncoderValueR_cntl;
-	prevCurEncoderValueL = targetEncoderValueL_cntl;
-	prevCurEncoderValueR = targetEncoderValueR_cntl;
+	positionCmdL = 0;
+	positionL = 0;
+	positionCmdR = 0;
+	positionR = 0;
+//	prevErrorL = 0;
+//	prevErrorR = 0;
+//	targetEncoderValueL_cntl = 0;
+//	targetEncoderValueR_cntl = 0;
+	TIM3->CNT = 0;
+	TIM4->CNT = 0;
+	prevEncoderValueL = 0;
+	prevEncoderValueR = 0;
 	pCoef = P_COEF_INIT;
 	dCoef = D_COEF_INIT;
 
@@ -213,7 +245,7 @@ void Pre_Drive_Var_Init() {
 	markState = MARK_STRAIGHT;
 
 	// state machine 의 상태 업데이트
-	driveState = DRIVE_STATE_IDLE;
+	markStateMachine = MARK_STATE_MACHINE_IDLE;
 
 	// 현재까지 읽은 크로스 개수 업데이트
 	crossCnt = 0;
@@ -231,75 +263,36 @@ void Pre_Drive_Var_Init() {
 	bothMarkMasking = RIGHT_MARK_MASKING_INIT | LEFT_MARK_MASKING_INIT;
 	markAreaMasking = ~(lineMasking << 1 | lineMasking >> 1);
 
+	// isReadAllMark 값 정상으로 변경
+	isReadAllMark = CUSTOM_TRUE;
 
-	// 1차 주행에서만 초기화할 변수
-	if (optimizeLevel == OPTIMIZE_LEVEL_NONE) {
+	// 부스트 컨트롤 상태 업데이트
+	starightBoostCntl = BOOST_CNTL_IDLE;
 
-		optimizeLevel = OPTIMIZE_LEVEL_NONE;
+	curveBoostCntl = BOOST_CNTL_IDLE;
 
-		for (uint32_t i = 0; i < MAX_DRIVE_DATA_LEN; i++) {
-			t_driveData temp = T_DRIVE_DATA_INIT;
+	// 커브 인라인 상태 업데이트
+	curveInlineCntl = INLINE_CNTL_IDLE;
 
-			driveDataBuffer[i] = temp;
-		}
-
-		// driveData의 0, 1번째 값 초기화
-		// 0번 인덱스는 할당되지 않은 포인터에 접근하지 않도록 고정시켜둠
-		// 실질적으로 주행은 1번 인덱스부터 시작
-		driveDataBuffer[0].markState = MARK_STRAIGHT;
+	isLastStraight = CUSTOM_FALSE;
 
 
-		for (uint32_t i = 0; i < MAX_CROSS_CNT; i++) {
+	for (uint32_t i = 0; i < MAX_DRIVE_DATA_LEN; i++) {
+		t_driveData temp = T_DRIVE_DATA_INIT;
 
-			crossCntTableBuffer[i] = 0;
-		}
+		driveDataBuffer[i] = temp;
 	}
 
-	// 2, 3차 주행에서만 초기화할 변수
-	if (optimizeLevel >= OPTIMIZE_LEVEL_STRAIGHT) {
+	// driveData의 0, 1번째 값 초기화
+	// 0번 인덱스는 할당되지 않은 포인터에 접근하지 않도록 고정시켜둠
+	// 실질적으로 주행은 1번 인덱스부터 시작
+	driveDataBuffer[0].markState = MARK_STRAIGHT;
 
-		// isReadAllMark 값 정상으로 변경
-		isReadAllMark = CUSTOM_TRUE;
 
-		// 부스트 컨트롤 상태 업데이트
-		starightBoostCntl = BOOST_CNTL_IDLE;
+	for (uint32_t i = 0; i < MAX_CROSS_CNT; i++) {
+
+		crossCntTableBuffer[i] = 0;
 	}
-
-	// 3차 주행에서만 초기화할 변수
-	if (optimizeLevel >= OPTIMIZE_LEVEL_CURVE){
-
-		// 커브 인라인 상태 업데이트
-		curveInlineCntl = INLINE_CNTL_IDLE;
-	}
-}
-
-
-
-
-void	Time_Attack_Setting() {
-
-
-	t_driveMenu_Int		intValues[] = {
-
-			{ "Threshold",			&threshold,			5 },
-	};
-	uint8_t intValCnt = sizeof(intValues) / sizeof(t_driveMenu_Int);
-
-
-	t_driveMenu_Float	floatValues[] = {
-
-			{ "Pit In Len",			&pitInLen,			0.01f },
-	};
-	uint8_t floatValCnt = sizeof(floatValues) / sizeof(t_driveMenu_Float);
-
-	targetAccele_init = 2.f;
-	positionCoef = POSITION_COEF_INIT;
-	curveDeceleCoef = CURVE_DECELE_COEF_INIT;
-
-
-	Pre_Drive_Var_Adjust_Switch_Cntl(intValues, floatValues, intValCnt, floatValCnt, CUSTOM_TRUE);
-
-	Pre_Drive_Var_Init();
 }
 
 

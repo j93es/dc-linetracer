@@ -3,12 +3,13 @@
  */
 
 
-#ifndef INC_DRIVE_DEF_VAR_H_
-#define INC_DRIVE_DEF_VAR_H_
+#ifndef INC_CONFIG_H_
+#define INC_CONFIG_H_
 
 
 #include <stdint.h>
 #include <stdbool.h>
+
 
 
 // 공용 매크로
@@ -21,19 +22,24 @@
 
 
 // pd 제어 매크로
-#define P_COEF_INIT					0.4f
-#define D_COEF_INIT					0.4f
-#define T_ENCODER_MAX				65536
+#define P_COEF_INIT					170.f
+#define D_COEF_INIT					0.256f
+//#define T_ENCODER_MAX				65536
+#define MOTOR_RESISTANCE			7.14f
+#define MOTOR_KE					0.0330f
+#define RADIAN_PER_M				(1 / (3.141592 * TIRE_RADIUS * MOTOR_GEAR_RATIO))
+#define RADIAN_PER_TICK				(RADIAN_PER_M / TICK_PER_M)
 
 
 // 속도와 관련된 매크로
-#define MIN_SPEED					0.01f
+#define MIN_SPEED					0.0f
 
 #define ACCELE_INIT					7.0f
 #define DECELE_INIT					6.0f
 
 #define TARGET_SPEED_INIT			2.8f
-#define BOOST_SPEED_INIT			5.f
+#define STRAIGHT_BOOST_SPEED_INIT	5.f
+#define CURVE_BOOST_SPEED_INIT		4.f
 
 
 // 커브에서 어느 정도 감속할지 결정하는 매크로
@@ -42,7 +48,7 @@
 
 // POSITION_COEF(포지션 상수)를 도출하기 위한 매크로
 #define TIRE_RADIUS					0.036f					// m
-#define POSITION_COEF_INIT			0.00005f
+#define POSITION_COEF_INIT			0.00006f
 
 
 // motor
@@ -67,11 +73,11 @@
 
 
 // state machine에서 나온 상태
-#define DRIVE_STATE_IDLE			0
-#define DRIVE_STATE_CROSS			1
-#define DRIVE_STATE_MARKER			2
-#define DRIVE_STATE_DECISION		3
-#define DRIVE_DECISION_LINE_OUT		4
+#define MARK_STATE_MACHINE_IDLE			0
+#define MARK_STATE_MACHINE_CROSS		1
+#define MARK_STATE_MACHINE_MARKER		2
+#define MARK_STATE_MACHINE_DECISION		3
+#define MARK_STATE_MACHINE_LINE_OUT		4
 
 
 // 현재 mark의 상태값 매크로
@@ -98,11 +104,6 @@
 #define INLINE_CNTL_END				3
 
 
-// 주행 최적화 레벨 조정
-#define OPTIMIZE_LEVEL_NONE			0
-#define OPTIMIZE_LEVEL_STRAIGHT		1
-#define OPTIMIZE_LEVEL_CURVE		2
-
 
 // exitEcho 관련 매크로
 #define EXIT_ECHO_IDLE				0
@@ -111,7 +112,7 @@
 
 
 // 라인 아웃 일 때 몇 초 딜레이 할지
-#define LINE_OUT_DELAY_MS			0
+#define LINE_OUT_DELAY_MS			100
 
 
 
@@ -136,11 +137,16 @@
 // 감속 안전비율
 #define DECELE_END_RATIO_INIT		0.2f
 
+#define MIN_STRAIGHT_BOOST_TICK		( 0.1f * TICK_PER_M )
+
+#define MIN_CURVE_BOOST_TICK		( 1.2f * TICK_PER_M )
+
 
 // 인라인 주행 관련 매크로
-#define ABS_INLINE_TARGET_POSITION	4000
+#define ABS_INLINE_TARGET_POSITION	8000
 #define INLINE_END_RATIO			0.2f
-#define INLINE_POSITIONING_LEN		0.1f
+#define INLINE_POSITIONING_TICK		( 0.1f * TICK_PER_M )
+#define INLINE_SAFTY_TICK			( 0.5f * TICK_PER_M )
 
 
 
@@ -153,12 +159,12 @@
 #define MAX_CROSS_CNT				128
 
 
-#define LAST_STRAIGHT_TARGET_SPEED	2.4f
+#define LAST_STRAIGHT_TARGET_SPEED	2.8f
 
 
 
 
-typedef uint16_t		t_encoder;
+typedef int16_t		t_encoder;
 typedef int32_t			t_tick;
 
 
@@ -189,12 +195,16 @@ typedef struct	s_driveData {
 
 // pd 제어에 사용하는 변수
 extern volatile uint32_t 	levelMaxCCR;
-extern volatile int32_t		prevErrorL;
-extern volatile int32_t		prevErrorR;
-extern volatile t_encoder	targetEncoderValueL_cntl;
-extern volatile t_encoder	targetEncoderValueR_cntl;
-extern volatile t_encoder	prevCurEncoderValueL;
-extern volatile t_encoder	prevCurEncoderValueR;
+extern volatile float		positionCmdL;
+extern volatile float		positionL;
+extern volatile float		positionCmdR;
+extern volatile float		positionR;
+//extern volatile int32_t		prevErrorL;
+//extern volatile int32_t		prevErrorR;
+//extern volatile t_encoder	targetEncoderValueL_cntl;
+//extern volatile t_encoder	targetEncoderValueR_cntl;
+extern volatile t_encoder	prevEncoderValueL;
+extern volatile t_encoder	prevEncoderValueR;
 extern volatile float		pCoef;
 extern volatile float		dCoef;
 
@@ -223,7 +233,8 @@ extern volatile float		decele;
 
 extern volatile float		targetSpeed;
 extern volatile float		curSpeed;
-extern volatile float		boostSpeed;
+extern volatile float		starightBoostSpeed;
+extern volatile float		curveBoostSpeed;
 
 extern volatile float		curveDeceleCoef;
 
@@ -261,16 +272,19 @@ extern uint16_t				markAreaMasking;
 
 
 // state machine 의 상태
-extern uint8_t				driveState;
+extern uint8_t				markStateMachine;
 
 
 // 주행 컨트롤 변수
 extern uint8_t				starightBoostCntl;
+extern uint8_t				curveBoostCntl;
 extern uint8_t				curveInlineCntl;
 
 
 // 직선 주행, 곡선 인라인 최적화 레벨
-extern uint8_t				optimizeLevel;
+extern uint8_t				isStraightBoostEnabled;
+extern uint8_t				isCurveBoostEnabled;
+extern uint8_t				isInlineDriveEnabled;
 
 
 // 2차주행에서 마크를 정확히 읽었는지 판단
@@ -325,7 +339,9 @@ extern float				acceleStartTick;
 extern float				deceleEndTick;
 extern float				deceleEndRatio;
 
+extern float				isLastStraight;
 
 
 
-#endif //INC_DRIVE_DEF_VAR_H_
+
+#endif //INC_CONFIG_H_

@@ -12,6 +12,8 @@
 
 
 void	Pre_Drive_Setting();
+void	Drive_Optimize_Setting();
+
 void	Drive_Last_Spurt();
 void	Drive_Read_Mark();
 void	Pre_Drive_Var_Init();

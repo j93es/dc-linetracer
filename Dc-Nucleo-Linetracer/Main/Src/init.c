@@ -76,6 +76,7 @@ void Init() {
 			{ "Test R Duty    ", MotorR_Test_Duty },
 			{ "Mark Live Test ", Mark_Live_Test },
 			{ "Drive Data     ", Print_Drive_Data },
+			{ "Drive Data Buf ", Print_Drive_Data_Buffer },
 //			{ "Test Velocity  ", Motor_Test_Velocity },
 //			{ "Switch Test    ", Switch_Test },
 	};

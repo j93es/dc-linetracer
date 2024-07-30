@@ -2,11 +2,11 @@
  * drive_state_machine.h
  */
 
-#ifndef INC_DRIVE_STATE_MACHINE_H_
-#define INC_DRIVE_STATE_MACHINE_H_
+#ifndef INC_MARK_H_
+#define INC_MARK_H_
 
 
-#include "drive_def_var.h"
+#include <config.h>
 #include "sensor.h"
 #include "main.h"
 
@@ -122,7 +122,7 @@ __STATIC_INLINE uint8_t	Is_Passed_Marker() {
 
 
 // end line, right mark, left mark, straight를 판별하고 정해진 동작을 실행하는 함수
-__STATIC_INLINE void	Decision() {
+__STATIC_INLINE void	Mark_Decision() {
 
 	// cross
 	if (irSensorStateSum == 0xff) {
@@ -135,8 +135,6 @@ __STATIC_INLINE void	Decision() {
 	else if ((irSensorStateSum & 0x81) == 0x81) {
 
 		markState = MARK_END;
-		endMarkCnt++;
-
 	}
 
 
@@ -178,7 +176,7 @@ __STATIC_INLINE void	Decision() {
 
 
 
-__STATIC_INLINE void	Drive_State_Machine() {
+__STATIC_INLINE void	Mark() {
 
 	static uint32_t	lineOutStartTime = 0;
 
@@ -187,17 +185,17 @@ __STATIC_INLINE void	Drive_State_Machine() {
 	Mark_Masking(curIrSensorMid);
 
 
-	switch (driveState) {
+	switch (markStateMachine) {
 
 
-		case DRIVE_STATE_IDLE :
+		case MARK_STATE_MACHINE_IDLE :
 
 				// 라인 센서 4개 이상 인식
 				if (__builtin_popcount(irSensorState & lineMasking) >= 4) {
 
 					Mark_Accumming_Reset();
 					Mark_Accumming(curIrSensorMid);
-					driveState = DRIVE_STATE_CROSS;
+					markStateMachine = MARK_STATE_MACHINE_CROSS;
 				}
 
 				// 라인 센서 4개 이하 and 마크 센서 1개 이상
@@ -205,7 +203,7 @@ __STATIC_INLINE void	Drive_State_Machine() {
 
 					Mark_Accumming_Reset();
 					Mark_Accumming(curIrSensorMid);
-					driveState = DRIVE_STATE_MARKER;
+					markStateMachine = MARK_STATE_MACHINE_MARKER;
 				}
 
 				// 라인아웃되거나 잠깐 떳을 때
@@ -213,7 +211,7 @@ __STATIC_INLINE void	Drive_State_Machine() {
 
 					lineOutStartTime = uwTick;
 
-					driveState = DRIVE_DECISION_LINE_OUT;
+					markStateMachine = MARK_STATE_MACHINE_LINE_OUT;
 				}
 
 				break;
@@ -222,7 +220,7 @@ __STATIC_INLINE void	Drive_State_Machine() {
 
 
 
-		case DRIVE_STATE_CROSS:
+		case MARK_STATE_MACHINE_CROSS:
 
 				// accum
 				Mark_Accumming(curIrSensorMid);
@@ -231,7 +229,7 @@ __STATIC_INLINE void	Drive_State_Machine() {
 				if ( (irSensorStateSum == 0xff && Is_Passed_Marker()) \
 					|| Is_Line_Out() ) {
 
-					driveState = DRIVE_STATE_DECISION;
+					markStateMachine = MARK_STATE_MACHINE_DECISION;
 				}
 
 				break;
@@ -240,7 +238,7 @@ __STATIC_INLINE void	Drive_State_Machine() {
 
 
 
-		case DRIVE_STATE_MARKER :
+		case MARK_STATE_MACHINE_MARKER :
 
 				// accum
 				Mark_Accumming(curIrSensorMid);
@@ -248,7 +246,7 @@ __STATIC_INLINE void	Drive_State_Machine() {
 				// 마커 센서가 0개 일 때
 				if (Is_Passed_Marker() || Is_Line_Out()) {
 
-					driveState = DRIVE_STATE_DECISION;
+					markStateMachine = MARK_STATE_MACHINE_DECISION;
 				}
 
 				break;
@@ -257,11 +255,11 @@ __STATIC_INLINE void	Drive_State_Machine() {
 
 
 
-		case DRIVE_STATE_DECISION :
+		case MARK_STATE_MACHINE_DECISION :
 
-				Decision();
+				Mark_Decision();
 
-				driveState = DRIVE_STATE_IDLE;
+				markStateMachine = MARK_STATE_MACHINE_IDLE;
 
 				break;
 
@@ -269,13 +267,12 @@ __STATIC_INLINE void	Drive_State_Machine() {
 
 
 
-		case DRIVE_DECISION_LINE_OUT :
+		case MARK_STATE_MACHINE_LINE_OUT :
 
-				markState = MARK_LINE_OUT;
 
 				if (!Is_Line_Out()) {
 
-					driveState = DRIVE_STATE_IDLE;
+					markStateMachine = MARK_STATE_MACHINE_IDLE;
 				}
 
 				// state == 0x00인 상태가 t(ms) 지속되었을 때
