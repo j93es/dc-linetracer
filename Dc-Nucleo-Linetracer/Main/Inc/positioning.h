@@ -13,7 +13,7 @@
 
 __STATIC_INLINE void	Position_Windowing() {
 
-	int32_t	window = (positionVal + 30000) / 4000;
+	int32_t	window = ((positionVal - curInlineVal) + 30000) / 4000;
 
 	positionIdxMax = GET_MIN(window + WINDOW_SIZE_HALF, IR_SENSOR_LEN - 1);
 	positionIdxMin = GET_MAX(window - WINDOW_SIZE_HALF + 1, 0);
@@ -44,9 +44,11 @@ __STATIC_INLINE void	Make_Position_Val() {
 }
 
 
-__STATIC_INLINE void	Positioning(uint8_t *idx) {
+__STATIC_INLINE void	Positioning() {
 
-	switch(*idx) {
+	static uint8_t idx = 0;
+
+	switch(idx) {
 			case 0:
 			case 1:
 			case 2:
@@ -55,9 +57,9 @@ __STATIC_INLINE void	Positioning(uint8_t *idx) {
 			case 5:
 			case 6:
 			case 7:
-				Sum_Position_Val(*idx);
-				Sum_Position_Val(*idx + 8);
-				*idx += 1;
+				Sum_Position_Val(idx);
+				Sum_Position_Val(idx + 8);
+				idx += 1;
 
 				break;
 
@@ -66,7 +68,7 @@ __STATIC_INLINE void	Positioning(uint8_t *idx) {
 				Make_Position_Val();
 				Position_Windowing();
 
-				*idx = 0;
+				idx = 0;
 				break;
 	}
 }

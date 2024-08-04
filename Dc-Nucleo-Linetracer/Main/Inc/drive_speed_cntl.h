@@ -32,32 +32,17 @@ __STATIC_INLINE void	Drive_Speed_Accele_Control() {
 	else if (curSpeed < targetSpeed) {
 
 		// 가속도 제어
-		curAccele += 0.04f;
-
-		if (curAccele > targetAccele) {
-
-			curAccele = targetAccele;
-		}
+		curAccele = GET_MIN(curAccele + JERK_COEF, targetAccele);
 
 		// 속도 제어
-		curSpeed += curAccele * MOTOR_CONTROL_INTERVAL_S;
-
-		if (curSpeed > targetSpeed) {
-
-			curSpeed = targetSpeed;
-		}
+		curSpeed = GET_MIN(curSpeed + curAccele * MOTOR_CONTROL_INTERVAL_S, targetSpeed);
 	}
 
 	// curSpeed > targetSpeed 일 경우
 	else {
 
 		// 속도 제어
-		curSpeed -= decele * MOTOR_CONTROL_INTERVAL_S;
-
-		if (curSpeed < targetSpeed) {
-
-			curSpeed = targetSpeed;
-		}
+		curSpeed = GET_MAX(curSpeed - decele * MOTOR_CONTROL_INTERVAL_S, targetSpeed);
 	}
 }
 
@@ -72,19 +57,12 @@ __STATIC_INLINE void	Make_Limited_Position() {
 	// 곡선에 진입을 시작했을 때 빠르게 curve decel을 해줌
 	if (limitedPositionVal < absPositionVal) {
 
-		limitedPositionVal += 100;
-		if (limitedPositionVal > absPositionVal) {
-			limitedPositionVal = absPositionVal;
-		}
+		limitedPositionVal = GET_MIN(limitedPositionVal + 50, absPositionVal);
 	}
-
 	// 곡선에서 벗어날 때 천천히 속도를 올려줌
 	else {
 
-		limitedPositionVal -= 50;
-		if (limitedPositionVal < absPositionVal) {
-			limitedPositionVal = absPositionVal;
-		}
+		limitedPositionVal = GET_MAX(limitedPositionVal - 25, absPositionVal);
 	}
 }
 
@@ -101,18 +79,12 @@ __STATIC_INLINE void	Make_Inline_Val(float finalSpeed) {
 
 	if (curInlineVal < targetInlineVal) {
 
-		curInlineVal += (float)targetInlineVal * finalSpeed * MOTOR_CONTROL_INTERVAL_S / INLINE_POSITIONING_TICK / TICK_PER_M;
-		if (curInlineVal > targetInlineVal) {
-			curInlineVal = targetInlineVal;
-		}
+		curInlineVal = GET_MIN(curInlineVal + 50, targetInlineVal);
 	}
 
 	else {
 
-		curInlineVal -= (float)targetInlineVal * finalSpeed * MOTOR_CONTROL_INTERVAL_S / INLINE_POSITIONING_TICK / TICK_PER_M;
-		if (curInlineVal < targetInlineVal) {
-			curInlineVal = targetInlineVal;
-		}
+		curInlineVal = GET_MAX(curInlineVal - 50, targetInlineVal);
 	}
 }
 
@@ -162,7 +134,7 @@ __STATIC_INLINE void	Drive_Fit_In(float s, float pinSpeed) {
 
 __STATIC_INLINE uint8_t	Is_Drive_End() {
 
-	if (endMarkCnt >= 2) {
+	if (endMarkCnt >= stopEndMarkCnt) {
 
 		return EXIT_ECHO_END_MARK;
 	}

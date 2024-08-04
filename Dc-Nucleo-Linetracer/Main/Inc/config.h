@@ -18,11 +18,13 @@
 #define ABS(x) 						( ((x) < 0) ? (-1 * (x)) : (x) )
 #define GET_MAX(x, y)				( ((x) > (y)) ? (x) : (y) )
 #define GET_MIN(x, y)				( ((x) < (y)) ? (x) : (y) )
+#define INT_SWAP(a, b)				{ a ^= b; b ^= a; a ^= b; }
+#define FLOAT_SWAP(a, b)			{ float _tmp = a; a = b; b = _tmp; }
 
 
 
 // pd 제어 매크로
-#define P_COEF_INIT					170.f
+#define P_COEF_INIT					160.f
 #define D_COEF_INIT					0.256f
 //#define T_ENCODER_MAX				65536
 #define MOTOR_RESISTANCE			7.14f
@@ -34,11 +36,13 @@
 // 속도와 관련된 매크로
 #define MIN_SPEED					0.0f
 
-#define ACCELE_INIT					7.0f
-#define DECELE_INIT					6.0f
+#define JERK_COEF					0.2f
 
-#define TARGET_SPEED_INIT			2.8f
-#define STRAIGHT_BOOST_SPEED_INIT	5.f
+#define ACCELE_INIT					7.0f
+#define DECELE_INIT					7.0f
+
+#define TARGET_SPEED_INIT			2.9f
+#define STRAIGHT_BOOST_SPEED_INIT	6.f
 #define CURVE_BOOST_SPEED_INIT		4.f
 
 
@@ -112,12 +116,12 @@
 
 
 // 라인 아웃 일 때 몇 초 딜레이 할지
-#define LINE_OUT_DELAY_MS			100
+#define LINE_OUT_DELAY_MS			200
 
 
 
 // 피트인 관련 매크로
-#define PIT_IN_LEN_INIT				0.1f
+#define PIT_IN_LEN_INIT				0.06f
 #define PIT_IN_TARGET_SPEED			MIN_SPEED
 
 
@@ -129,13 +133,13 @@
 // 2차 주행에서 어느 정도 지나면 가감속할 지 결정하는 매크로
 
 //// 직선에 진입한 후 어느정도 이동한 후 가속할지
-#define ACCELE_START_TICK_INIT		( 0.05f * TICK_PER_M )
+#define ACCELE_START_TICK_INIT		( 0.1f * TICK_PER_M )
 
 // 감속 안전거리 (최소 20cm 이상)
 #define DECELE_END_TICK_INIT		( 0.2f * TICK_PER_M )
 
 // 감속 안전비율
-#define DECELE_END_RATIO_INIT		0.2f
+#define DECELE_END_RATIO_INIT		0.3f
 
 #define MIN_STRAIGHT_BOOST_TICK		( 0.1f * TICK_PER_M )
 
@@ -143,23 +147,40 @@
 
 
 // 인라인 주행 관련 매크로
-#define ABS_INLINE_TARGET_POSITION	8000
-#define INLINE_END_RATIO			0.2f
-#define INLINE_POSITIONING_TICK		( 0.1f * TICK_PER_M )
-#define INLINE_SAFTY_TICK			( 0.5f * TICK_PER_M )
+#define ABS_INLINE_TARGET_POSITION			6000
+#define INLINE_END_RATIO					0.2f
+#define INLINE_PREPARE_POSITIONING_TICK		( 0.05f * TICK_PER_M )
+#define INLINE_RESTORE_POSITIONING_TICK		( 0.1f * TICK_PER_M )
+#define INLINE_SAFTY_TICK					( 0.05f * TICK_PER_M )
 
 
 
 // 1차주행, 2차 주행의 driveData 관련 매크로
+#define STOP_END_MARK_CNT_INIT		2
 #define MAX_DRIVE_DATA_LEN			320
 #define T_DRIVE_DATA_INIT			{ 0, 0, MARK_NONE, 0 }
 
 
 // 최대 크로스 개수
 #define MAX_CROSS_CNT				128
+#define LAST_STRAIGHT_TARGET_SPEED	2.6f
 
 
-#define LAST_STRAIGHT_TARGET_SPEED	2.8f
+
+
+// 센서
+
+#define IR_SENSOR_MID			7
+
+#define IR_SENSOR_LEN			16
+
+#define WINDOW_SIZE_HALF		2
+
+#define	THRESHOLD_MAX 			250
+#define	THRESHOLD_MIN			20
+#define	THRESHOLD_CHANGE_VAL	5
+#define	THRESHOLD_INIT			180
+
 
 
 
@@ -323,7 +344,7 @@ extern uint16_t				crossCnt;
 
 //end mark를 몇 번 봤는지 카운트하는 변수
 extern uint8_t				endMarkCnt;
-
+extern uint8_t 				stopEndMarkCnt;
 
 // 피트인 거리
 extern float				pitInLen;

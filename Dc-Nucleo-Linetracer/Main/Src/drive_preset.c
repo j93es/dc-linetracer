@@ -56,6 +56,7 @@ static void Adjust_First_Drive() {
 	t_driveMenu_Int		intValues[] = {
 
 			{ "Threshold",			&threshold,			10 },
+//			{ "Stop End Mark", 		&stopEndMarkCnt,	1},
 	};
 	uint8_t intValCnt = sizeof(intValues) / sizeof(t_driveMenu_Int);
 	Adjust_Int_Val(intValues, intValCnt, CUSTOM_FALSE);
@@ -83,13 +84,13 @@ static void Adjust_Straight_Boost() {
 
 			{ "st boost V",		&starightBoostSpeed,	0.25f },
 			{ "Accele",				&targetAccele_init,	0.25f },
-			//{ "Decele",				&decele_init,		0.25f },
+			{ "Decele",				&decele_init,		0.25f },
 			{ "acceleStart len",	&acceleStartLen,	0.025f },
 			{ "decelEnd len",		&deceleEndLen,		0.05f },
 			{ "decelEnd ratio",		&deceleEndRatio,	0.05f },
 	};
 	uint8_t floatValCnt = sizeof(floatValues) / sizeof(t_driveMenu_Float);
-	Adjust_Float_Val(floatValues, floatValCnt, CUSTOM_TRUE);
+	Adjust_Float_Val(floatValues, floatValCnt, CUSTOM_FALSE);
 
 
 	acceleStartTick = acceleStartLen * TICK_PER_M;
@@ -106,7 +107,7 @@ static void Adjust_Curve_Boost() {
 			{ "cu boost V",		&curveBoostSpeed,		0.25f },
 	};
 	uint8_t floatValCnt = sizeof(floatValues) / sizeof(t_driveMenu_Float);
-	Adjust_Float_Val(floatValues, floatValCnt, CUSTOM_TRUE);
+	Adjust_Float_Val(floatValues, floatValCnt, CUSTOM_FALSE);
 }
 
 

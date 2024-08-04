@@ -314,7 +314,7 @@ void MotorL_Test_PD() {
 void MotorR_Test_PD() {
 
 	float coefChangeVal = 5;
-	float targetChangeVal = 200;
+	float targetChangeVal = 100;
 
 	Pre_Drive_Var_Init();
 
@@ -480,9 +480,7 @@ void Drive_Test_Position() {
 		}
 
 		Custom_OLED_Printf("/0pos:     %7d", positionVal);
-		Custom_OLED_Printf("/2speedL:  %f", (1 + positionVal * positionCoef));
-		Custom_OLED_Printf("/3speedR:  %f", (1 - positionVal * positionCoef));
-		Custom_OLED_Printf("/4pos:     %7d", limitedPositionVal);
+		Custom_OLED_Printf("/1pos:     %7d", limitedPositionVal);
 	}
 	Speed_Control_Stop();
 	Sensor_Stop();

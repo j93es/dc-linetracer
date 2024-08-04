@@ -146,6 +146,7 @@ uint8_t					isInlineDriveEnabled = CUSTOM_FALSE;
 
 //end mark를 몇 번 봤는지 카운트하는 변수
 uint8_t					endMarkCnt = 0;
+uint8_t 				stopEndMarkCnt = STOP_END_MARK_CNT_INIT;
 
 
 // 피트인 거리

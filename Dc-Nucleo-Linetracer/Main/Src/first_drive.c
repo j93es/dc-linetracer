@@ -17,17 +17,23 @@ static void				First_Drive_Data_Update_Cntl(uint8_t exitEcho);
 //1차 주행
 void First_Drive() {
 
-	uint8_t positioningIdx = 0;
-
 	uint8_t exitEcho = EXIT_ECHO_IDLE;
 
 
 	Custom_OLED_Clear();
 
+	isStraightBoostEnabled = 0;
+	isCurveBoostEnabled = 0;
+	isInlineDriveEnabled = 0;
+
 	//주행 전 변수값 초기화
 	Pre_Drive_Setting();
 
 	Sensor_Start();
+	for (int __i = 0; __i < 9; __i++) {
+		Positioning();
+	}
+
 	Motor_Start();
 	Speed_Control_Start();
 
@@ -36,7 +42,7 @@ void First_Drive() {
 
 		//Drive_Test_Info_Oled();
 
-		Positioning(&positioningIdx);
+		Positioning();
 
 		Mark();
 		First_Drive_Cntl();
@@ -47,7 +53,7 @@ void First_Drive() {
 			Drive_Fit_In(pitInLen, PIT_IN_TARGET_SPEED);
 
 			while (curSpeed > DRIVE_END_DELAY_SPEED) {
-				Positioning(&positioningIdx);
+				Positioning();
 				//Drive_Speed_Cntl();
 			}
 
@@ -106,7 +112,7 @@ __STATIC_INLINE void First_Drive_Cntl() {
 
 			endMarkCnt++;
 
-			if (endMarkCnt >= 2) {
+			if (endMarkCnt >= stopEndMarkCnt) {
 
 				// 현재마크에서 이동한 tick 값을 현재 인덱스의 구조체에 저장
 				driveDataBuffer[driveDataIdx].tickCnt_L = curTick_L;
@@ -121,14 +127,12 @@ __STATIC_INLINE void First_Drive_Cntl() {
 				driveDataBuffer[driveDataIdx].crossCnt = crossCnt;
 				driveDataBuffer[driveDataIdx].tickCnt_L = 0;
 				driveDataBuffer[driveDataIdx].tickCnt_R = 0;
+			} else {
+
+				// 크로스, 엔드마크는 읽은 후 마커를 강제로 직선으로 변경
+				markState = MARK_STRAIGHT;
+				driveDataBuffer[driveDataIdx].markState = MARK_STRAIGHT;
 			}
-
-			// 크로스, 엔드마크는 읽은 후 이전 상태로 되돌림
-//			markState = driveDataBuffer[driveDataIdx].markState;
-
-			// 크로스, 엔드마크는 읽은 후 마커를 강제로 직선으로 변경
-			markState = MARK_STRAIGHT;
-			driveDataBuffer[driveDataIdx].markState = MARK_STRAIGHT;
 
 			break;
 

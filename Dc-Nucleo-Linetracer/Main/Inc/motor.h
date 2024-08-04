@@ -134,19 +134,10 @@ __STATIC_INLINE void	Motor_Speed_Control(float speedL, float speedR) {
 	positionCmdL += velocityCmdL * MOTOR_CONTROL_INTERVAL_S;
 	positionCmdR += velocityCmdR * MOTOR_CONTROL_INTERVAL_S;
 
-	float velocityL = RADIAN_PER_TICK * (t_encoder)(curEncoderValueL - prevEncoderValueL) / MOTOR_CONTROL_INTERVAL_S;
-	float velocityR = RADIAN_PER_TICK * (t_encoder)(curEncoderValueR - prevEncoderValueR) / MOTOR_CONTROL_INTERVAL_S;
+	float velocityL = (t_encoder)(curEncoderValueL - prevEncoderValueL) * RADIAN_PER_TICK / MOTOR_CONTROL_INTERVAL_S;
+	float velocityR = (t_encoder)(curEncoderValueR - prevEncoderValueR) * RADIAN_PER_TICK / MOTOR_CONTROL_INTERVAL_S;
 
 	positionL += velocityL * MOTOR_CONTROL_INTERVAL_S;
-//	if (positionL > RADIAN_PER_TICK * ENCODER_VALUE_PER_CIRCLE / 2.f) {
-//
-//		positionCmdL -= RADIAN_PER_TICK * ENCODER_VALUE_PER_CIRCLE;
-//		positionL -= RADIAN_PER_TICK * ENCODER_VALUE_PER_CIRCLE;
-//	} else if (positionL < -1 * RADIAN_PER_TICK * ENCODER_VALUE_PER_CIRCLE / 2.f) {
-//
-//		positionCmdL += RADIAN_PER_TICK * ENCODER_VALUE_PER_CIRCLE;
-//		positionL += RADIAN_PER_TICK * ENCODER_VALUE_PER_CIRCLE;
-//	}
 
 	if (ABS(positionCmdL - positionL) > RADIAN_PER_TICK * ENCODER_VALUE_PER_CIRCLE / 2.f) {
 
@@ -157,15 +148,6 @@ __STATIC_INLINE void	Motor_Speed_Control(float speedL, float speedR) {
 	}
 
 	positionR += velocityR * MOTOR_CONTROL_INTERVAL_S;
-//	if (positionR > RADIAN_PER_TICK * ENCODER_VALUE_PER_CIRCLE / 2.f) {
-//
-//		positionCmdR -= RADIAN_PER_TICK * ENCODER_VALUE_PER_CIRCLE;
-//		positionR -= RADIAN_PER_TICK * ENCODER_VALUE_PER_CIRCLE;
-//	} else if (positionR < -1 * RADIAN_PER_TICK * ENCODER_VALUE_PER_CIRCLE / 2.f) {
-//
-//		positionCmdR += RADIAN_PER_TICK * ENCODER_VALUE_PER_CIRCLE;
-//		positionR += RADIAN_PER_TICK * ENCODER_VALUE_PER_CIRCLE;
-//	}
 
 	if (ABS(positionCmdR - positionR) > RADIAN_PER_TICK * ENCODER_VALUE_PER_CIRCLE / 2.f) {
 

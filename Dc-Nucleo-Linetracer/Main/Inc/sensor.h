@@ -12,24 +12,6 @@
 #include "core_cm4.h"
 
 
-#define INT_SWAP(a, b)			{ a ^= b; b ^= a; a ^= b; }
-#define FLOAT_SWAP(a, b)		{ float _tmp = a; a = b; b = _tmp; }
-
-
-#define IR_SENSOR_LEN			16
-
-
-#define WINDOW_SIZE_HALF		2
-
-
-#define LINE_MARKER_SENSOR_LEN	5
-
-
-#define	THRESHOLD_MAX 			250
-#define	THRESHOLD_MIN			20
-#define	THRESHOLD_CHANGE_VAL	5
-#define	THRESHOLD_INIT			120
-
 
 extern volatile uint8_t		sensorRawVals[IR_SENSOR_LEN];
 

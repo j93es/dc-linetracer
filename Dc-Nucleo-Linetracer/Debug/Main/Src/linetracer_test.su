@@ -4,17 +4,17 @@
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_tim.h:1634:22:LL_TIM_CC_DisableChannel	16	static
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_tim.h:2134:22:LL_TIM_OC_SetCompareCH2	16	static
 /Users/j93es/workspace/imbedded/dc-linetracer/Dc-Nucleo-Linetracer/External Library/Inc/custom_gpio.h:23:20:Custom_GPIO_Set	24	static
-/Users/j93es/workspace/imbedded/dc-linetracer/Dc-Nucleo-Linetracer/Main/Inc/mark.h:20:22:Mark_Masking	24	static
-/Users/j93es/workspace/imbedded/dc-linetracer/Dc-Nucleo-Linetracer/Main/Inc/mark.h:47:22:Mark_Accumming	16	static
-/Users/j93es/workspace/imbedded/dc-linetracer/Dc-Nucleo-Linetracer/Main/Inc/mark.h:83:22:Mark_Accumming_Reset	4	static
-/Users/j93es/workspace/imbedded/dc-linetracer/Dc-Nucleo-Linetracer/Main/Inc/mark.h:95:25:Is_Line_Out	4	static
-/Users/j93es/workspace/imbedded/dc-linetracer/Dc-Nucleo-Linetracer/Main/Inc/mark.h:107:25:Is_Passed_Marker	4	static
-/Users/j93es/workspace/imbedded/dc-linetracer/Dc-Nucleo-Linetracer/Main/Inc/mark.h:125:22:Mark_Decision	4	static
-/Users/j93es/workspace/imbedded/dc-linetracer/Dc-Nucleo-Linetracer/Main/Inc/mark.h:179:22:Mark	16	static
+/Users/j93es/workspace/imbedded/dc-linetracer/Dc-Nucleo-Linetracer/Main/Inc/mark.h:18:22:Mark_Masking	24	static
+/Users/j93es/workspace/imbedded/dc-linetracer/Dc-Nucleo-Linetracer/Main/Inc/mark.h:43:22:Mark_Accumming	16	static
+/Users/j93es/workspace/imbedded/dc-linetracer/Dc-Nucleo-Linetracer/Main/Inc/mark.h:79:22:Mark_Accumming_Reset	4	static
+/Users/j93es/workspace/imbedded/dc-linetracer/Dc-Nucleo-Linetracer/Main/Inc/mark.h:91:25:Is_Line_Out	4	static
+/Users/j93es/workspace/imbedded/dc-linetracer/Dc-Nucleo-Linetracer/Main/Inc/mark.h:103:25:Is_Passed_Marker	4	static
+/Users/j93es/workspace/imbedded/dc-linetracer/Dc-Nucleo-Linetracer/Main/Inc/mark.h:121:22:Mark_Decision	4	static
+/Users/j93es/workspace/imbedded/dc-linetracer/Dc-Nucleo-Linetracer/Main/Inc/mark.h:175:22:Mark	16	static
 /Users/j93es/workspace/imbedded/dc-linetracer/Dc-Nucleo-Linetracer/Main/Inc/positioning.h:14:22:Position_Windowing	16	static
 /Users/j93es/workspace/imbedded/dc-linetracer/Dc-Nucleo-Linetracer/Main/Inc/positioning.h:26:22:Sum_Position_Val	16	static
 /Users/j93es/workspace/imbedded/dc-linetracer/Dc-Nucleo-Linetracer/Main/Inc/positioning.h:38:22:Make_Position_Val	4	static
-/Users/j93es/workspace/imbedded/dc-linetracer/Dc-Nucleo-Linetracer/Main/Inc/positioning.h:47:22:Positioning	16	static
+/Users/j93es/workspace/imbedded/dc-linetracer/Dc-Nucleo-Linetracer/Main/Inc/positioning.h:47:22:Positioning	8	static
 ../Main/Src/linetracer_test.c:10:6:Switch_Test	16	static
 ../Main/Src/linetracer_test.c:49:6:Sensor_Test_Raw	48	static
 ../Main/Src/linetracer_test.c:75:6:Sensor_Test_Normalized	48	static
@@ -26,4 +26,4 @@
 ../Main/Src/linetracer_test.c:314:6:MotorR_Test_PD	32	static
 ../Main/Src/linetracer_test.c:362:6:Motor_Test_Speed	16	static
 ../Main/Src/linetracer_test.c:463:6:Drive_Test_Position	16	static
-../Main/Src/linetracer_test.c:497:6:Mark_Live_Test	56	static
+../Main/Src/linetracer_test.c:495:6:Mark_Live_Test	56	static

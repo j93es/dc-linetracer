@@ -1,8 +1,8 @@
 ../Main/Src/drive_preset.c:21:6:Drive_Optimize_Setting	1
 ../Main/Src/drive_preset.c:35:6:Pre_Drive_Setting	3
 ../Main/Src/drive_preset.c:54:13:Adjust_First_Drive	1
-../Main/Src/drive_preset.c:77:13:Adjust_Straight_Boost	1
-../Main/Src/drive_preset.c:101:13:Adjust_Curve_Boost	1
-../Main/Src/drive_preset.c:114:13:Adjust_Int_Val	8
-../Main/Src/drive_preset.c:151:13:Adjust_Float_Val	7
-../Main/Src/drive_preset.c:189:6:Pre_Drive_Var_Init	3
+../Main/Src/drive_preset.c:78:13:Adjust_Straight_Boost	1
+../Main/Src/drive_preset.c:102:13:Adjust_Curve_Boost	1
+../Main/Src/drive_preset.c:115:13:Adjust_Int_Val	8
+../Main/Src/drive_preset.c:152:13:Adjust_Float_Val	7
+../Main/Src/drive_preset.c:190:6:Pre_Drive_Var_Init	3

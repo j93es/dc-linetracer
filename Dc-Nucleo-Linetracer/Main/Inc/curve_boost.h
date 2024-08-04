@@ -1,3 +1,7 @@
+
+#ifndef INC_CURVE_BOOST_H_
+#define INC_CURVE_BOOST_H_
+
 #include <config.h>
 #include "main.h"
 
@@ -95,8 +99,7 @@ __STATIC_INLINE void Curve_Boost() {
 			case BOOST_CNTL_END :
 
 					// 직선이 10cm 남았을 경우
-					if (curTick_L > driveData[driveDataIdx].tickCnt_L - 0.1 * TICK_PER_M \
-					 || curTick_R > driveData[driveDataIdx].tickCnt_R - 0.1 * TICK_PER_M) {
+					if (curTick_L + curTick_R > finalDeceleEndTick_L + finalDeceleEndTick_R -  2 * MIN_CURVE_BOOST_TICK) {
 
 
 						curveBoostCntl = BOOST_CNTL_IDLE;
@@ -105,4 +108,6 @@ __STATIC_INLINE void Curve_Boost() {
 					break ;
 	}
 }
+
+#endif
 

@@ -1,3 +1,8 @@
+
+#ifndef INC_STRAIGTH_BOOST_H_
+#define INC_STRAIGTH_BOOST_H_
+
+
 #include <config.h>
 #include "main.h"
 
@@ -30,7 +35,8 @@ __STATIC_INLINE void Straight_Boost() {
 												- GET_MIN(deceleEndTick, deceleEndRatio * driveData[driveDataIdx].tickCnt_R);
 
 						// 최소 부스트 거리 이상일 때
-						if (curTick_L + curTick_R < finalDeceleEndTick_L + finalDeceleEndTick_R - 2 * MIN_STRAIGHT_BOOST_TICK) {
+						if (curTick_L < driveData[driveDataIdx].tickCnt_L - MIN_STRAIGHT_BOOST_TICK \
+							&& curTick_R < driveData[driveDataIdx].tickCnt_R - MIN_STRAIGHT_BOOST_TICK)  {
 
 							// deceleEndTickCoef 업데이트
 							deceleEndTickCoef = 2 * decele / TICK_PER_M;
@@ -110,12 +116,15 @@ __STATIC_INLINE void Straight_Boost() {
 			// 부스트가 종료되었을 때
 			case BOOST_CNTL_END :
 
-					// 직선이 10cm 남았을 경우
-					if (curTick_L > driveData[driveDataIdx].tickCnt_L - 0.1 * TICK_PER_M \
-					 || curTick_R > driveData[driveDataIdx].tickCnt_R - 0.1 * TICK_PER_M) {
+					// 직선이 다시 가속 안할 정도로 남았을 경우
+					if (curTick_L > driveData[driveDataIdx].tickCnt_L - MIN_STRAIGHT_BOOST_TICK \
+					 || curTick_R > driveData[driveDataIdx].tickCnt_R - MIN_STRAIGHT_BOOST_TICK) {
 
 						// 부스트 중 차체가 떳을 때 크로스를 못읽는 경우를 방지함
 						crossCnt = driveData[driveDataIdx].crossCnt;
+
+						// 크로스에서 이빨 빠지는거 방지
+						markStateMachine = MARK_STATE_MACHINE_IDLE;
 
 						starightBoostCntl = BOOST_CNTL_IDLE;
 					}
@@ -123,3 +132,6 @@ __STATIC_INLINE void Straight_Boost() {
 					break ;
 	}
 }
+
+
+#endif

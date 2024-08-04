@@ -21,25 +21,26 @@ void Second_Drive() {
 	uint32_t startTime = 0;
 	uint32_t endTime = 0;
 
-	uint8_t positioningIdx = 0;
-
-
 	Custom_OLED_Clear();
 
-	Drive_Optimize_Setting();
-
 	//주행 전 변수값 초기화
+	Drive_Optimize_Setting();
 	Pre_Drive_Setting();
 
 	Sensor_Start();
+	for (int __i = 0; __i < 9; __i++) {
+		Positioning();
+	}
+
 	Motor_Start();
 	Speed_Control_Start();
+
 
 	while (1) {
 
 		//Drive_Test_Info_Oled();
 
-		Positioning(&positioningIdx);
+		Positioning();
 
 		Mark();
 		Second_Drive_Cntl();
@@ -50,7 +51,7 @@ void Second_Drive() {
 			Drive_Fit_In(pitInLen, PIT_IN_TARGET_SPEED);
 
 			while (curSpeed > DRIVE_END_DELAY_SPEED) {
-				Positioning(&positioningIdx);
+				Positioning();
 				//Drive_Speed_Cntl();
 			}
 
@@ -78,7 +79,11 @@ void Second_Drive() {
 
 	Custom_OLED_Printf("/1cross: %u", crossCnt);
 
-	Custom_OLED_Printf("%u", endTime - startTime);
+	int min = (endTime - startTime) / 1000 / 60;
+	int sec = (endTime - startTime) / 1000 % 60;
+	int ms = (endTime - startTime) % 1000;
+
+	Custom_OLED_Printf("/2%d:%d.%d", min, sec, ms);
 
 	while (CUSTOM_SW_3 != Custom_Switch_Read());
 	Custom_OLED_Clear();
@@ -128,8 +133,6 @@ __STATIC_INLINE void Second_Drive_Cntl() {
 
 			crossCnt += 1;
 
-			// 크로스, 엔드마크는 읽은 후 이전 상태로 되돌림
-//			markState = driveDataBuffer[driveDataIdx].markState;
 
 			// 크로스, 엔드마크는 읽은 후 마커를 강제로 직선으로 변경
 			markState = MARK_STRAIGHT;
@@ -143,9 +146,6 @@ __STATIC_INLINE void Second_Drive_Cntl() {
 		case MARK_END:
 
 			endMarkCnt++;
-
-			// 크로스, 엔드마크는 읽은 후 이전 상태로 되돌림
-//			markState = driveDataBuffer[driveDataIdx].markState;
 
 			// 크로스, 엔드마크는 읽은 후 마커를 강제로 직선으로 변경
 			markState = MARK_STRAIGHT;
@@ -201,8 +201,8 @@ __STATIC_INLINE void Set_Second_Drive_Data() {
 
 
 		// 현재마크에서 이동한 tick 값을 현재 인덱스의 구조체에 저장
-		driveDataBuffer[driveDataIdx].tickCnt_L = curTick_L;
-		driveDataBuffer[driveDataIdx].tickCnt_R = curTick_R;
+//		driveDataBuffer[driveDataIdx].tickCnt_L = curTick_L;
+//		driveDataBuffer[driveDataIdx].tickCnt_R = curTick_R;
 
 		// curTick 초기화
 		curTick_L = 0;
@@ -223,7 +223,7 @@ __STATIC_INLINE void Set_Second_Drive_Data() {
 
 
 		isLastStraight = CUSTOM_FALSE;
-		if (driveData[driveDataIdx].markState == MARK_END) {
+		if (driveData[driveDataIdx + 1].markState == MARK_END) {
 			isLastStraight = CUSTOM_TRUE;
 		}
 
@@ -232,8 +232,8 @@ __STATIC_INLINE void Set_Second_Drive_Data() {
 		starightBoostCntl = BOOST_CNTL_IDLE;
 		curveBoostCntl = BOOST_CNTL_IDLE;
 		curveInlineCntl = INLINE_CNTL_IDLE;
-		targetSpeed = targetSpeed_init;
 
+		targetSpeed = targetSpeed_init;
 
 
 
@@ -242,12 +242,6 @@ __STATIC_INLINE void Set_Second_Drive_Data() {
 
 			// 마크 인식 정상 여부를 업데이트
 			isReadAllMark = CUSTOM_FALSE;
-
-//			starightBoostCntl = BOOST_CNTL_IDLE;
-//
-//			targetSpeed = targetSpeed_init;
-//
-//			curveInlineCntl = INLINE_CNTL_IDLE;
 
 			targetInlineVal = 0;
 		}

@@ -9,15 +9,13 @@
 #include <config.h>
 #include "sensor.h"
 #include "main.h"
+#include "math.h"
 
 
 
 
-#define IR_SENSOR_MID		7
 
-
-
-__STATIC_INLINE void	Mark_Masking(int8_t curIrSensorMid) {
+__STATIC_INLINE void	Mark_Masking(int32_t curIrSensorMid) {
 
 	if (curIrSensorMid > IR_SENSOR_MID) {
 
@@ -27,7 +25,6 @@ __STATIC_INLINE void	Mark_Masking(int8_t curIrSensorMid) {
 		leftMarkMasking = LEFT_MARK_MASKING_INIT >> moveLen;
 		rightMarkMasking = RIGHT_MARK_MASKING_INIT >> moveLen;
 		bothMarkMasking = leftMarkMasking | rightMarkMasking;
-
 	} else {
 
 		int8_t moveLen = IR_SENSOR_MID - curIrSensorMid;
@@ -36,7 +33,6 @@ __STATIC_INLINE void	Mark_Masking(int8_t curIrSensorMid) {
 		leftMarkMasking = LEFT_MARK_MASKING_INIT << moveLen;
 		rightMarkMasking = RIGHT_MARK_MASKING_INIT << moveLen;
 		bothMarkMasking = leftMarkMasking | rightMarkMasking;
-
 	}
 
 	markAreaMasking = ~(lineMasking << 1 | lineMasking >> 1);
@@ -44,7 +40,7 @@ __STATIC_INLINE void	Mark_Masking(int8_t curIrSensorMid) {
 
 
 
-__STATIC_INLINE void	Mark_Accumming(int8_t curIrSensorMid) {
+__STATIC_INLINE void	Mark_Accumming(int32_t curIrSensorMid) {
 
 	// 0 0 0 0  0 0 0 0  0 0 0 0  0 0 0 0
 	// ~
@@ -180,7 +176,7 @@ __STATIC_INLINE void	Mark() {
 
 	static uint32_t	lineOutStartTime = 0;
 
-	int8_t	curIrSensorMid = positionIdxMax - WINDOW_SIZE_HALF;
+	int32_t	curIrSensorMid = (positionVal + 30000) / 4000;
 
 	Mark_Masking(curIrSensorMid);
 

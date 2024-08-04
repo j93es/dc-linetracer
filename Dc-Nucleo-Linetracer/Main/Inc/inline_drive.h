@@ -1,3 +1,7 @@
+
+#ifndef INC_INLINE_DERIVE_H_
+#define INC_INLINE_DERIVE_H_
+
 #include <config.h>
 #include "main.h"
 
@@ -6,25 +10,18 @@ __STATIC_INLINE void Prepare_Inline() {
 	// 최적화 레벨이 곡선 가속 이상 일 때
 	if (isInlineDriveEnabled) {
 
-		if (driveData[driveDataIdx].tickCnt_L + driveData[driveDataIdx].tickCnt_R > 2 * (INLINE_POSITIONING_TICK + INLINE_SAFTY_TICK)) {
+		if (driveData[driveDataIdx].tickCnt_L < curTick_L + INLINE_PREPARE_POSITIONING_TICK + INLINE_SAFTY_TICK
+			|| driveData[driveDataIdx].tickCnt_R < curTick_R + INLINE_PREPARE_POSITIONING_TICK + INLINE_SAFTY_TICK) {
 
-//			if (driveData[driveDataIdx + 2].markState == MARK_STRAIGHT) {
+			if (driveData[driveDataIdx + 1].markState == MARK_CURVE_R) {
 
-				if (driveData[driveDataIdx].tickCnt_L < curTick_L + INLINE_POSITIONING_TICK + INLINE_SAFTY_TICK
-					|| driveData[driveDataIdx].tickCnt_R < curTick_R + INLINE_POSITIONING_TICK + INLINE_SAFTY_TICK) {
-
-					if (driveData[driveDataIdx + 1].markState == MARK_CURVE_R) {
-
-						targetInlineVal = -1 * ABS_INLINE_TARGET_POSITION;
-					}
-
-					else if (driveData[driveDataIdx + 1].markState == MARK_CURVE_L) {
-
-						targetInlineVal = ABS_INLINE_TARGET_POSITION;
-					}
-				}
+				targetInlineVal = -1 * ABS_INLINE_TARGET_POSITION;
 			}
-//		}
+			else if (driveData[driveDataIdx + 1].markState == MARK_CURVE_L) {
+
+				targetInlineVal = ABS_INLINE_TARGET_POSITION;
+			}
+		}
 	}
 }
 
@@ -32,10 +29,14 @@ __STATIC_INLINE void Restore_Inline() {
 	// 최적화 레벨이 곡선 가속 이상 일 때
 	if (isInlineDriveEnabled) {
 
-		if (driveData[driveDataIdx + 1].markState == MARK_STRAIGHT && markState == driveData[driveDataIdx + 1].markState) {
+		if (driveData[driveDataIdx].tickCnt_L < curTick_L + INLINE_RESTORE_POSITIONING_TICK + INLINE_SAFTY_TICK
+			|| driveData[driveDataIdx].tickCnt_R < curTick_R + INLINE_RESTORE_POSITIONING_TICK + INLINE_SAFTY_TICK) {
 
-		} else {
-			targetInlineVal = 0;
+			if (driveData[driveDataIdx + 1].markState == MARK_STRAIGHT && markState == driveData[driveDataIdx + 2].markState) {
+
+			} else {
+				targetInlineVal = 0;
+			}
 		}
 	}
 }
@@ -138,5 +139,7 @@ __STATIC_INLINE void Inline_Drive() {
 					break ;
 	}
 }
+
+#endif
 
 
