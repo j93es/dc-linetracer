@@ -29,8 +29,10 @@
 //#define T_ENCODER_MAX				65536
 #define MOTOR_RESISTANCE			7.14f
 #define MOTOR_KE					0.0330f
+#define TIRE_RADIUS					0.036f
+#define TICK_PER_M					( ENCODER_VALUE_PER_CIRCLE / (TIRE_RADIUS * 3.141592f * MOTOR_GEAR_RATIO) )
 #define RADIAN_PER_M				(1 / (3.141592 * TIRE_RADIUS * MOTOR_GEAR_RATIO))
-#define RADIAN_PER_TICK				(RADIAN_PER_M / TICK_PER_M)
+#define RADIAN_PER_TICK				( 1 / ENCODER_VALUE_PER_CIRCLE )
 
 
 // 속도와 관련된 매크로
@@ -50,8 +52,7 @@
 #define CURVE_DECELE_COEF_INIT		24500.f
 
 
-// POSITION_COEF(포지션 상수)를 도출하기 위한 매크로
-#define TIRE_RADIUS					0.036f					// m
+// POSITION_COEF(포지션 상수)를 도출하기 위한 매크로				// m
 #define POSITION_COEF_INIT			0.00006f
 
 
@@ -59,7 +60,6 @@
 #define MOTOR_CONTROL_INTERVAL_S	0.0005f
 #define ENCODER_VALUE_PER_CIRCLE	2048.f
 #define MOTOR_GEAR_RATIO			( 17.f / 69.f )
-#define TICK_PER_M					( ENCODER_VALUE_PER_CIRCLE / (TIRE_RADIUS * 3.141592f) / MOTOR_GEAR_RATIO )
 
 
 
@@ -121,7 +121,7 @@
 
 
 // 피트인 관련 매크로
-#define PIT_IN_LEN_INIT				0.06f
+#define PIT_IN_LEN_INIT				0.13f
 #define PIT_IN_TARGET_SPEED			MIN_SPEED
 
 
@@ -179,7 +179,11 @@
 #define	THRESHOLD_MAX 			250
 #define	THRESHOLD_MIN			20
 #define	THRESHOLD_CHANGE_VAL	5
-#define	THRESHOLD_INIT			180
+#define	THRESHOLD_INIT			160
+
+
+
+#define STRAIGHT_ADJUST_TICK	( 2.f * TICK_PER_M )
 
 
 

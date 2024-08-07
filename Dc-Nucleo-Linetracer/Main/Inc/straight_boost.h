@@ -124,7 +124,12 @@ __STATIC_INLINE void Straight_Boost() {
 						crossCnt = driveData[driveDataIdx].crossCnt;
 
 						// 크로스에서 이빨 빠지는거 방지
-						markStateMachine = MARK_STATE_MACHINE_IDLE;
+//						markStateMachine = MARK_STATE_MACHINE_IDLE;
+
+						// 크로스에서 이빨 빠지는거 방지
+						if (markStateMachine == MARK_STATE_MACHINE_CROSS) {
+							markStateMachine = MARK_STATE_MACHINE_IDLE;
+						}
 
 						starightBoostCntl = BOOST_CNTL_IDLE;
 					}

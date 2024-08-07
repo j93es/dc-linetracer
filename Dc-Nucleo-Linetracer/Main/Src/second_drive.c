@@ -28,9 +28,9 @@ void Second_Drive() {
 	Pre_Drive_Setting();
 
 	Sensor_Start();
-	for (int __i = 0; __i < 9; __i++) {
-		Positioning();
-	}
+
+	Positioning();
+
 
 	Motor_Start();
 	Speed_Control_Start();

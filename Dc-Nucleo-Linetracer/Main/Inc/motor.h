@@ -139,23 +139,30 @@ __STATIC_INLINE void	Motor_Speed_Control(float speedL, float speedR) {
 
 	positionL += velocityL * MOTOR_CONTROL_INTERVAL_S;
 
-	if (ABS(positionCmdL - positionL) > RADIAN_PER_TICK * ENCODER_VALUE_PER_CIRCLE / 2.f) {
-
-		positionCmdL = positionL + RADIAN_PER_TICK * ENCODER_VALUE_PER_CIRCLE / 2.f;
-		if (positionCmdL - positionL < 0) {
-			positionCmdL = positionL - RADIAN_PER_TICK * ENCODER_VALUE_PER_CIRCLE / 2.f;
-		}
-	}
+//	if (ABS(positionCmdL - positionL) > RADIAN_PER_TICK * ENCODER_VALUE_PER_CIRCLE / 2.f) {
+//
+//		positionCmdL = positionL + RADIAN_PER_TICK * ENCODER_VALUE_PER_CIRCLE / 2.f;
+//		if (positionCmdL - positionL < 0) {
+//			positionCmdL = positionL - RADIAN_PER_TICK * ENCODER_VALUE_PER_CIRCLE / 2.f;
+//		}
+//	}
 
 	positionR += velocityR * MOTOR_CONTROL_INTERVAL_S;
 
-	if (ABS(positionCmdR - positionR) > RADIAN_PER_TICK * ENCODER_VALUE_PER_CIRCLE / 2.f) {
+//	if (ABS(positionCmdR - positionR) > RADIAN_PER_TICK * ENCODER_VALUE_PER_CIRCLE / 2.f) {
+//
+//		positionCmdR = positionR + RADIAN_PER_TICK * ENCODER_VALUE_PER_CIRCLE / 2.f;
+//		if (positionCmdR - positionR < 0) {
+//			positionCmdR = positionR - RADIAN_PER_TICK * ENCODER_VALUE_PER_CIRCLE / 2.f;
+//		}
+//	}
 
-		positionCmdR = positionR + RADIAN_PER_TICK * ENCODER_VALUE_PER_CIRCLE / 2.f;
-		if (positionCmdR - positionR < 0) {
-			positionCmdR = positionR - RADIAN_PER_TICK * ENCODER_VALUE_PER_CIRCLE / 2.f;
-		}
-	}
+	// anti windup
+	positionCmdL = GET_MIN(positionCmdL, positionL + 0.5f);
+	positionCmdL = GET_MAX(positionCmdL, positionL - 0.5f);
+
+	positionCmdR = GET_MIN(positionCmdR, positionR + 0.5f);
+	positionCmdR = GET_MAX(positionCmdR, positionR - 0.5f);
 
 
 	float positionErrL = positionL - positionCmdL;

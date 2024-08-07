@@ -1,22 +1,19 @@
-/Users/j93es/workspace/imbedded/dc-linetracer/Dc-Nucleo-Linetracer/External Library/Inc/custom_delay.h:20:22:Custom_Delay_us	16	static
-/Users/j93es/workspace/imbedded/dc-linetracer/Dc-Nucleo-Linetracer/External Library/Inc/custom_delay.h:28:22:Custom_Delay_ms	16	static
-/Users/j93es/workspace/imbedded/dc-linetracer/Dc-Nucleo-Linetracer/Main/Inc/drive_speed_cntl.h:125:22:Drive_Fit_In	16	static
-/Users/j93es/workspace/imbedded/dc-linetracer/Dc-Nucleo-Linetracer/Main/Inc/drive_speed_cntl.h:135:25:Is_Drive_End	4	static
-/Users/j93es/workspace/imbedded/dc-linetracer/Dc-Nucleo-Linetracer/Main/Inc/inline_drive.h:8:22:Prepare_Inline	4	static
-/Users/j93es/workspace/imbedded/dc-linetracer/Dc-Nucleo-Linetracer/Main/Inc/inline_drive.h:28:22:Restore_Inline	4	static
-/Users/j93es/workspace/imbedded/dc-linetracer/Dc-Nucleo-Linetracer/Main/Inc/mark.h:18:22:Mark_Masking	24	static
-/Users/j93es/workspace/imbedded/dc-linetracer/Dc-Nucleo-Linetracer/Main/Inc/mark.h:43:22:Mark_Accumming	16	static
-/Users/j93es/workspace/imbedded/dc-linetracer/Dc-Nucleo-Linetracer/Main/Inc/mark.h:79:22:Mark_Accumming_Reset	4	static
-/Users/j93es/workspace/imbedded/dc-linetracer/Dc-Nucleo-Linetracer/Main/Inc/mark.h:91:25:Is_Line_Out	4	static
-/Users/j93es/workspace/imbedded/dc-linetracer/Dc-Nucleo-Linetracer/Main/Inc/mark.h:103:25:Is_Passed_Marker	4	static
-/Users/j93es/workspace/imbedded/dc-linetracer/Dc-Nucleo-Linetracer/Main/Inc/mark.h:121:22:Mark_Decision	4	static
-/Users/j93es/workspace/imbedded/dc-linetracer/Dc-Nucleo-Linetracer/Main/Inc/mark.h:175:22:Mark	16	static
-/Users/j93es/workspace/imbedded/dc-linetracer/Dc-Nucleo-Linetracer/Main/Inc/positioning.h:14:22:Position_Windowing	16	static
-/Users/j93es/workspace/imbedded/dc-linetracer/Dc-Nucleo-Linetracer/Main/Inc/positioning.h:26:22:Sum_Position_Val	16	static
-/Users/j93es/workspace/imbedded/dc-linetracer/Dc-Nucleo-Linetracer/Main/Inc/positioning.h:38:22:Make_Position_Val	4	static
-/Users/j93es/workspace/imbedded/dc-linetracer/Dc-Nucleo-Linetracer/Main/Inc/positioning.h:47:22:Positioning	8	static
-/Users/j93es/workspace/imbedded/dc-linetracer/Dc-Nucleo-Linetracer/Main/Inc/curve_boost.h:8:22:Curve_Boost	4	static
-/Users/j93es/workspace/imbedded/dc-linetracer/Dc-Nucleo-Linetracer/Main/Inc/straight_boost.h:10:22:Straight_Boost	4	static
-../Main/Src/second_drive.c:17:6:Second_Drive	40	static
+/Users/j93es/workspace/Dc-Nucleo-Linetracer/External Library/Inc/custom_delay.h:20:22:Custom_Delay_us	16	static
+/Users/j93es/workspace/Dc-Nucleo-Linetracer/External Library/Inc/custom_delay.h:28:22:Custom_Delay_ms	16	static
+/Users/j93es/workspace/Dc-Nucleo-Linetracer/Main/Inc/drive_speed_cntl.h:125:22:Drive_Fit_In	16	static
+/Users/j93es/workspace/Dc-Nucleo-Linetracer/Main/Inc/drive_speed_cntl.h:135:25:Is_Drive_End	4	static
+/Users/j93es/workspace/Dc-Nucleo-Linetracer/Main/Inc/inline_drive.h:8:22:Prepare_Inline	4	static
+/Users/j93es/workspace/Dc-Nucleo-Linetracer/Main/Inc/inline_drive.h:28:22:Restore_Inline	4	static
+/Users/j93es/workspace/Dc-Nucleo-Linetracer/Main/Inc/mark.h:18:22:Mark_Masking	24	static
+/Users/j93es/workspace/Dc-Nucleo-Linetracer/Main/Inc/mark.h:43:22:Mark_Accumming	16	static
+/Users/j93es/workspace/Dc-Nucleo-Linetracer/Main/Inc/mark.h:79:22:Mark_Accumming_Reset	4	static
+/Users/j93es/workspace/Dc-Nucleo-Linetracer/Main/Inc/mark.h:91:25:Is_Line_Out	4	static
+/Users/j93es/workspace/Dc-Nucleo-Linetracer/Main/Inc/mark.h:103:25:Is_Passed_Marker	4	static
+/Users/j93es/workspace/Dc-Nucleo-Linetracer/Main/Inc/mark.h:121:22:Mark_Decision	4	static
+/Users/j93es/workspace/Dc-Nucleo-Linetracer/Main/Inc/mark.h:175:22:Mark	16	static
+/Users/j93es/workspace/Dc-Nucleo-Linetracer/Main/Inc/positioning.h:14:22:Positioning	24	static
+/Users/j93es/workspace/Dc-Nucleo-Linetracer/Main/Inc/curve_boost.h:8:22:Curve_Boost	4	static
+/Users/j93es/workspace/Dc-Nucleo-Linetracer/Main/Inc/straight_boost.h:10:22:Straight_Boost	4	static
+../Main/Src/second_drive.c:17:6:Second_Drive	32	static
 ../Main/Src/second_drive.c:93:22:Second_Drive_Cntl	8	static
 ../Main/Src/second_drive.c:195:22:Set_Second_Drive_Data	4	static

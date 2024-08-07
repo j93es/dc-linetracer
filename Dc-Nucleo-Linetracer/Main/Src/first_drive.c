@@ -30,9 +30,7 @@ void First_Drive() {
 	Pre_Drive_Setting();
 
 	Sensor_Start();
-	for (int __i = 0; __i < 9; __i++) {
-		Positioning();
-	}
+	Positioning();
 
 	Motor_Start();
 	Speed_Control_Start();
@@ -160,6 +158,12 @@ __STATIC_INLINE void Set_First_Drive_Data() {
 		// 현재마크에서 이동한 tick 값을 현재 인덱스의 구조체에 저장
 		driveDataBuffer[driveDataIdx].tickCnt_L = curTick_L;
 		driveDataBuffer[driveDataIdx].tickCnt_R = curTick_R;
+
+		if (driveDataBuffer[driveDataIdx].tickCnt_L > STRAIGHT_ADJUST_TICK
+			&& driveDataBuffer[driveDataIdx].tickCnt_R  > STRAIGHT_ADJUST_TICK) {
+
+			driveDataBuffer[driveDataIdx].markState = MARK_STRAIGHT;
+		}
 
 		// curTick 초기화
 		curTick_L = 0;

@@ -1,6 +1,6 @@
 ../Main/Src/drive_preset.c:21:6:Drive_Optimize_Setting	88	static
 ../Main/Src/drive_preset.c:35:6:Pre_Drive_Setting	8	static
-../Main/Src/drive_preset.c:54:13:Adjust_First_Drive	168	static
+../Main/Src/drive_preset.c:54:13:Adjust_First_Drive	144	static
 ../Main/Src/drive_preset.c:78:13:Adjust_Straight_Boost	176	static
 ../Main/Src/drive_preset.c:102:13:Adjust_Curve_Boost	48	static
 ../Main/Src/drive_preset.c:115:13:Adjust_Int_Val	24	static
