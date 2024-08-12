@@ -8,6 +8,7 @@
 
 __STATIC_INLINE void	First_Drive_Cntl();
 __STATIC_INLINE void	Set_First_Drive_Data();
+__STATIC_INLINE uint8_t	First_Driving();
 static void				First_Drive_Data_Cntl(uint8_t exitEcho);
 static void				First_Drive_Data_Update_Cntl(uint8_t exitEcho);
 
@@ -17,9 +18,6 @@ static void				First_Drive_Data_Update_Cntl(uint8_t exitEcho);
 //1차 주행
 void First_Drive() {
 
-	uint8_t exitEcho = EXIT_ECHO_IDLE;
-
-
 	Custom_OLED_Clear();
 
 	isStraightBoostEnabled = 0;
@@ -28,6 +26,51 @@ void First_Drive() {
 
 	//주행 전 변수값 초기화
 	Pre_Drive_Setting();
+
+	uint32_t startTime = uwTick;
+	uint8_t exitEcho = First_Driving();
+	uint32_t endTime = uwTick;
+
+	int min = (endTime - startTime) / 1000 / 60;
+	int sec = (endTime - startTime) / 1000 % 60;
+	int ms = (endTime - startTime) % 1000;
+
+	Custom_OLED_Printf("/5%d:%d.%d", min, sec, ms);
+
+	First_Drive_Data_Cntl(exitEcho);
+}
+
+//1차 주행
+void First_Drive_Read_Map() {
+
+	Custom_OLED_Clear();
+
+	isStraightBoostEnabled = 0;
+	isCurveBoostEnabled = 0;
+	isInlineDriveEnabled = 0;
+
+	//주행 전 변수값 초기화
+	Pre_Drive_Read_Map();
+
+	uint32_t startTime = uwTick;
+	uint8_t exitEcho = First_Driving();
+	uint32_t endTime = uwTick;
+
+	int min = (endTime - startTime) / 1000 / 60;
+	int sec = (endTime - startTime) / 1000 % 60;
+	int ms = (endTime - startTime) % 1000;
+
+	Custom_OLED_Printf("/5%d:%d.%d", min, sec, ms);
+
+	First_Drive_Data_Cntl(exitEcho);
+}
+
+
+
+__STATIC_INLINE uint8_t First_Driving() {
+
+	uint8_t exitEcho = EXIT_ECHO_IDLE;
+
 
 	Sensor_Start();
 	Positioning();
@@ -65,7 +108,7 @@ void First_Drive() {
 	Speed_Control_Stop();
 	Sensor_Stop();
 
-	First_Drive_Data_Cntl(exitEcho);
+	return exitEcho;
 }
 
 

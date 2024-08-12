@@ -40,10 +40,10 @@
 
 #define JERK_COEF					0.2f
 
-#define ACCELE_INIT					7.0f
+#define ACCELE_INIT					8.0f
 #define DECELE_INIT					7.0f
 
-#define TARGET_SPEED_INIT			2.9f
+#define TARGET_SPEED_INIT			2.8f
 #define STRAIGHT_BOOST_SPEED_INIT	6.f
 #define CURVE_BOOST_SPEED_INIT		4.f
 
@@ -147,7 +147,7 @@
 
 
 // 인라인 주행 관련 매크로
-#define ABS_INLINE_TARGET_POSITION			6000
+#define ABS_INLINE_TARGET_POSITION			3000
 #define INLINE_END_RATIO					0.2f
 #define INLINE_PREPARE_POSITIONING_TICK		( 0.05f * TICK_PER_M )
 #define INLINE_RESTORE_POSITIONING_TICK		( 0.1f * TICK_PER_M )
@@ -176,10 +176,10 @@
 
 #define WINDOW_SIZE_HALF		2
 
-#define	THRESHOLD_MAX 			250
-#define	THRESHOLD_MIN			20
+#define	THRESHOLD_MAX 			245
+#define	THRESHOLD_MIN			10
 #define	THRESHOLD_CHANGE_VAL	5
-#define	THRESHOLD_INIT			160
+#define	THRESHOLD_INIT			140
 
 
 
@@ -208,6 +208,14 @@ typedef struct	s_driveData {
 		uint8_t		crossCnt;
 
 }				t_driveData;
+
+
+
+typedef struct s_mark_masking {
+    uint16_t left_mask[16];
+    uint16_t right_mask[16];
+    uint16_t line_mask[16];
+}				t_mark_masking;
 
 
 
@@ -244,6 +252,7 @@ extern volatile float		decele_init;
 extern volatile int32_t		positionVal;
 extern volatile float		positionCoef;
 extern volatile int32_t		limitedPositionVal;
+extern volatile int32_t		prevPositionValCmd;
 
 extern volatile uint8_t		positionIdxMax;
 extern volatile uint8_t		positionIdxMin;
@@ -293,6 +302,8 @@ extern uint16_t				rightMarkMasking;
 extern uint16_t				leftMarkMasking;
 extern uint16_t				bothMarkMasking;
 extern uint16_t				markAreaMasking;
+
+extern t_mark_masking		markMasking;
 
 
 

@@ -495,8 +495,6 @@ void Drive_Test_Position() {
 void Mark_Live_Test() {
 	uint8_t	sw = 0;
 
-	uint8_t positioningIdx = 0;
-
 	Sensor_Start();
 
     Custom_OLED_Clear();
@@ -510,7 +508,7 @@ void Mark_Live_Test() {
 
     	Mark();
 
-    	Positioning(&positioningIdx);
+    	Positioning();
 
         switch (markStateMachine) {
         case MARK_STATE_MACHINE_IDLE:
@@ -569,7 +567,7 @@ void Mark_Live_Test() {
 
 
 
-    	masking = markAreaMasking;
+    	masking = bothMarkMasking;
 
     	Custom_OLED_Printf("/4%x/r%x/w%x/r%x/w%x/r%x/w%x/r%x/w",  \
     				(masking >> 15) & 1, (masking >> 14) & 1, (masking >> 13) & 1, (masking >> 12) & 1, \

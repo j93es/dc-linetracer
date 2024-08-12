@@ -10,6 +10,11 @@ __STATIC_INLINE void Prepare_Inline() {
 	// 최적화 레벨이 곡선 가속 이상 일 때
 	if (isInlineDriveEnabled) {
 
+		if (isLastStraight) {
+			targetInlineVal = 0;
+			return;
+		}
+
 		if (driveData[driveDataIdx].tickCnt_L < curTick_L + INLINE_PREPARE_POSITIONING_TICK + INLINE_SAFTY_TICK
 			|| driveData[driveDataIdx].tickCnt_R < curTick_R + INLINE_PREPARE_POSITIONING_TICK + INLINE_SAFTY_TICK) {
 
@@ -28,6 +33,11 @@ __STATIC_INLINE void Prepare_Inline() {
 __STATIC_INLINE void Restore_Inline() {
 	// 최적화 레벨이 곡선 가속 이상 일 때
 	if (isInlineDriveEnabled) {
+
+		if (isLastStraight) {
+			targetInlineVal = 0;
+			return;
+		}
 
 		if (driveData[driveDataIdx].tickCnt_L < curTick_L + INLINE_RESTORE_POSITIONING_TICK + INLINE_SAFTY_TICK
 			|| driveData[driveDataIdx].tickCnt_R < curTick_R + INLINE_RESTORE_POSITIONING_TICK + INLINE_SAFTY_TICK) {

@@ -7,6 +7,7 @@
 
 
 void	First_Drive();
+void	First_Drive_Read_Map();
 
 void	Drive_Time_Attack_Get_Data();
 void	Drive_Time_Attack();

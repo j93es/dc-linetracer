@@ -7,6 +7,7 @@
 
 
 void	Second_Drive();
+void	Second_Drive_Normal();
 
 
 #endif

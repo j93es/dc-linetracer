@@ -39,6 +39,7 @@ volatile float			decele_init = DECELE_INIT;
 volatile int32_t		positionVal = 0;
 volatile float			positionCoef = POSITION_COEF_INIT;
 volatile int32_t		limitedPositionVal = 0;
+volatile int32_t		prevPositionValCmd = 0;
 
 
 // positionVal을 windowing하여 구하는 것에 사용되는 변수 초기화
@@ -95,7 +96,9 @@ uint16_t				lineMasking = LINE_MASKING_INIT;
 uint16_t				rightMarkMasking = RIGHT_MARK_MASKING_INIT;
 uint16_t				leftMarkMasking = LEFT_MARK_MASKING_INIT;
 uint16_t				bothMarkMasking = RIGHT_MARK_MASKING_INIT | LEFT_MARK_MASKING_INIT;
-uint16_t				markAreaMasking =  ~(LINE_MASKING_INIT << 1 | LINE_MASKING_INIT >> 1);;
+uint16_t				markAreaMasking =  ~(LINE_MASKING_INIT << 1 | LINE_MASKING_INIT >> 1);
+
+t_mark_masking			markMasking;
 
 
 // 2차주행 컨트롤 변수

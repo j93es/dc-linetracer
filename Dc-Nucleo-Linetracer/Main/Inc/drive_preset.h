@@ -13,6 +13,8 @@
 
 void	Pre_Drive_Setting();
 void	Drive_Optimize_Setting();
+void	Pre_Drive_Read_Map();
+void	Pre_Drive_Second_Norm();
 
 void	Drive_Last_Spurt();
 void	Drive_Read_Mark();

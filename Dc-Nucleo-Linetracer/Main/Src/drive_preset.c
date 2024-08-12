@@ -48,6 +48,34 @@ void Pre_Drive_Setting() {
 
 }
 
+void Pre_Drive_Read_Map() {
+
+	Pre_Drive_Var_Init();
+
+
+	threshold = 140;
+	pitInLen = 0.13f;
+	targetSpeed_init = 2.8f;
+	curveDeceleCoef = 24500;
+}
+
+void Pre_Drive_Second_Norm() {
+	Pre_Drive_Var_Init();
+
+	threshold = 140;
+	pitInLen = 0.13f;
+	targetSpeed_init = 2.8f;
+	curveDeceleCoef = 24500;
+
+	acceleStartTick = 0.1f * TICK_PER_M;
+	deceleEndTick = 0.2f * TICK_PER_M;
+	starightBoostSpeed = 6.f;
+	targetAccele_init = 7.f;
+	decele_init = 7.f;
+	deceleEndRatio = 0.3f;
+}
+
+
 
 
 // 주행 전 초기값 조정
@@ -67,7 +95,7 @@ static void Adjust_First_Drive() {
 			{ "Pit In Len",			&pitInLen,			0.01f },
 			{ "Target Speed",		&targetSpeed_init,	0.05f },
 			{ "CurveDecel Coef",	&curveDeceleCoef,	500 },
-			{ "Position Coef",		&positionCoef,		0.000001f },
+//			{ "Position Coef",		&positionCoef,		0.000001f },
 	};
 	uint8_t floatValCnt = sizeof(floatValues) / sizeof(t_driveMenu_Float);
 	Adjust_Float_Val(floatValues, floatValCnt, CUSTOM_TRUE);
@@ -223,6 +251,7 @@ void Pre_Drive_Var_Init() {
 	// 좌우모터 포지션 값을 0으로 초기화
 	positionVal = 0;
 	limitedPositionVal = 0;
+	prevPositionValCmd = 0;
 
 	// positionVal을 windowing하여 구하는 것에 사용되는 변수 초기화
 	positionSum = 0;
@@ -276,6 +305,8 @@ void Pre_Drive_Var_Init() {
 	curveInlineCntl = INLINE_CNTL_IDLE;
 
 	isLastStraight = CUSTOM_FALSE;
+
+	Mark_Masking_Init();
 
 
 	for (uint32_t i = 0; i < MAX_DRIVE_DATA_LEN; i++) {

@@ -7,6 +7,7 @@
 #include "header_init.h"
 
 
+__STATIC_INLINE uint8_t	Second_Driving();
 __STATIC_INLINE void	Second_Drive_Cntl();
 __STATIC_INLINE void	Set_Second_Drive_Data();
 
@@ -16,22 +17,94 @@ __STATIC_INLINE void	Set_Second_Drive_Data();
 //2차 주행
 void Second_Drive() {
 
-	uint8_t	exitEcho = EXIT_ECHO_IDLE;
+	uint32_t startTime = 0;
+	uint32_t endTime = 0;
+
+	Custom_OLED_Clear();
+
+	isStraightBoostEnabled = 1;
+
+
+	//주행 전 변수값 초기화
+	Drive_Optimize_Setting();
+	Pre_Drive_Setting();
+
+	startTime = uwTick;
+
+	uint8_t exitEcho = Second_Driving();
+
+	endTime = uwTick;
+
+	Custom_OLED_Clear();
+
+	if (exitEcho == EXIT_ECHO_END_MARK) {
+		Custom_OLED_Printf("/0end mark");
+	}
+	else {
+		Custom_OLED_Printf("/0line out");
+	}
+
+	Custom_OLED_Printf("/1cross: %u", crossCnt);
+
+	int min = (endTime - startTime) / 1000 / 60;
+	int sec = (endTime - startTime) / 1000 % 60;
+	int ms = (endTime - startTime) % 1000;
+
+	Custom_OLED_Printf("/5%d:%d.%d", min, sec, ms);
+
+	while (CUSTOM_SW_3 != Custom_Switch_Read());
+	Custom_OLED_Clear();
+}
+
+
+//2차 주행
+void Second_Drive_Normal() {
 
 	uint32_t startTime = 0;
 	uint32_t endTime = 0;
 
 	Custom_OLED_Clear();
 
+	isStraightBoostEnabled = 1;
+
+
 	//주행 전 변수값 초기화
-	Drive_Optimize_Setting();
-	Pre_Drive_Setting();
+	Pre_Drive_Second_Norm();
+
+	startTime = uwTick;
+
+	uint8_t exitEcho = Second_Driving();
+
+	endTime = uwTick;
+
+	Custom_OLED_Clear();
+
+	if (exitEcho == EXIT_ECHO_END_MARK) {
+		Custom_OLED_Printf("/0end mark");
+	}
+	else {
+		Custom_OLED_Printf("/0line out");
+	}
+
+	Custom_OLED_Printf("/1cross: %u", crossCnt);
+
+	int min = (endTime - startTime) / 1000 / 60;
+	int sec = (endTime - startTime) / 1000 % 60;
+	int ms = (endTime - startTime) % 1000;
+
+	Custom_OLED_Printf("/5%d:%d.%d", min, sec, ms);
+
+	while (CUSTOM_SW_3 != Custom_Switch_Read());
+	Custom_OLED_Clear();
+}
+
+
+__STATIC_INLINE uint8_t	Second_Driving() {
+
+	uint8_t	exitEcho = EXIT_ECHO_IDLE;
 
 	Sensor_Start();
-
 	Positioning();
-
-
 	Motor_Start();
 	Speed_Control_Start();
 
@@ -56,8 +129,6 @@ void Second_Drive() {
 			}
 
 			Custom_Delay_ms(DRIVE_END_DELAY_TIME_MS);
-
-			endTime = uwTick;
 			break;
 		}
 	}
@@ -66,27 +137,7 @@ void Second_Drive() {
 	Speed_Control_Stop();
 	Sensor_Stop();
 
-
-
-	Custom_OLED_Clear();
-
-	if (exitEcho == EXIT_ECHO_END_MARK) {
-		Custom_OLED_Printf("/0end mark");
-	}
-	else {
-		Custom_OLED_Printf("/0line out");
-	}
-
-	Custom_OLED_Printf("/1cross: %u", crossCnt);
-
-	int min = (endTime - startTime) / 1000 / 60;
-	int sec = (endTime - startTime) / 1000 % 60;
-	int ms = (endTime - startTime) % 1000;
-
-	Custom_OLED_Printf("/2%d:%d.%d", min, sec, ms);
-
-	while (CUSTOM_SW_3 != Custom_Switch_Read());
-	Custom_OLED_Clear();
+	return exitEcho;
 }
 
 
