@@ -88,6 +88,7 @@ __STATIC_INLINE uint8_t First_Driving() {
 		Mark();
 		First_Drive_Cntl();
 
+
 		//Drive_Speed_Cntl();
 		if ( EXIT_ECHO_IDLE != (exitEcho = Is_Drive_End()) ) {
 
@@ -238,16 +239,35 @@ static void First_Drive_Data_Cntl(uint8_t exitEcho) {
 		// 마크 개수 세기
 		for (i = 1; driveDataBuffer[i].markState != MARK_NONE && i < MAX_DRIVE_DATA_LEN; i++) {
 
+			uint16_t curvature = CURVATURE_0;
+
+			float moveMeterL = (float)driveDataBuffer[i].tickCnt_L / TICK_PER_M;
+			float moveMeterR = (float)driveDataBuffer[i].tickCnt_R / TICK_PER_M;
+
 			// 현재상태가 좌측 곡선인 경우
 			if (driveDataBuffer[i].markState == MARK_CURVE_L) {
 
 				markCnt_L += 1;
+
+				float radiosOfCurvature = ROBOT_WIDTH / 2.f * (moveMeterL + moveMeterR) / (moveMeterR - moveMeterL + 1);
+				// calculate curvature
+				float setaL = moveMeterL / (radiosOfCurvature - ROBOT_WIDTH / 2.f);
+				float setaR = moveMeterR / (radiosOfCurvature + ROBOT_WIDTH / 2.f);
+
+				curvature = 360 * (setaL + setaR) / 2;
 			}
 
 			// 현재상태가 우측 곡선인 경우
 			else if (driveDataBuffer[i].markState == MARK_CURVE_R) {
 
 				markCnt_R += 1;
+
+				float radiosOfCurvature = ROBOT_WIDTH / 2.f * (moveMeterR + moveMeterL) / (moveMeterL - moveMeterR + 1);
+				// calculate curvature
+				float setaL = moveMeterL / (radiosOfCurvature + ROBOT_WIDTH / 2.f);
+				float setaR = moveMeterR / (radiosOfCurvature - ROBOT_WIDTH / 2.f);
+
+				curvature = 360 * (setaL + setaR) / 2;
 			}
 
 			// 직선 (인덱스가 1부터 시작하기에 지정되지 않은 메모리에 접근하는 행동을 방지함)
@@ -263,6 +283,8 @@ static void First_Drive_Data_Cntl(uint8_t exitEcho) {
 					markCnt_R += 1;
 				}
 			}
+
+			driveDataBuffer[i].curvature = curvature;
 		}
 
 		for (i = 0; i < MAX_CROSS_CNT && crossCntTableBuffer[i] != 0; i++) {
@@ -325,6 +347,7 @@ static void First_Drive_Data_Update_Cntl(uint8_t exitEcho) {
 			driveData[i].tickCnt_R = driveDataBuffer[i].tickCnt_R;
 			driveData[i].markState = driveDataBuffer[i].markState;
 			driveData[i].crossCnt = driveDataBuffer[i].crossCnt;
+			driveData[i].curvature = driveDataBuffer[i].curvature;
 		}
 
 		for (uint32_t i = 0; i < MAX_CROSS_CNT; i++) {

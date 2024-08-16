@@ -150,14 +150,6 @@ void Battery_Test_Voltage() {
 
 
 
-
-
-
-
-
-
-
-
 void MotorR_Test_Duty() {
 	LL_TIM_EnableCounter(TIM11);
 	LL_TIM_CC_EnableChannel(TIM11, LL_TIM_CHANNEL_CH1);
@@ -411,55 +403,6 @@ void Motor_Test_Speed() {
 
 
 
-
-//void Motor_Test_Velocity() {
-//	uint8_t		sw = 0;
-//	float		speed = MIN_SPEED;
-//	float		maxSpeed = 2.f;
-//	float		minSpeed = 1.f;
-//	float		accele = 1;
-//	/*
-//	 * 모터 속도를 부드럽게 올렸다가 내리기를 반복한다.
-//	 */
-//
-//	Motor_Start();
-//
-//	while (CUSTOM_SW_3 != (sw = Custom_Switch_Read())) {
-//
-//		// accele / 1000인 이유는 단위 시간이 1ms이기 때문이다. 따라서 인터럽트는 500us 단위이기 때문에 인터럽트에서는 accele / 2000을 해야한다.
-//		speed += accele / 1000;
-//
-//
-//		if (speed > maxSpeed) {
-//			speed = maxSpeed;
-//			accele *= -1;
-//		}
-//		else if (speed < minSpeed) {
-//			speed = minSpeed;
-//			accele *= -1;
-//		}
-//
-//		Motor_L_Speed_Control(speed);
-//		Motor_R_Speed_Control(speed);
-//
-//		Custom_Delay_ms(1);
-//	}
-//	Motor_Stop();
-//}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 void Drive_Test_Position() {
 	uint8_t	sw = 0;
 
@@ -567,11 +510,11 @@ void Mark_Live_Test() {
 
 
 
-    	masking = bothMarkMasking;
+    	masking = markSampling[0];
 
-    	Custom_OLED_Printf("/4%x/r%x/w%x/r%x/w%x/r%x/w%x/r%x/w",  \
-    				(masking >> 15) & 1, (masking >> 14) & 1, (masking >> 13) & 1, (masking >> 12) & 1, \
-    				(masking >> 11) & 1, (masking >> 10) & 1, (masking >> 9) & 1, (masking >> 8) & 1);
+//    	Custom_OLED_Printf("/4%x/r%x/w%x/r%x/w%x/r%x/w%x/r%x/w",
+//    				(masking >> 15) & 1, (masking >> 14) & 1, (masking >> 13) & 1, (masking >> 12) & 1,
+//    				(masking >> 11) & 1, (masking >> 10) & 1, (masking >> 9) & 1, (masking >> 8) & 1);
 
     	Custom_OLED_Printf("/5%x/r%x/w%x/r%x/w%x/r%x/w%x/r%x/w", \
     				(masking >> 7) & 1, (masking >> 6) & 1, (masking >> 5) & 1, (masking >> 4) & 1, \
@@ -581,28 +524,4 @@ void Mark_Live_Test() {
     Sensor_Stop();
 }
 
-
-//void Current_Setting() {
-//	uint8_t		sw = 0;
-//	float		acc = ACCELE_INIT;
-//	float		speed = MIN_SPEED;
-//	float		target = 2.0f;
-//
-//	Motor_Start();
-//
-//	while (CUSTOM_SW_3 != (sw = Custom_Switch_Read())) {
-//
-//		Motor_L_Speed_Control(speed);
-//		Motor_R_Speed_Control(speed);
-//
-//		speed += acc / 1000;
-//		if (speed > target) {
-//			speed = target;
-//		}
-//
-//		Custom_Delay_ms(1);
-//	}
-//
-//	Motor_Stop();
-//}
 

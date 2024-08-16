@@ -61,11 +61,11 @@ __STATIC_INLINE void	Make_Sensor_Raw_Vals(uint8_t idx) {
 
 
 
-	LL_ADC_REG_SetSequencerRanks(ADC1, LL_ADC_REG_RANK_1, LL_ADC_CHANNEL_7);
-	sensorMidianLeft[0] = ADC_Read();
-
-	LL_ADC_REG_SetSequencerRanks(ADC1, LL_ADC_REG_RANK_1, LL_ADC_CHANNEL_6);
-	sensorMidianRight[0] = ADC_Read();
+//	LL_ADC_REG_SetSequencerRanks(ADC1, LL_ADC_REG_RANK_1, LL_ADC_CHANNEL_7);
+//	sensorMidianLeft[0] = ADC_Read();
+//
+//	LL_ADC_REG_SetSequencerRanks(ADC1, LL_ADC_REG_RANK_1, LL_ADC_CHANNEL_6);
+//	sensorMidianRight[0] = ADC_Read();
 
 
 
@@ -216,17 +216,21 @@ __STATIC_INLINE void	Make_Battery_Voltage() {
 
 
 __STATIC_INLINE void	Sensor_TIM5_IRQ() {
-	DWT->CYCCNT = 0;
+//	DWT->CYCCNT = 0;
+
+	const  uint8_t	senorReadTable[IR_SENSOR_LEN_HALF] = { 0, 2, 4, 6, 1, 3, 5, 7 };
 
 	static uint8_t	tim5Idx = 0;
 
-	Make_Sensor_Raw_Vals(tim5Idx);
+	uint8_t sensorReadIdx = senorReadTable[tim5Idx];
 
-	Make_Sensor_Norm_Vals(tim5Idx);
-	Make_Sensor_Norm_Vals(tim5Idx + 8);
+	Make_Sensor_Raw_Vals(sensorReadIdx);
 
-	Make_Sensor_State(tim5Idx);
-	Make_Sensor_State(tim5Idx + 8);
+	Make_Sensor_Norm_Vals(sensorReadIdx);
+	Make_Sensor_Norm_Vals(sensorReadIdx + 8);
+
+	Make_Sensor_State(sensorReadIdx);
+	Make_Sensor_State(sensorReadIdx + 8);
 
 	if (tim5Idx & 0x01) {
 		Make_Battery_Voltage();
@@ -235,14 +239,8 @@ __STATIC_INLINE void	Sensor_TIM5_IRQ() {
 
 //	다음의 순서로 센서를 읽음 { 0, 2, 4, 6, 1, 3, 5, 7 };
 //	인덱스 증가
-	tim5Idx += 2;
 
-	if (tim5Idx == 9) {
-		tim5Idx = 0;
-	}
-	else if (tim5Idx == 8) {
-		tim5Idx = 1;
-	}
+	tim5Idx = (tim5Idx + 1) & 0x07;
 }
 
 #endif /* INC_SENSOR_H_ */

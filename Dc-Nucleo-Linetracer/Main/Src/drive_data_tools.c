@@ -79,6 +79,7 @@ void Print_Drive_Data() {
 		Custom_OLED_Printf("/1L: %9u", driveData[i].tickCnt_L);
 		Custom_OLED_Printf("/2R: %9u", driveData[i].tickCnt_R);
 		Custom_OLED_Printf("/3C: %5u", driveData[i].crossCnt);
+		Custom_OLED_Printf("/4S: %5u", driveData[i].curvature);
 
 		if (sw == CUSTOM_SW_1) {
 
@@ -170,6 +171,7 @@ void Print_Drive_Data_Buffer() {
 		Custom_OLED_Printf("/1L: %9u", driveDataBuffer[i].tickCnt_L);
 		Custom_OLED_Printf("/2R: %9u", driveDataBuffer[i].tickCnt_R);
 		Custom_OLED_Printf("/3C: %5u", driveDataBuffer[i].crossCnt);
+		Custom_OLED_Printf("/4S: %5d", driveData[i].curvature);
 
 		if (sw == CUSTOM_SW_1) {
 

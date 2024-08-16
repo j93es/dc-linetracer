@@ -7,7 +7,7 @@
 
 
 void	Second_Drive();
-void	Second_Drive_Normal();
-
+void	Second_Drive_Quick();
+void	Third_Drive_Quick();
 
 #endif

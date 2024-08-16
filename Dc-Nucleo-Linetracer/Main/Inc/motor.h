@@ -134,28 +134,14 @@ __STATIC_INLINE void	Motor_Speed_Control(float speedL, float speedR) {
 	positionCmdL += velocityCmdL * MOTOR_CONTROL_INTERVAL_S;
 	positionCmdR += velocityCmdR * MOTOR_CONTROL_INTERVAL_S;
 
-	float velocityL = (t_encoder)(curEncoderValueL - prevEncoderValueL) * RADIAN_PER_TICK / MOTOR_CONTROL_INTERVAL_S;
-	float velocityR = (t_encoder)(curEncoderValueR - prevEncoderValueR) * RADIAN_PER_TICK / MOTOR_CONTROL_INTERVAL_S;
+	t_encoder deltaTickL = (t_encoder)(curEncoderValueL - prevEncoderValueL);
+	t_encoder deltaTickR = (t_encoder)(curEncoderValueR - prevEncoderValueR);
+
+	float velocityL = deltaTickL * RADIAN_PER_TICK / MOTOR_CONTROL_INTERVAL_S;
+	float velocityR = deltaTickR * RADIAN_PER_TICK / MOTOR_CONTROL_INTERVAL_S;
 
 	positionL += velocityL * MOTOR_CONTROL_INTERVAL_S;
-
-//	if (ABS(positionCmdL - positionL) > RADIAN_PER_TICK * ENCODER_VALUE_PER_CIRCLE / 2.f) {
-//
-//		positionCmdL = positionL + RADIAN_PER_TICK * ENCODER_VALUE_PER_CIRCLE / 2.f;
-//		if (positionCmdL - positionL < 0) {
-//			positionCmdL = positionL - RADIAN_PER_TICK * ENCODER_VALUE_PER_CIRCLE / 2.f;
-//		}
-//	}
-
 	positionR += velocityR * MOTOR_CONTROL_INTERVAL_S;
-
-//	if (ABS(positionCmdR - positionR) > RADIAN_PER_TICK * ENCODER_VALUE_PER_CIRCLE / 2.f) {
-//
-//		positionCmdR = positionR + RADIAN_PER_TICK * ENCODER_VALUE_PER_CIRCLE / 2.f;
-//		if (positionCmdR - positionR < 0) {
-//			positionCmdR = positionR - RADIAN_PER_TICK * ENCODER_VALUE_PER_CIRCLE / 2.f;
-//		}
-//	}
 
 	// anti windup
 	positionCmdL = GET_MIN(positionCmdL, positionL + 0.5f);
@@ -197,8 +183,9 @@ __STATIC_INLINE void	Motor_Speed_Control(float speedL, float speedR) {
 	Custom_GPIO_Set(GPIOC, 1 << 5, dutyRatioR > 0 ? 1 : 0); // PC5
 
 
-	curTick_L += (t_encoder)(curEncoderValueL - prevEncoderValueL);
-	curTick_R += (t_encoder)(curEncoderValueR - prevEncoderValueR);
+	curTick_L += deltaTickL;
+	curTick_R += deltaTickR;
+//	curMarkSamplingTick += (float)(deltaTickL + deltaTickR) / 2.f;
 
 	prevEncoderValueL = curEncoderValueL;
 	prevEncoderValueR = curEncoderValueR;

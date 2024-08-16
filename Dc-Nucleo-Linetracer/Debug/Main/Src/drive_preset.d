@@ -40,6 +40,8 @@ Main/Src/drive_preset.o: ../Main/Src/drive_preset.c \
  /Users/j93es/workspace/imbedded/dc-linetracer/latest/Dc-Nucleo-Linetracer/Main/Inc/linetracer_test.h \
  /Users/j93es/workspace/imbedded/dc-linetracer/latest/Dc-Nucleo-Linetracer/Main/Inc/second_drive.h \
  /Users/j93es/workspace/imbedded/dc-linetracer/latest/Dc-Nucleo-Linetracer/Main/Inc/straight_boost.h \
+ /Users/j93es/workspace/imbedded/dc-linetracer/latest/Dc-Nucleo-Linetracer/Main/Inc/mark_sampling.h \
+ /Users/j93es/workspace/imbedded/dc-linetracer/latest/Dc-Nucleo-Linetracer/Main/Inc/positioning.h \
  /Users/j93es/workspace/imbedded/dc-linetracer/latest/Dc-Nucleo-Linetracer/External\ Library/Inc/custom_oled.h \
  /Users/j93es/workspace/imbedded/dc-linetracer/latest/Dc-Nucleo-Linetracer/External\ Library/Inc/custom_switch.h \
  /Users/j93es/workspace/imbedded/dc-linetracer/latest/Dc-Nucleo-Linetracer/External\ Library/Inc/custom_delay.h \
@@ -87,6 +89,8 @@ Main/Src/drive_preset.o: ../Main/Src/drive_preset.c \
 /Users/j93es/workspace/imbedded/dc-linetracer/latest/Dc-Nucleo-Linetracer/Main/Inc/linetracer_test.h:
 /Users/j93es/workspace/imbedded/dc-linetracer/latest/Dc-Nucleo-Linetracer/Main/Inc/second_drive.h:
 /Users/j93es/workspace/imbedded/dc-linetracer/latest/Dc-Nucleo-Linetracer/Main/Inc/straight_boost.h:
+/Users/j93es/workspace/imbedded/dc-linetracer/latest/Dc-Nucleo-Linetracer/Main/Inc/mark_sampling.h:
+/Users/j93es/workspace/imbedded/dc-linetracer/latest/Dc-Nucleo-Linetracer/Main/Inc/positioning.h:
 /Users/j93es/workspace/imbedded/dc-linetracer/latest/Dc-Nucleo-Linetracer/External\ Library/Inc/custom_oled.h:
 /Users/j93es/workspace/imbedded/dc-linetracer/latest/Dc-Nucleo-Linetracer/External\ Library/Inc/custom_switch.h:
 /Users/j93es/workspace/imbedded/dc-linetracer/latest/Dc-Nucleo-Linetracer/External\ Library/Inc/custom_delay.h:

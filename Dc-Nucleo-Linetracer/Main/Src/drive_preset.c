@@ -50,29 +50,54 @@ void Pre_Drive_Setting() {
 
 void Pre_Drive_Read_Map() {
 
-	Pre_Drive_Var_Init();
-
-
 	threshold = 140;
 	pitInLen = 0.13f;
 	targetSpeed_init = 2.8f;
 	curveDeceleCoef = 24500;
+
+	Pre_Drive_Var_Init();
 }
 
-void Pre_Drive_Second_Norm() {
-	Pre_Drive_Var_Init();
+void Pre_Drive_Second_Quick() {
+
+	isStraightBoostEnabled = 1;
+	isCurveBoostEnabled = 0;
+	isInlineDriveEnabled = 0;
 
 	threshold = 140;
-	pitInLen = 0.13f;
-	targetSpeed_init = 2.8f;
+	pitInLen = 0.17f;
+	targetSpeed_init = 3.f;
 	curveDeceleCoef = 24500;
 
 	acceleStartTick = 0.1f * TICK_PER_M;
 	deceleEndTick = 0.2f * TICK_PER_M;
-	starightBoostSpeed = 6.f;
-	targetAccele_init = 7.f;
+	starightBoostSpeed = 7.f;
+	targetAccele_init = 8.f;
 	decele_init = 7.f;
 	deceleEndRatio = 0.3f;
+
+	Pre_Drive_Var_Init();
+}
+
+void Pre_Drive_Third_Quick() {
+
+	isStraightBoostEnabled = 1;
+	isCurveBoostEnabled = 0;
+	isInlineDriveEnabled = 1;
+
+	threshold = 140;
+	pitInLen = 0.17f;
+	targetSpeed_init = 3.f;
+	curveDeceleCoef = 24500;
+
+	acceleStartTick = 0.1f * TICK_PER_M;
+	deceleEndTick = 0.2f * TICK_PER_M;
+	starightBoostSpeed = 7.f;
+	targetAccele_init = 8.f;
+	decele_init = 7.f;
+	deceleEndRatio = 0.3f;
+
+	Pre_Drive_Var_Init();
 }
 
 
@@ -260,6 +285,7 @@ void Pre_Drive_Var_Init() {
 	// 현재 모터가 상을 잡은 횟수 초기화
 	curTick_L = 0;
 	curTick_R = 0;
+	curMarkSamplingTick = (float)(curTick_L + curTick_R) / 2.f;
 
 	// 2차 주행 inline 관현 값 초기화
 	targetInlineVal = 0;
@@ -307,6 +333,9 @@ void Pre_Drive_Var_Init() {
 	isLastStraight = CUSTOM_FALSE;
 
 	Mark_Masking_Init();
+
+	Mark_Sampling_Reset();
+
 
 
 	for (uint32_t i = 0; i < MAX_DRIVE_DATA_LEN; i++) {

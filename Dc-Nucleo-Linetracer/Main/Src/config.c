@@ -48,6 +48,8 @@ volatile uint8_t		positionIdxMin = 6;
 volatile int32_t		positionSum = 0;
 volatile int32_t		sensorNormValsSum = 0;
 
+volatile int8_t			curPositionIrSensorMid = IR_SENSOR_MID;
+
 
 // 속도 값에 관한 변수
 volatile float			targetAccele = ACCELE_INIT;
@@ -67,14 +69,13 @@ volatile float			curveDeceleCoef = CURVE_DECELE_COEF_INIT;
 // 현재 모터에 몇번 상이 잡혔는 지를 카운트하는 변수
 volatile t_tick			curTick_L = 0;
 volatile t_tick			curTick_R = 0;
+volatile float			curMarkSamplingTick = 0;
 
 
 
 // 2차 주행 inline
 volatile int32_t		targetInlineVal = 0;
 volatile int32_t		curInlineVal = 0;
-
-
 
 
 /*
@@ -171,3 +172,10 @@ float					deceleEndTick = DECELE_END_TICK_INIT;
 float					deceleEndRatio = DECELE_END_RATIO_INIT;
 
 float					isLastStraight = CUSTOM_FALSE;
+
+
+float				targetMarkSamplingTick = 0.f;
+uint8_t				markSampling[MARK_SAMPLING_MAX_LEN];
+
+
+

@@ -27,6 +27,7 @@
 #include "second_drive.h"
 #include "sensor.h"
 #include "straight_boost.h"
+#include "mark_sampling.h"
 
 #include "main.h"
 #include "custom_delay.h"

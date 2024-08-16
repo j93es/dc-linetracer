@@ -119,7 +119,7 @@ __STATIC_INLINE void	Drive_TIM9_IRQ() {
 	float speedL = finalSpeed * (1.f + finalPosition * positionCoef);
 	float speedR = finalSpeed * (1.f - finalPosition * positionCoef);
 
-	prevPositionValCmd = positionValCmd;
+//	prevPositionValCmd = positionValCmd;
 
 	Motor_Speed_Control(speedL, speedR);
 

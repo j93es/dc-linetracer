@@ -11,7 +11,7 @@
 /Users/j93es/workspace/imbedded/dc-linetracer/latest/Dc-Nucleo-Linetracer/Main/Inc/sensor.h:154:22:Make_Sensor_State	1
 /Users/j93es/workspace/imbedded/dc-linetracer/latest/Dc-Nucleo-Linetracer/Main/Inc/sensor.h:170:23:Make_Voltage_Raw_Val	1
 /Users/j93es/workspace/imbedded/dc-linetracer/latest/Dc-Nucleo-Linetracer/Main/Inc/sensor.h:177:22:Make_Battery_Voltage	8
-/Users/j93es/workspace/imbedded/dc-linetracer/latest/Dc-Nucleo-Linetracer/Main/Inc/sensor.h:218:22:Sensor_TIM5_IRQ	4
+/Users/j93es/workspace/imbedded/dc-linetracer/latest/Dc-Nucleo-Linetracer/Main/Inc/sensor.h:218:22:Sensor_TIM5_IRQ	2
 /Users/j93es/workspace/imbedded/dc-linetracer/latest/Dc-Nucleo-Linetracer/Main/Inc/motor.h:124:22:Motor_Speed_Control	9
 /Users/j93es/workspace/imbedded/dc-linetracer/latest/Dc-Nucleo-Linetracer/Main/Inc/drive_speed_cntl.h:23:22:Drive_Speed_Accele_Control	6
 /Users/j93es/workspace/imbedded/dc-linetracer/latest/Dc-Nucleo-Linetracer/Main/Inc/drive_speed_cntl.h:53:22:Make_Limited_Position	5

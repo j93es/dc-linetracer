@@ -58,18 +58,56 @@ void Second_Drive() {
 
 
 //2차 주행
-void Second_Drive_Normal() {
+void Second_Drive_Quick() {
 
 	uint32_t startTime = 0;
 	uint32_t endTime = 0;
 
 	Custom_OLED_Clear();
 
-	isStraightBoostEnabled = 1;
+
+	//주행 전 변수값 초기화
+	Pre_Drive_Second_Quick();
+
+	startTime = uwTick;
+
+	uint8_t exitEcho = Second_Driving();
+
+	endTime = uwTick;
+
+	Custom_OLED_Clear();
+
+	if (exitEcho == EXIT_ECHO_END_MARK) {
+		Custom_OLED_Printf("/0end mark");
+	}
+	else {
+		Custom_OLED_Printf("/0line out");
+	}
+
+	Custom_OLED_Printf("/1cross: %u", crossCnt);
+
+	int min = (endTime - startTime) / 1000 / 60;
+	int sec = (endTime - startTime) / 1000 % 60;
+	int ms = (endTime - startTime) % 1000;
+
+	Custom_OLED_Printf("/5%d:%d.%d", min, sec, ms);
+
+	while (CUSTOM_SW_3 != Custom_Switch_Read());
+	Custom_OLED_Clear();
+}
+
+
+//2차 주행
+void Third_Drive_Quick() {
+
+	uint32_t startTime = 0;
+	uint32_t endTime = 0;
+
+	Custom_OLED_Clear();
 
 
 	//주행 전 변수값 초기화
-	Pre_Drive_Second_Norm();
+	Pre_Drive_Third_Quick();
 
 	startTime = uwTick;
 
@@ -216,7 +254,9 @@ __STATIC_INLINE void Second_Drive_Cntl() {
 				// 직선가속
 				Straight_Boost();
 
-				Prepare_Inline();
+//				Prepare_Inline();
+
+				Inline_Drive();
 			}
 
 			break;
@@ -234,7 +274,9 @@ __STATIC_INLINE void Second_Drive_Cntl() {
 				Curve_Boost();
 
 				// 곡선 인라인
-				Restore_Inline();
+//				Restore_Inline();
+
+				Inline_Drive();
 			}
 			break;
 	}
@@ -275,7 +317,9 @@ __STATIC_INLINE void Set_Second_Drive_Data() {
 
 		isLastStraight = CUSTOM_FALSE;
 		if (driveData[driveDataIdx + 1].markState == MARK_END) {
+
 			isLastStraight = CUSTOM_TRUE;
+			targetInlineVal = 0;
 		}
 
 

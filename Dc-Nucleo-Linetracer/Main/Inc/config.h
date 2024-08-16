@@ -23,13 +23,17 @@
 
 
 
+// hw spec
+#define TIRE_RADIUS					0.036f
+#define ROBOT_WIDTH					0.2f
+
+
 // pd 제어 매크로
 #define P_COEF_INIT					160.f
 #define D_COEF_INIT					0.256f
 //#define T_ENCODER_MAX				65536
 #define MOTOR_RESISTANCE			7.14f
 #define MOTOR_KE					0.0330f
-#define TIRE_RADIUS					0.036f
 #define TICK_PER_M					( ENCODER_VALUE_PER_CIRCLE / (TIRE_RADIUS * 3.141592f * MOTOR_GEAR_RATIO) )
 #define RADIAN_PER_M				(1 / (3.141592 * TIRE_RADIUS * MOTOR_GEAR_RATIO))
 #define RADIAN_PER_TICK				( 1 / ENCODER_VALUE_PER_CIRCLE )
@@ -44,7 +48,7 @@
 #define DECELE_INIT					7.0f
 
 #define TARGET_SPEED_INIT			2.8f
-#define STRAIGHT_BOOST_SPEED_INIT	6.f
+#define STRAIGHT_BOOST_SPEED_INIT	7.f
 #define CURVE_BOOST_SPEED_INIT		4.f
 
 
@@ -93,6 +97,14 @@
 #define MARK_CROSS					5
 #define MARK_LINE_OUT				6
 
+#define CURVATURE_0					0
+#define CURVATURE_45				1
+#define CURVATURE_90				2
+#define CURVATURE_135				3
+#define CURVATURE_180				4
+#define CURVATURE_235				5
+#define CURVATURE_270				6
+
 
 // 부스트 컨트롤 매크로
 #define BOOST_CNTL_IDLE				0
@@ -121,7 +133,7 @@
 
 
 // 피트인 관련 매크로
-#define PIT_IN_LEN_INIT				0.13f
+#define PIT_IN_LEN_INIT				0.15f
 #define PIT_IN_TARGET_SPEED			MIN_SPEED
 
 
@@ -147,23 +159,28 @@
 
 
 // 인라인 주행 관련 매크로
-#define ABS_INLINE_TARGET_POSITION			3000
-#define INLINE_END_RATIO					0.2f
-#define INLINE_PREPARE_POSITIONING_TICK		( 0.05f * TICK_PER_M )
-#define INLINE_RESTORE_POSITIONING_TICK		( 0.1f * TICK_PER_M )
-#define INLINE_SAFTY_TICK					( 0.05f * TICK_PER_M )
+#define ABS_INLINE_TARGET_POSITION			8000
+#define INLINE_POSITIONING_TICK				( 0.13f * TICK_PER_M )
 
 
 
 // 1차주행, 2차 주행의 driveData 관련 매크로
 #define STOP_END_MARK_CNT_INIT		2
 #define MAX_DRIVE_DATA_LEN			320
-#define T_DRIVE_DATA_INIT			{ 0, 0, MARK_NONE, 0 }
+#define T_DRIVE_DATA_INIT			{ 0, 0, MARK_NONE, 0, CURVATURE_0 }
 
 
 // 최대 크로스 개수
 #define MAX_CROSS_CNT				128
 #define LAST_STRAIGHT_TARGET_SPEED	2.6f
+
+
+// 마크 샘플링
+#define MARK_SAMPLING_MAX_LEN			10
+#define MARK_SAMPLING_METER				0.004
+#define MARK_SAMPLING_TICK				( MARK_SAMPLING_METER * TICK_PER_M )
+// (MARK_SAMPLING_METER * MARK_SAMPLING_MAX_LEN == ncm) 간격으로 accum 진행
+
 
 
 
@@ -173,6 +190,7 @@
 #define IR_SENSOR_MID			7
 
 #define IR_SENSOR_LEN			16
+#define IR_SENSOR_LEN_HALF		8
 
 #define WINDOW_SIZE_HALF		2
 
@@ -187,10 +205,10 @@
 
 
 
-
-
 typedef int16_t		t_encoder;
 typedef int32_t			t_tick;
+
+
 
 
 
@@ -207,14 +225,20 @@ typedef struct	s_driveData {
 		// 마크 종료시점에서의 크로스 개수
 		uint8_t		crossCnt;
 
+		uint16_t		curvature;
+
 }				t_driveData;
 
 
 
+
+
+
+
 typedef struct s_mark_masking {
-    uint16_t left_mask[16];
-    uint16_t right_mask[16];
-    uint16_t line_mask[16];
+    volatile uint16_t left_mask[IR_SENSOR_LEN];
+    volatile uint16_t right_mask[IR_SENSOR_LEN];
+    volatile uint16_t line_mask[IR_SENSOR_LEN];
 }				t_mark_masking;
 
 
@@ -259,6 +283,8 @@ extern volatile uint8_t		positionIdxMin;
 extern volatile int32_t		positionSum;
 extern volatile int32_t		sensorNormValsSum;
 
+extern volatile int8_t		curPositionIrSensorMid;
+
 
 // 주행 중 변하는 속도 값에 관한 변수
 extern volatile float		targetAccele;
@@ -276,6 +302,7 @@ extern volatile float		curveDeceleCoef;
 // 현재 모터에 몇번 상이 잡혔는지를 카운트하는 변수
 extern volatile t_tick		curTick_L;
 extern volatile t_tick		curTick_R;
+extern volatile float		curMarkSamplingTick;
 
 
 // 2차 주행 inline
@@ -376,6 +403,10 @@ extern float				deceleEndTick;
 extern float				deceleEndRatio;
 
 extern float				isLastStraight;
+
+
+extern float				targetMarkSamplingTick;
+extern uint8_t				markSampling[MARK_SAMPLING_MAX_LEN];
 
 
 

@@ -107,7 +107,10 @@ void Init() {
 				First_Drive_Read_Map();
 			}
 			else if (sw == CUSTOM_SW_2_3) {
-				Second_Drive_Normal();
+				Second_Drive_Quick();
+			}
+			else if (sw == CUSTOM_SW_1_3) {
+				Third_Drive_Quick();
 			}
 		}
 		menus[count].func();
