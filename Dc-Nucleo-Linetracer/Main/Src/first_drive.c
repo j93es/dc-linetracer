@@ -203,11 +203,11 @@ __STATIC_INLINE void Set_First_Drive_Data() {
 		driveDataBuffer[driveDataIdx].tickCnt_L = curTick_L;
 		driveDataBuffer[driveDataIdx].tickCnt_R = curTick_R;
 
-		if (driveDataBuffer[driveDataIdx].tickCnt_L > STRAIGHT_ADJUST_TICK
-			&& driveDataBuffer[driveDataIdx].tickCnt_R  > STRAIGHT_ADJUST_TICK) {
-
-			driveDataBuffer[driveDataIdx].markState = MARK_STRAIGHT;
-		}
+//		if (driveDataBuffer[driveDataIdx].tickCnt_L > STRAIGHT_ADJUST_TICK
+//			&& driveDataBuffer[driveDataIdx].tickCnt_R  > STRAIGHT_ADJUST_TICK) {
+//
+//			driveDataBuffer[driveDataIdx].markState = MARK_STRAIGHT;
+//		}
 
 		// curTick 초기화
 		curTick_L = 0;

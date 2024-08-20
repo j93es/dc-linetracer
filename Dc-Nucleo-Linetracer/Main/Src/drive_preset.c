@@ -66,7 +66,7 @@ void Pre_Drive_Second_Quick() {
 
 	threshold = 140;
 	pitInLen = 0.17f;
-	targetSpeed_init = 3.f;
+	targetSpeed_init = 3.1f;
 	curveDeceleCoef = 24500;
 
 	acceleStartTick = 0.1f * TICK_PER_M;
@@ -81,13 +81,15 @@ void Pre_Drive_Second_Quick() {
 
 void Pre_Drive_Third_Quick() {
 
+	curveBoostSpeed = 4.f;
+
 	isStraightBoostEnabled = 1;
 	isCurveBoostEnabled = 0;
 	isInlineDriveEnabled = 1;
 
 	threshold = 140;
 	pitInLen = 0.17f;
-	targetSpeed_init = 3.f;
+	targetSpeed_init = 3.1f;
 	curveDeceleCoef = 24500;
 
 	acceleStartTick = 0.1f * TICK_PER_M;

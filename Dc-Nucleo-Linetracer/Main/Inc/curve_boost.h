@@ -31,8 +31,8 @@ __STATIC_INLINE void Curve_Boost() {
 						finalDeceleEndTick_R =	driveData[driveDataIdx].tickCnt_R \
 												- GET_MIN(deceleEndTick, deceleEndRatio * driveData[driveDataIdx].tickCnt_R);
 
-						// 최소 부스트 거리 이상일 때
-						if (curTick_L + curTick_R  < finalDeceleEndTick_L + finalDeceleEndTick_R -  2 * MIN_CURVE_BOOST_TICK) {
+						if (curTick_L < finalDeceleEndTick_L - MIN_CURVE_BOOST_TICK
+							&& curTick_R < finalDeceleEndTick_R - MIN_CURVE_BOOST_TICK) {
 
 							// deceleEndTickCoef 업데이트
 							deceleEndTickCoef = 2 * decele / TICK_PER_M;
@@ -98,9 +98,9 @@ __STATIC_INLINE void Curve_Boost() {
 			// 부스트가 종료되었을 때
 			case BOOST_CNTL_END :
 
-					// 직선이 10cm 남았을 경우
-					if (curTick_L + curTick_R > finalDeceleEndTick_L + finalDeceleEndTick_R -  2 * MIN_CURVE_BOOST_TICK) {
 
+					if (curTick_L > finalDeceleEndTick_L - MIN_CURVE_BOOST_TICK
+						|| curTick_R > finalDeceleEndTick_R - MIN_CURVE_BOOST_TICK) {
 
 						curveBoostCntl = BOOST_CNTL_IDLE;
 					}

@@ -34,7 +34,7 @@ __STATIC_INLINE void Straight_Boost() {
 						finalDeceleEndTick_R =	driveData[driveDataIdx].tickCnt_R \
 												- GET_MIN(deceleEndTick, deceleEndRatio * driveData[driveDataIdx].tickCnt_R);
 
-						// 최소 부스트 거리 이상일 때
+						// 최소 부스트 거리 이상이고 이미 가속을 하고 다시 IDLE 상태에 도달하지 않았을때
 						if (curTick_L < driveData[driveDataIdx].tickCnt_L - MIN_STRAIGHT_BOOST_TICK \
 							&& curTick_R < driveData[driveDataIdx].tickCnt_R - MIN_STRAIGHT_BOOST_TICK)  {
 

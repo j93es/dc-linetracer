@@ -14,6 +14,6 @@
 ../Main/Src/first_drive.c:44:6:First_Drive_Read_Map	1
 ../Main/Src/first_drive.c:70:25:First_Driving	3
 ../Main/Src/first_drive.c:120:22:First_Drive_Cntl	6
-../Main/Src/first_drive.c:197:22:Set_First_Drive_Data	4
+../Main/Src/first_drive.c:197:22:Set_First_Drive_Data	2
 ../Main/Src/first_drive.c:231:13:First_Drive_Data_Cntl	14
 ../Main/Src/first_drive.c:320:13:First_Drive_Data_Update_Cntl	8

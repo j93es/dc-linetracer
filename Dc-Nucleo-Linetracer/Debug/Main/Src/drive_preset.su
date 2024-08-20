@@ -5,9 +5,9 @@
 ../Main/Src/drive_preset.c:51:6:Pre_Drive_Read_Map	8	static
 ../Main/Src/drive_preset.c:61:6:Pre_Drive_Second_Quick	8	static
 ../Main/Src/drive_preset.c:82:6:Pre_Drive_Third_Quick	8	static
-../Main/Src/drive_preset.c:107:13:Adjust_First_Drive	120	static
-../Main/Src/drive_preset.c:131:13:Adjust_Straight_Boost	176	static
-../Main/Src/drive_preset.c:155:13:Adjust_Curve_Boost	48	static
-../Main/Src/drive_preset.c:168:13:Adjust_Int_Val	24	static
-../Main/Src/drive_preset.c:205:13:Adjust_Float_Val	32	static
-../Main/Src/drive_preset.c:243:6:Pre_Drive_Var_Init	40	static
+../Main/Src/drive_preset.c:109:13:Adjust_First_Drive	120	static
+../Main/Src/drive_preset.c:133:13:Adjust_Straight_Boost	176	static
+../Main/Src/drive_preset.c:157:13:Adjust_Curve_Boost	48	static
+../Main/Src/drive_preset.c:170:13:Adjust_Int_Val	24	static
+../Main/Src/drive_preset.c:207:13:Adjust_Float_Val	32	static
+../Main/Src/drive_preset.c:245:6:Pre_Drive_Var_Init	40	static

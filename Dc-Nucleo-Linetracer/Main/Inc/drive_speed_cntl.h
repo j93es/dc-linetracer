@@ -79,12 +79,12 @@ __STATIC_INLINE void	Make_Inline_Val(float finalSpeed) {
 
 	if (curInlineVal < targetInlineVal) {
 
-		curInlineVal = GET_MIN(curInlineVal + 100, targetInlineVal);
+		curInlineVal = GET_MIN(curInlineVal + 80, targetInlineVal);
 	}
 
 	else {
 
-		curInlineVal = GET_MAX(curInlineVal - 100, targetInlineVal);
+		curInlineVal = GET_MAX(curInlineVal - 80, targetInlineVal);
 	}
 }
 
